@@ -247,6 +247,14 @@ const routeSteps = [
     health: "78%",
     freeTransfers: "1 FT",
     bank: "£1.4m",
+    confidence: 82,
+    projectedPoints: 61.8,
+    risk: "Medium" as const,
+    reasons: [
+      "Watkins has better fixture quality in GW1.",
+      "Aston Villa at home historically strong.",
+      "Releases £6.0m in budget flexibility.",
+    ],
   },
   {
     gw: "GW2",
@@ -262,6 +270,14 @@ const routeSteps = [
     health: "81%",
     freeTransfers: "2 FTs",
     bank: "£5.9m",
+    confidence: 75,
+    projectedPoints: 63.2,
+    risk: "Low" as const,
+    reasons: [
+      "Squad remains fully playable with no injuries.",
+      "Preserves two transfers for the GW3 fixture swing.",
+      "No available replacement beats holding this week.",
+    ],
   },
   {
     gw: "GW3",
@@ -279,6 +295,14 @@ const routeSteps = [
     health: "84%",
     freeTransfers: "1 FT",
     bank: "£4.1m",
+    confidence: 79,
+    projectedPoints: 66.9,
+    risk: "Medium" as const,
+    reasons: [
+      "Fixture swing favors clean-sheet returns.",
+      "Gabriel's underlying attacking threat is rising.",
+      "Uses the transfer banked from GW2's roll.",
+    ],
   },
   {
     gw: "GW4",
@@ -296,6 +320,14 @@ const routeSteps = [
     health: "82%",
     freeTransfers: "1 FT",
     bank: "£2.6m",
+    confidence: 74,
+    projectedPoints: 69.8,
+    risk: "Medium" as const,
+    reasons: [
+      "Haaland's ceiling exceeds Palmer's this gameweek.",
+      "Fixture favors a high-goal-threat captain.",
+      "Captaincy edge outweighs the raw transfer cost.",
+    ],
   },
   {
     gw: "GW5",
@@ -313,6 +345,14 @@ const routeSteps = [
     health: "88%",
     freeTransfers: "1 FT",
     bank: "£0.8m",
+    confidence: 85,
+    projectedPoints: 73.7,
+    risk: "Low" as const,
+    reasons: [
+      "Completes the planned premium forward structure.",
+      "Budget fully released by this point in the route.",
+      "Highest sustained ceiling of the five-GW plan.",
+    ],
   },
 ];
 
@@ -516,27 +556,7 @@ function pad2(value: number) {
   return String(value).padStart(2, "0");
 }
 
-const decisionChainSteps = [
-  { label: "Current XI", icon: "team" as const },
-  { label: "This GW", icon: "transfer" as const },
-  { label: "Captaincy", icon: "captain" as const },
-  { label: "Future Route", icon: "planner" as const },
-  { label: "GW2–5", icon: "layers" as const },
-];
-
-const heroDecision = {
-  gain: "+4.8 pts",
-  out: players.haaland,
-  incoming: players.watkins,
-  confidence: 82,
-  projectedPoints: 61.8,
-  risk: "Medium" as const,
-  reasons: [
-    "Watkins has better fixture quality in GW1.",
-    "Aston Villa at home historically strong.",
-    "Releases £6.0m in budget flexibility.",
-  ],
-};
+const decisionChainIcons = ["team", "transfer", "captain", "planner", "layers"] as const;
 
 const analysisEngineStatus = [
   { label: "Player projections", icon: "spark" as const, state: "done" as const },
@@ -551,7 +571,8 @@ function riskDots(risk: "Low" | "Medium" | "High") {
 }
 
 function DecisionChainCard() {
-  const [activeStep, setActiveStep] = useState(1);
+  const [activeStep, setActiveStep] = useState(0);
+  const activeRoute = routeSteps[activeStep];
   const deadline = useMemo(() => nextDeadline(), []);
   const countdown = useCountdown(deadline);
   const [activePitchPlayer, setActivePitchPlayer] = useState(players.haaland.id);
@@ -586,7 +607,7 @@ function DecisionChainCard() {
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/8 pb-3.5">
           <div className="flex items-center gap-2.5">
             <span className="grid h-9 w-9 place-items-center rounded-[11px] bg-[#6C1DFF] text-sm font-black text-white">
-              {routeSteps[0].gw.replace("GW", "")}
+              {activeRoute.gw.replace("GW", "")}
             </span>
             <div>
               <p className="text-[9px] font-black uppercase tracking-[0.12em] text-white/40">Deadline</p>
@@ -602,21 +623,21 @@ function DecisionChainCard() {
           </div>
           <div className="text-right">
             <p className="text-[9px] font-black uppercase tracking-[0.12em] text-white/40">Bank</p>
-            <p className="text-sm font-black text-white">£1.2m</p>
+            <p className="text-sm font-black text-white">{activeRoute.bank}</p>
           </div>
           <div className="text-right">
             <p className="text-[9px] font-black uppercase tracking-[0.12em] text-white/40">FT</p>
-            <p className="text-sm font-black text-white">1</p>
+            <p className="text-sm font-black text-white">{activeRoute.freeTransfers}</p>
           </div>
         </div>
 
         <div className="mt-3.5">
-          <p className="mb-2 text-[9px] font-black uppercase tracking-[0.14em] text-white/40">Decision chain</p>
+          <p className="mb-2 text-[9px] font-black uppercase tracking-[0.14em] text-white/40">Decision chain - click any gameweek</p>
           <div className="flex items-center gap-1.5 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-            {decisionChainSteps.map((step, index) => {
+            {routeSteps.map((step, index) => {
               const active = index === activeStep;
               return (
-                <div key={step.label} className="flex shrink-0 items-center gap-1.5">
+                <div key={step.gw} className="flex shrink-0 items-center gap-1.5">
                   <button
                     type="button"
                     onClick={() => setActiveStep(index)}
@@ -626,12 +647,10 @@ function DecisionChainCard() {
                         : "border-white/10 bg-white/[0.04] text-white/45 hover:bg-white/[0.08] hover:text-white/80"
                     }`}
                   >
-                    <span className={`grid h-5 w-5 shrink-0 place-items-center rounded-full text-[9px] font-black ${active ? "bg-white/20" : "bg-white/8"}`}>
-                      {index + 1}
-                    </span>
-                    <span className="whitespace-nowrap text-[10px] font-black">{step.label}</span>
+                    <Icon name={decisionChainIcons[index]} className="h-3 w-3 shrink-0" />
+                    <span className="whitespace-nowrap text-[10px] font-black">{step.gw}</span>
                   </button>
-                  {index < decisionChainSteps.length - 1 ? <span className="h-px w-3 shrink-0 bg-white/12" /> : null}
+                  {index < routeSteps.length - 1 ? <span className="h-px w-3 shrink-0 bg-white/12" /> : null}
                 </div>
               );
             })}
@@ -640,13 +659,14 @@ function DecisionChainCard() {
 
         <div className="mt-4 grid gap-3 lg:grid-cols-[minmax(0,0.98fr)_minmax(0,1.12fr)_minmax(0,0.78fr)]">
           <div className="min-w-0 rounded-[16px] border border-white/8 bg-white/[0.03] p-2.5">
-            <p className="mb-1.5 text-[8px] font-black uppercase tracking-[0.12em] text-white/40">Projected XI</p>
-            <div className="relative h-[196px] overflow-hidden rounded-[12px] border border-[#12824D] bg-[#0A9B57] lg:h-[212px]">
+            <p className="mb-1.5 text-[8px] font-black uppercase tracking-[0.12em] text-white/40">Projected XI - {activeRoute.gw}</p>
+            <div className="relative h-[320px] overflow-hidden rounded-[12px] border border-[#12824D] bg-[#0A9B57] sm:h-[360px] lg:h-[400px]">
               <div className="absolute inset-0 bg-[repeating-linear-gradient(90deg,rgba(255,255,255,.05)_0,rgba(255,255,255,.05)_12.5%,rgba(0,0,0,.02)_12.5%,rgba(0,0,0,.02)_25%)]" />
               <div className="absolute inset-[9px] rounded-[10px] border border-white/40" />
               <div className="absolute left-[9px] right-[9px] top-1/2 h-px bg-white/35" />
               {heroPitchPlayers.map((item) => {
                 const selected = item.player.id === activePitchPlayer;
+                const isCaptainThisGw = item.player.id === activeRoute.captain.id;
                 return (
                   <button
                     key={item.player.id}
@@ -657,19 +677,19 @@ function DecisionChainCard() {
                     style={{ left: item.x, top: item.y }}
                   >
                     <div
-                      className={`relative mx-auto rounded-full scale-[0.62] transition duration-200 ${
+                      className={`relative mx-auto rounded-full scale-[0.92] transition duration-200 ${
                         selected ? "-translate-y-0.5 ring-2 ring-[#D7FFF0]" : "ring-1 ring-white/30 hover:ring-white/70"
                       }`}
                     >
                       <PlayerVisual player={item.player} size="sm" />
-                      {item.captain ? (
-                        <span className="absolute -right-1 -top-1 grid h-3 w-3 place-items-center rounded-full border border-white bg-[#FFB800] text-[5px] font-black text-[#17052D]">
+                      {isCaptainThisGw ? (
+                        <span className="absolute -right-1 -top-1 grid h-4 w-4 place-items-center rounded-full border border-white bg-[#FFB800] text-[8px] font-black text-[#17052D]">
                           C
                         </span>
                       ) : null}
                     </div>
-                    <p className="mt-0.5 max-w-[46px] truncate text-[5.5px] font-black text-white">{item.player.name}</p>
-                    <p className="text-[5px] font-black text-[#A5F1CC]">{item.player.projected.toFixed(1)}</p>
+                    <p className="mt-1 max-w-[64px] truncate text-[9px] font-black text-white">{item.player.name}</p>
+                    <p className="text-[8px] font-black text-[#A5F1CC]">{item.player.projected.toFixed(1)}</p>
                   </button>
                 );
               })}
@@ -680,43 +700,50 @@ function DecisionChainCard() {
             <div className="flex items-center justify-between gap-2">
               <div>
                 <p className="text-[8px] font-black uppercase tracking-[0.12em] text-white/40">This gameweek decision</p>
-                <p className="mt-0.5 text-[13px] font-black text-white">Best move for {routeSteps[0].gw}</p>
+                <p className="mt-0.5 text-[13px] font-black text-white">Best move for {activeRoute.gw}</p>
               </div>
-              <span className="shrink-0 rounded-full bg-[#8CFFD5]/14 px-2.5 py-1 text-[10px] font-black text-[#8CFFD5]">{heroDecision.gain}</span>
+              <span className="shrink-0 rounded-full bg-[#8CFFD5]/14 px-2.5 py-1 text-[10px] font-black text-[#8CFFD5]">{activeRoute.gain} pts</span>
             </div>
 
-            <div className="mt-2.5 grid grid-cols-[minmax(0,1fr)_22px_minmax(0,1fr)] items-stretch gap-1.5">
-              <div className="min-w-0 rounded-[11px] border border-[#4A2438] bg-[#20131A] p-1.5 text-center">
-                <span className="rounded-full bg-[#3B1622] px-1.5 py-0.5 text-[5.5px] font-black uppercase tracking-[0.08em] text-[#FF9DBB]">Out</span>
-                <div className="mx-auto mt-1 h-8 w-8 scale-[0.62]"><PlayerVisual player={heroDecision.out} size="sm" /></div>
-                <p className="truncate text-[9px] font-black text-white">{heroDecision.out.name}</p>
-                <p className="truncate text-[6px] font-bold text-white/45">{heroDecision.out.team} · £{heroDecision.out.price.toFixed(1)}m</p>
+            {activeRoute.out && activeRoute.incoming ? (
+              <div className="mt-2.5 grid grid-cols-[minmax(0,1fr)_22px_minmax(0,1fr)] items-stretch gap-1.5">
+                <div className="min-w-0 rounded-[11px] border border-[#4A2438] bg-[#20131A] p-1.5 text-center">
+                  <span className="rounded-full bg-[#3B1622] px-1.5 py-0.5 text-[5.5px] font-black uppercase tracking-[0.08em] text-[#FF9DBB]">Out</span>
+                  <div className="mx-auto mt-1 h-8 w-8 scale-[0.62]"><PlayerVisual player={activeRoute.out} size="sm" /></div>
+                  <p className="truncate text-[9px] font-black text-white">{activeRoute.out.name}</p>
+                  <p className="truncate text-[6px] font-bold text-white/45">{activeRoute.out.team} · £{activeRoute.out.price.toFixed(1)}m</p>
+                </div>
+                <span className="grid h-5 w-5 place-self-center place-items-center rounded-full bg-[#6C1DFF] text-white">
+                  <Icon name="arrow" className="h-2.5 w-2.5" />
+                </span>
+                <div className="min-w-0 rounded-[11px] border border-[#1E4A38] bg-[#0F231C] p-1.5 text-center">
+                  <span className="rounded-full bg-[#0F3126] px-1.5 py-0.5 text-[5.5px] font-black uppercase tracking-[0.08em] text-[#8CFFD5]">In</span>
+                  <div className="mx-auto mt-1 h-8 w-8 scale-[0.62]"><PlayerVisual player={activeRoute.incoming} size="sm" /></div>
+                  <p className="truncate text-[9px] font-black text-white">{activeRoute.incoming.name}</p>
+                  <p className="truncate text-[6px] font-bold text-white/45">{activeRoute.incoming.team} · £{activeRoute.incoming.price.toFixed(1)}m</p>
+                </div>
               </div>
-              <span className="grid h-5 w-5 place-self-center place-items-center rounded-full bg-[#6C1DFF] text-white">
-                <Icon name="arrow" className="h-2.5 w-2.5" />
-              </span>
-              <div className="min-w-0 rounded-[11px] border border-[#1E4A38] bg-[#0F231C] p-1.5 text-center">
-                <span className="rounded-full bg-[#0F3126] px-1.5 py-0.5 text-[5.5px] font-black uppercase tracking-[0.08em] text-[#8CFFD5]">In</span>
-                <div className="mx-auto mt-1 h-8 w-8 scale-[0.62]"><PlayerVisual player={heroDecision.incoming} size="sm" /></div>
-                <p className="truncate text-[9px] font-black text-white">{heroDecision.incoming.name}</p>
-                <p className="truncate text-[6px] font-bold text-white/45">{heroDecision.incoming.team} · £{heroDecision.incoming.price.toFixed(1)}m</p>
+            ) : (
+              <div className="mt-2.5 rounded-[11px] border border-white/10 bg-white/[0.03] p-2.5 text-center">
+                <p className="text-[10px] font-black text-white">No transfer this gameweek</p>
+                <p className="mt-0.5 text-[8px] font-bold text-white/45">{activeRoute.detail} - squad holds unchanged</p>
               </div>
-            </div>
+            )}
 
             <div className="mt-2.5 grid grid-cols-3 gap-1.5">
               <div className="rounded-[11px] border border-white/8 bg-white/[0.03] px-2 py-1.5">
                 <p className="text-[6px] font-black uppercase tracking-[0.08em] text-white/40">Confidence</p>
-                <p className="mt-0.5 text-[13px] font-black text-[#8CFFD5]">{heroDecision.confidence}%</p>
+                <p className="mt-0.5 text-[13px] font-black text-[#8CFFD5]">{activeRoute.confidence}%</p>
               </div>
               <div className="rounded-[11px] border border-white/8 bg-white/[0.03] px-2 py-1.5">
                 <p className="text-[6px] font-black uppercase tracking-[0.08em] text-white/40">Projected points</p>
-                <p className="mt-0.5 text-[13px] font-black text-white">{heroDecision.projectedPoints}</p>
+                <p className="mt-0.5 text-[13px] font-black text-white">{activeRoute.projectedPoints}</p>
               </div>
               <div className="rounded-[11px] border border-white/8 bg-white/[0.03] px-2 py-1.5">
                 <p className="text-[6px] font-black uppercase tracking-[0.08em] text-white/40">Risk level</p>
-                <p className="mt-0.5 text-[10px] font-black text-[#F5C15C]">{heroDecision.risk}</p>
+                <p className="mt-0.5 text-[10px] font-black text-[#F5C15C]">{activeRoute.risk}</p>
                 <div className="mt-1 flex gap-0.5">
-                  {riskDots(heroDecision.risk).map((filled, index) => (
+                  {riskDots(activeRoute.risk).map((filled, index) => (
                     <span key={index} className={`h-1 flex-1 rounded-full ${filled ? "bg-[#F5C15C]" : "bg-white/10"}`} />
                   ))}
                 </div>
@@ -726,7 +753,7 @@ function DecisionChainCard() {
             <div className="mt-2.5">
               <p className="text-[7px] font-black uppercase tracking-[0.1em] text-white/40">Why this move?</p>
               <div className="mt-1 space-y-1">
-                {heroDecision.reasons.map((reason) => (
+                {activeRoute.reasons.map((reason) => (
                   <div key={reason} className="flex items-start gap-1.5">
                     <span className="mt-0.5 grid h-3 w-3 shrink-0 place-items-center rounded-full bg-[#8CFFD5]/16 text-[#8CFFD5]">
                       <Icon name="check" className="h-1.5 w-1.5" />
@@ -755,7 +782,7 @@ function DecisionChainCard() {
                 </p>
               </div>
               <p className="mt-2 text-[7.5px] font-bold leading-3 text-white/40">
-                Gameweek 1 deadline
+                {activeRoute.gw} deadline
                 <span className="mt-0.5 block text-white/60">{deadlineLabel || "…"}</span>
               </p>
             </div>
