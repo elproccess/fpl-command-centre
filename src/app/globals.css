@@ -1,0 +1,74 @@
+@import "tailwindcss";
+
+:root {
+  --background: #F4F0FA;
+  --foreground: #17002F;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-body);
+  --font-mono: var(--font-body);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-body), Arial, Helvetica, sans-serif;
+}
+
+h1,
+h2,
+h3,
+.font-display {
+  font-family: var(--font-display), var(--font-body), Arial, Helvetica, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+::selection {
+  background: rgba(52, 211, 153, 0.35);
+}
+
+/* Multi-GW planner true per-gameweek streaming: a real gameweek's card gets this the instant it
+   swaps in from a placeholder, so it visually reads as "just arrived" without being distracting -
+   a not-yet-ready gameweek/route card gets the pulse instead, so partially-loaded and
+   fully-loaded cards are distinguishable without looking broken. */
+@keyframes gw-pop-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.gw-pop-in {
+  animation: gw-pop-in 0.35s ease-out;
+}
+
+@keyframes gw-placeholder-pulse {
+  0%,
+  100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.gw-placeholder-pulse {
+  animation: gw-placeholder-pulse 1.8s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gw-pop-in,
+  .gw-placeholder-pulse {
+    animation: none;
+  }
+}
