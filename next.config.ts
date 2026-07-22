@@ -29,6 +29,10 @@ const backendApiBaseUrl =
   "http://127.0.0.1:8000";
 
 const nextConfig: NextConfig = {
+  // Produces a self-contained .next/standalone build (server + only the node_modules it actually
+  // needs) instead of requiring the full node_modules tree in the runtime image - the Dockerfile
+  // relies on this to keep the final container small.
+  output: "standalone",
   allowedDevOrigins,
   // Next.js's own rewrite proxy (used for /api/backend/* below) kills any proxied request after
   // 30s by default (node_modules/next/dist/server/lib/router-utils/proxy-request.js:
