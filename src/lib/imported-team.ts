@@ -5,6 +5,10 @@ export const FPL_ENTRY_COOKIE = "fpl_entry_id";
 export const FPL_EVENT_COOKIE = "fpl_event";
 export const IMPORTED_TEAM_ENTRY_COOKIE = "matchday_os_entry_id";
 export const IMPORTED_TEAM_EVENT_COOKIE = "matchday_os_event";
+// Reserved entry id the backend serves a demo squad for (real 2026/27 players/fixtures/
+// projections, sample squad) while FPL hides everyone's picks until the GW1 deadline.
+// Must match DEMO_ENTRY_ID in fpl-os-backend/app/services/squad_health.py.
+export const DEMO_ENTRY_ID = "999999999";
 
 const IMPORTED_TEAM_COOKIE_MAX_AGE = 60 * 60 * 24 * 30;
 

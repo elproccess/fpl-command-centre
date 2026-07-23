@@ -7,6 +7,7 @@ import { ApiRequestError, getGameweekCommandCentre, getImportTeamData, getSquadP
 import {
   appStateFromImport,
   commandCentrePayloadFromImport,
+  DEMO_ENTRY_ID,
   FPL_ENTRY_COOKIE,
   FPL_EVENT_COOKIE,
   importedTeamFromResponse,
@@ -1145,6 +1146,13 @@ function ImportedSquadLoaded({
   return (
     <>
       <DeadlineStrip state={state} />
+      {imported.entry_id === DEMO_ENTRY_ID ? (
+        <div className="rounded-2xl border-2 border-dashed border-[#6C1DFF] bg-[#F5EFFF] px-5 py-3 text-sm font-bold text-[#3C2752]">
+          <span className="mr-2 rounded-md bg-[#6C1DFF] px-2 py-0.5 text-[10px] font-black uppercase tracking-widest text-white">Demo</span>
+          Sample squad on real 2026/27 fixtures and projections. Import your own team once the
+          Gameweek 1 deadline passes — FPL keeps everyone&apos;s picks private until then.
+        </div>
+      ) : null}
       <BackgroundAnalysisStrip entryId={imported.entry_id} gameweek={imported.event} />
 
       <DashboardHero
