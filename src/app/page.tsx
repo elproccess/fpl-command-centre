@@ -521,9 +521,14 @@ function OsLoopStep({
   );
 }
 
-// Deadline is computed relative to page load (next Friday 18:30) rather than hardcoded, so the
-// countdown in the hero card never shows a stale or negative value no matter when the page loads.
+// The hero card counts down to the REAL next FPL deadline - 2026/27 GW1, confirmed against
+// bootstrap-static (2026-08-21T17:30:00Z). Once that has passed the season is running weekly,
+// so fall back to the next-Friday-18:30 heuristic rather than ever showing a stale or negative
+// countdown between deploys.
+const GW1_DEADLINE_UTC = Date.UTC(2026, 7, 21, 17, 30, 0);
+
 function nextDeadline(): Date {
+  if (Date.now() < GW1_DEADLINE_UTC) return new Date(GW1_DEADLINE_UTC);
   const now = new Date();
   const deadline = new Date(now);
   const dayOffset = (5 - now.getDay() + 7) % 7 || 7;
