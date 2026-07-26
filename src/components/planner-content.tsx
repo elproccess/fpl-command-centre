@@ -1044,14 +1044,13 @@ function GameweekHorizon({ route, selectedStepIndex, onSelectStep, animateFirstS
   return (
     <>
       <section className="mt-3 rounded-[20px] border border-[#E0E5EF] bg-white p-3 shadow-[0_14px_38px_rgba(15,23,60,0.055)] sm:hidden">
+        {/* The prev/next controls deliberately do NOT live up here on mobile - they sit in
+            MobileGameweekNav, directly above the selected-gameweek workspace, so the content
+            that changes on a tap is on screen when it changes. */}
         <div className="flex items-center justify-between gap-3">
           <div>
             <p className="text-[9px] font-black uppercase tracking-[0.14em] text-[#6C1DFF]">Gameweek timeline</p>
             <p className="mt-1 text-sm font-black text-[#0A1031]">{route.steps[selectedStepIndex]?.gw ?? "GW"} of {route.steps.length}</p>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <button type="button" onClick={() => onSelectStep(Math.max(0, selectedStepIndex - 1))} disabled={!canGoPrevious} className="grid h-9 w-9 place-items-center rounded-full border border-[#DDD3F5] bg-white text-lg font-black text-[#6C1DFF] disabled:opacity-30" aria-label="Previous gameweek">‹</button>
-            <button type="button" onClick={() => onSelectStep(Math.min(route.steps.length - 1, selectedStepIndex + 1))} disabled={!canGoNext} className="grid h-9 w-9 place-items-center rounded-full border border-[#DDD3F5] bg-white text-lg font-black text-[#6C1DFF] disabled:opacity-30" aria-label="Next gameweek">›</button>
           </div>
         </div>
         <div className="mt-3 h-1 overflow-hidden rounded-full bg-[#ECE7F7]">
@@ -1111,6 +1110,45 @@ function GameweekHorizon({ route, selectedStepIndex, onSelectStep, animateFirstS
         </div>
       </section>
     </>
+  );
+}
+
+// Mobile-only prev/next for the gameweek decision. On a phone the timeline strip's own controls
+// sat a full screen above the workspace, so flicking gameweeks changed content the user couldn't
+// see - these controls are welded to the top of the workspace instead, so the swap (plus its
+// planner-step-in animation) happens directly under the user's thumb.
+function MobileGameweekNav({ route, selectedStepIndex, onSelectStep }: { route: PlannerRoute; selectedStepIndex: number; onSelectStep: (index: number) => void }) {
+  const step = route.steps[selectedStepIndex];
+  const canGoPrevious = selectedStepIndex > 0;
+  const canGoNext = selectedStepIndex < route.steps.length - 1;
+  return (
+    <div className="mt-4 flex items-center justify-between gap-3 rounded-t-[20px] border border-b-0 border-[#E0E5EF] bg-white px-3 py-2.5 sm:hidden">
+      <button
+        type="button"
+        onClick={() => onSelectStep(Math.max(0, selectedStepIndex - 1))}
+        disabled={!canGoPrevious}
+        className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-[#DDD3F5] bg-white text-lg font-black text-[#6C1DFF] transition active:scale-95 disabled:opacity-30"
+        aria-label="Previous gameweek"
+      >
+        ‹
+      </button>
+      <div className="min-w-0 text-center">
+        <p className="text-[9px] font-black uppercase tracking-[0.14em] text-[#6C1DFF]">Gameweek decision</p>
+        <p className="truncate text-sm font-black text-[#0A1031]">
+          {step?.gw ?? "GW"} of {route.steps.length}
+          {step && !step.__pending ? ` · ${actionLabel(step.action)}` : ""}
+        </p>
+      </div>
+      <button
+        type="button"
+        onClick={() => onSelectStep(Math.min(route.steps.length - 1, selectedStepIndex + 1))}
+        disabled={!canGoNext}
+        className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-[#DDD3F5] bg-white text-lg font-black text-[#6C1DFF] transition active:scale-95 disabled:opacity-30"
+        aria-label="Next gameweek"
+      >
+        ›
+      </button>
+    </div>
   );
 }
 
@@ -1411,7 +1449,7 @@ function CandidateOption({ candidate, playerIndex, compact = false }: { candidat
 function SelectedGameweekWorkspace({ step, route, playerIndex }: { step: PlannerStep; route: PlannerRoute; playerIndex: PlannerPlayerIndex }) {
   if (step.__pending) {
     return (
-      <section className="mt-4 rounded-[20px] border border-dashed border-[#CFC4EC] bg-[#FBF9FF] p-6 text-center sm:mt-5 sm:rounded-[24px] sm:p-8">
+      <section className="mt-0 rounded-b-[20px] border border-dashed border-[#CFC4EC] bg-[#FBF9FF] p-6 text-center sm:mt-5 sm:rounded-[24px] sm:p-8">
         <span className="mx-auto block h-7 w-7 animate-spin rounded-full border-2 border-[#6C1DFF] border-t-transparent" aria-hidden />
         <h2 className="mt-4 text-xl font-black text-[#0A1031]">Calculating {step.gw}</h2>
         <p className="mt-2 text-sm font-semibold text-[#68718F]">The live route will update this workspace as soon as the gameweek completes.</p>
@@ -1451,14 +1489,16 @@ function SelectedGameweekWorkspace({ step, route, playerIndex }: { step: Planner
   );
 
   return (
-    <section className="mt-4 overflow-hidden rounded-[20px] border border-[#E0E5EF] bg-white shadow-[0_16px_44px_rgba(15,23,60,0.055)] sm:mt-5 sm:rounded-[24px] sm:shadow-[0_20px_55px_rgba(15,23,60,0.065)]">
+    <section className="planner-step-in mt-0 overflow-hidden rounded-b-[20px] border border-[#E0E5EF] bg-white shadow-[0_16px_44px_rgba(15,23,60,0.055)] sm:mt-5 sm:rounded-[24px] sm:shadow-[0_20px_55px_rgba(15,23,60,0.065)]">
       <div className="flex flex-col gap-3 border-b border-[#E6EAF2] bg-[#FAFBFD] p-4 sm:gap-4 sm:px-6 sm:py-5 lg:flex-row lg:items-center lg:justify-between">
         <div>
           <div className="flex flex-wrap items-center gap-2">
             <span className="text-[10px] font-black uppercase tracking-[0.13em] text-[#6C1DFF] sm:text-xs sm:tracking-[0.16em]">Selected gameweek</span>
             <span className={`rounded-lg border px-2 py-1 text-[9px] font-black uppercase tracking-[0.08em] sm:px-2.5 sm:text-[10px] sm:tracking-[0.1em] ${actionSurfaceClass(step.action)}`}>{actionLabel(step.action)}</span>
           </div>
-          <h2 className="mt-2 text-xl font-black tracking-[-0.03em] text-[#0A1031] sm:text-3xl">{step.gw}: {step.headline || routeActionSummary(step)}</h2>
+          {/* Backend headlines sometimes already start with "GWn:" - strip it so the prefix
+              this heading adds doesn't render as "GW2: GW2: ...". */}
+          <h2 className="mt-2 text-xl font-black tracking-[-0.03em] text-[#0A1031] sm:text-3xl">{step.gw}: {(step.headline || routeActionSummary(step)).replace(/^GW\d+:\s*/i, "")}</h2>
           <p className="mt-1.5 line-clamp-2 text-xs font-semibold leading-5 text-[#68718F] sm:mt-2 sm:text-sm">{fixture.opponent}{fixture.venue ? ` (${fixture.venue})` : ""} · Review the move, captain and decision evidence for this week.</p>
         </div>
         <div className="grid grid-cols-3 gap-1.5 sm:min-w-[360px] sm:gap-2">
@@ -1971,7 +2011,8 @@ export function PlannerContent({ payload }: { payload: Record<string, unknown> }
       <PlannerHeader planner={planner} route={activeRoute} step={selectedStep} playerIndex={playerIndex} isRecommended={isRecommended} provisional={state.phase === "streaming"} onBack={() => handleRouteSelect(null)} />
       <PlannerContextBar planner={planner} route={activeRoute} />
       <GameweekHorizon route={activeRoute} selectedStepIndex={safeStepIndex} onSelectStep={setSelectedStepIndex} animateFirstStep={routeTransitioning} />
-      {selectedStep ? <SelectedGameweekWorkspace step={selectedStep} route={activeRoute} playerIndex={playerIndex} /> : null}
+      {selectedStep ? <MobileGameweekNav route={activeRoute} selectedStepIndex={safeStepIndex} onSelectStep={setSelectedStepIndex} /> : null}
+      {selectedStep ? <SelectedGameweekWorkspace key={`${activeRoute.id}-${selectedStep.gw}`} step={selectedStep} route={activeRoute} playerIndex={playerIndex} /> : null}
       <RouteComparison planner={planner} activeRoute={activeRoute} onSelect={handleRouteSelect} />
       <DetailedRoutes planner={planner} activeRoute={activeRoute} onSelect={handleRouteSelect} />
       <AdvancedAnalysis route={activeRoute} />

@@ -66,9 +66,58 @@ h3,
   animation: gw-placeholder-pulse 1.8s ease-in-out infinite;
 }
 
+/* Planner: the selected-gameweek workspace remounts (keyed by route+GW) whenever the user flicks
+   prev/next, and this subtle rise makes the swap legible - on phones the change happens right
+   under the nav buttons, so without a visual cue a tap can look like it did nothing. */
+@keyframes planner-step-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.planner-step-in {
+  animation: planner-step-in 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Landing hero: staggered entrance on first paint. `both` keeps elements hidden until their
+   delayed animation starts, which is what produces the stagger. */
+@keyframes hero-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hero-rise {
+  animation: hero-rise 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.hero-rise-delay-1 {
+  animation-delay: 0.08s;
+}
+
+.hero-rise-delay-2 {
+  animation-delay: 0.16s;
+}
+
+.hero-rise-delay-3 {
+  animation-delay: 0.24s;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .gw-pop-in,
-  .gw-placeholder-pulse {
+  .gw-placeholder-pulse,
+  .planner-step-in,
+  .hero-rise {
     animation: none;
   }
 }

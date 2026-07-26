@@ -941,7 +941,7 @@ export default function Home() {
         <nav className="relative z-20 mx-auto flex max-w-[1480px] items-center justify-between px-4 py-5 sm:px-6 lg:px-8">
           <div className="flex items-center gap-3">
             <Brand />
-            <span className="rounded-full border border-[#9F7CFF]/35 bg-[#6C1DFF]/18 px-2.5 py-1 text-[9px] font-black uppercase tracking-[0.13em] text-[#DCCBFF]">
+            <span className="hidden rounded-full border border-[#9F7CFF]/35 bg-[#6C1DFF]/18 px-2.5 py-1 text-[9px] font-black uppercase tracking-[0.13em] text-[#DCCBFF] sm:inline-block">
               Beta
             </span>
           </div>
@@ -956,8 +956,8 @@ export default function Home() {
             <Link href="/dashboard" className="hidden rounded-xl px-4 py-2.5 text-sm font-black text-white/66 transition hover:bg-white/[0.07] hover:text-white sm:inline-flex">
               Open app
             </Link>
-            <Link href="/import" className="inline-flex items-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-black text-[#17052D] shadow-[0_12px_30px_rgba(0,0,0,0.22)] transition hover:-translate-y-0.5 hover:bg-[#F2EBFF] sm:px-5">
-              Enter beta <Icon name="arrow" className="h-4 w-4" />
+            <Link href="/import" className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-lg bg-[#6C1DFF] px-3 py-2 text-xs font-black text-white shadow-[0_10px_26px_rgba(108,29,255,0.3)] transition hover:-translate-y-0.5 hover:bg-[#7A2EFF] sm:gap-2 sm:rounded-xl sm:px-5 sm:py-2.5 sm:text-sm">
+              Enter beta <Icon name="arrow" className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
             </Link>
           </div>
         </nav>
@@ -965,22 +965,22 @@ export default function Home() {
         <div className="relative z-10 mx-auto max-w-[1480px] px-4 pb-8 pt-3 sm:px-6 sm:pb-10 lg:px-8">
           <div className="grid gap-8 lg:grid-cols-[minmax(0,.74fr)_minmax(620px,1.26fr)] lg:items-center">
             <div className="max-w-3xl">
-              <div className="inline-flex items-center gap-2 rounded-full border border-white/12 bg-white/[0.06] px-3.5 py-2 text-[10px] font-black uppercase tracking-[0.16em] text-[#DCCBFF] backdrop-blur">
+              <div className="hero-rise inline-flex items-center gap-2 rounded-full border border-white/12 bg-white/[0.06] px-3.5 py-2 text-[10px] font-black uppercase tracking-[0.16em] text-[#DCCBFF] backdrop-blur">
                 <span className="h-2 w-2 rounded-full bg-[#8CFFD5] shadow-[0_0_16px_#8CFFD5]" />
                 Beta season · your squad. Our system. One advantage.
               </div>
 
-              <h1 className="mt-5 text-[2.55rem] font-black leading-[0.94] tracking-[-0.052em] text-white sm:text-[3.55rem] lg:text-[3.7rem] xl:text-[3.95rem]">
+              <h1 className="hero-rise hero-rise-delay-1 mt-5 text-[2.55rem] font-black leading-[0.94] tracking-[-0.052em] text-white sm:text-[3.55rem] lg:text-[3.7rem] xl:text-[3.95rem]">
                 The operating
                 <span className="block">system for</span>
                 <span className="block bg-[linear-gradient(90deg,#C9B3FF_0%,#8CFFD5_100%)] bg-clip-text text-transparent">FPL decisions.</span>
               </h1>
 
-              <p className="mt-5 max-w-2xl text-sm font-semibold leading-6 text-white/61">
+              <p className="hero-rise hero-rise-delay-2 mt-5 max-w-2xl text-sm font-semibold leading-6 text-white/61">
                 Matchday OS connects every decision from this week to the next five. Diagnose. Decide. Execute. All in one connected system.
               </p>
 
-              <div className="mt-6 flex flex-col gap-2.5 sm:flex-row">
+              <div className="hero-rise hero-rise-delay-3 mt-6 flex flex-col gap-2.5 sm:flex-row">
                 <Link href="/import" className="inline-flex min-h-13 items-center justify-center gap-2 rounded-[14px] bg-[#6C1DFF] px-6 py-3.5 text-sm font-black text-white shadow-[0_18px_42px_rgba(108,29,255,0.34)] transition hover:-translate-y-0.5 hover:bg-[#7A2EFF]">
                   Run my squad in the beta <Icon name="arrow" className="h-4 w-4" />
                 </Link>
@@ -989,12 +989,14 @@ export default function Home() {
                 </a>
               </div>
 
-              <p className="mt-3 flex items-center gap-1.5 text-[11px] font-bold text-white/40">
+              <p className="hero-rise hero-rise-delay-3 mt-3 flex items-center gap-1.5 text-[11px] font-bold text-white/40">
                 <Icon name="shield" className="h-3.5 w-3.5" /> No credit card. Free during beta.
               </p>
             </div>
 
-            <DecisionChainCard />
+            <div className="hero-rise hero-rise-delay-2 min-w-0">
+              <DecisionChainCard />
+            </div>
           </div>
         </div>
 
