@@ -28,22 +28,61 @@ const SIGNAL_ORDER: Record<MarketSignal["signal"], number> = {
   Avoid: 1,
 };
 
-const SIGNALS: Array<"All" | MarketSignal["signal"] | "My squad"> = [
-  "All",
-  "Buy",
-  "Watch",
-  "Hold",
-  "Sell",
-  "Avoid",
-  "My squad",
-];
-
 const POSITIONS = ["All", "GK", "DEF", "MID", "FWD"] as const;
 
+// Tabs re-slice ONE underlying table instead of swapping to a second, differently-shaped list -
+// "Sell/Avoid" is deliberately one tab even though the two are distinct badges, because the
+// player is asking the same question either way ("who's a risk right now").
+const VIEW_TABS = ["All", "Buy", "Watch", "Sell/Avoid", "Rising", "Falling", "My Squad"] as const;
+
+const PRICE_OPTIONS = [
+  { value: 0, label: "Any price" },
+  { value: 4.5, label: "Under £4.5m" },
+  { value: 5, label: "Under £5.0m" },
+  { value: 5.5, label: "Under £5.5m" },
+  { value: 6, label: "Under £6.0m" },
+  { value: 6.5, label: "Under £6.5m" },
+  { value: 7.5, label: "Under £7.5m" },
+  { value: 8.5, label: "Under £8.5m" },
+  { value: 10, label: "Under £10.0m" },
+  { value: 12, label: "Under £12.0m" },
+];
+
+const PAGE_SIZE = 30;
+
 type PositionFilter = (typeof POSITIONS)[number];
-type SignalFilter = (typeof SIGNALS)[number];
-type SortKey = "score" | "projected" | "three_gw" | "form" | "ownership" | "price" | "price_change";
+type ViewTab = (typeof VIEW_TABS)[number];
+type RowSortKey = "horizon" | "next" | "value" | "score" | "form" | "movement" | "price" | "ownership";
 type SortDirection = "asc" | "desc";
+
+// One row per real player, always present for the whole pool (explorer fields) - signal/score/
+// thesis/trend/form/movement/fixture are attached when the market engine has ranked that player,
+// and left null otherwise. This is what lets a single table answer both "best under £6.0m" (every
+// row has price+projection) and "what does the market think of him" (only ranked rows have this).
+type MarketRow = {
+  id: number;
+  code: number | null;
+  name: string;
+  team: string;
+  team_id: number;
+  position: "GK" | "DEF" | "MID" | "FWD";
+  price: number;
+  ownership: number;
+  status: Player["status"];
+  projections: Record<string, number>;
+  next_projected: number;
+  horizon_projected: number;
+  value_per_million: number;
+  signal: MarketSignal["signal"] | null;
+  score: number | null;
+  reason: string | null;
+  trend: Player["trend"] | null;
+  price_movement: number | null;
+  form: number | null;
+  three_gw_projected: number | null;
+  fixture: string | null;
+  fixture_difficulty: Player["fixture_difficulty"] | null;
+};
 
 function numberValue(value: number | null | undefined) {
   return typeof value === "number" && Number.isFinite(value) ? value : 0;
@@ -54,6 +93,7 @@ function formatProjection(value: number | null | undefined) {
 }
 
 function formatMovement(value: number | null | undefined) {
+  if (value == null) return "—";
   const movement = numberValue(value);
   if (movement === 0) return "—";
   const normalized = Math.abs(movement) >= 1 ? movement / 10 : movement;
@@ -68,15 +108,15 @@ function signalTone(signal: MarketSignal["signal"]) {
   return "border-[#E1E7F2] bg-[#F5F7FB] text-[#4D5680]";
 }
 
-function trendGlyph(player: Player) {
-  if (player.trend === "up") return "↗";
-  if (player.trend === "down") return "↘";
+function trendGlyph(trend: Player["trend"] | null | undefined) {
+  if (trend === "up") return "↗";
+  if (trend === "down") return "↘";
   return "→";
 }
 
-function trendClass(player: Player) {
-  if (player.trend === "up") return "text-[#00A85A]";
-  if (player.trend === "down") return "text-[#E90052]";
+function trendClass(trend: Player["trend"] | null | undefined) {
+  if (trend === "up") return "text-[#00A85A]";
+  if (trend === "down") return "text-[#E90052]";
   return "text-[#6C7195]";
 }
 
@@ -144,15 +184,122 @@ function marketUniverse(board: MarketBoard) {
   ]);
 }
 
-function scoreForSort(signal: MarketSignal, key: SortKey) {
-  const player = signal.player;
-  if (key === "score") return numberValue(signal.score);
-  if (key === "projected") return numberValue(player.projected);
-  if (key === "three_gw") return numberValue(player.three_gw_projected);
-  if (key === "form") return numberValue(player.form);
-  if (key === "ownership") return numberValue(player.ownership);
-  if (key === "price") return numberValue(player.price);
-  return numberValue(player.price_movement);
+// The single merge point: every player in the full pool becomes one row; a signal (if the market
+// engine ranked that player) attaches its score/thesis/trend/form/movement/fixture on top. A
+// signal player somehow missing from the pool (shouldn't normally happen - same players table)
+// still gets a row rather than silently vanishing.
+function buildMarketRows(pool: ExplorerPlayer[], signals: MarketSignal[]): MarketRow[] {
+  const signalById = new Map<number, MarketSignal>();
+  for (const signal of signals) signalById.set(signal.player.id, signal);
+
+  const asPosition = (value: string): MarketRow["position"] =>
+    (["GK", "DEF", "MID", "FWD"] as const).includes(value as never) ? (value as MarketRow["position"]) : "MID";
+
+  const rows: MarketRow[] = pool.map((entry) => {
+    const signal = signalById.get(entry.id);
+    const signalPlayer = signal?.player;
+    return {
+      id: entry.id,
+      code: entry.code,
+      name: entry.name,
+      team: entry.team,
+      team_id: entry.team_id,
+      position: asPosition(entry.position),
+      price: entry.price,
+      ownership: entry.ownership,
+      status: signalPlayer?.status ?? "Available",
+      projections: entry.projections,
+      next_projected: entry.next_projected,
+      horizon_projected: entry.horizon_projected,
+      value_per_million: entry.value_per_million,
+      signal: signal?.signal ?? null,
+      score: signal?.score ?? null,
+      reason: signal?.reason ?? null,
+      trend: signalPlayer?.trend ?? null,
+      price_movement: signalPlayer?.price_movement ?? null,
+      form: signalPlayer?.form ?? null,
+      three_gw_projected: signalPlayer?.three_gw_projected ?? null,
+      fixture: signalPlayer?.fixture ?? null,
+      fixture_difficulty: signalPlayer?.fixture_difficulty ?? null,
+    };
+  });
+
+  const poolIds = new Set(pool.map((entry) => entry.id));
+  for (const signal of signals) {
+    if (poolIds.has(signal.player.id)) continue;
+    const player = signal.player;
+    const horizon = numberValue(player.three_gw_projected) || numberValue(player.projected);
+    rows.push({
+      id: player.id,
+      code: player.code ?? null,
+      name: player.name,
+      team: player.team,
+      team_id: 0,
+      position: asPosition(player.position),
+      price: player.price,
+      ownership: numberValue(player.ownership),
+      status: player.status,
+      projections: {},
+      next_projected: numberValue(player.projected),
+      horizon_projected: horizon,
+      value_per_million: player.price ? Math.round((horizon / player.price) * 100) / 100 : 0,
+      signal: signal.signal,
+      score: signal.score,
+      reason: signal.reason,
+      trend: player.trend ?? null,
+      price_movement: player.price_movement ?? null,
+      form: player.form ?? null,
+      three_gw_projected: player.three_gw_projected ?? null,
+      fixture: player.fixture ?? null,
+      fixture_difficulty: player.fixture_difficulty ?? null,
+    });
+  }
+
+  return rows;
+}
+
+function rowSortValue(row: MarketRow, key: RowSortKey) {
+  if (key === "next") return row.next_projected;
+  if (key === "value") return row.value_per_million;
+  if (key === "score") return numberValue(row.score);
+  if (key === "form") return numberValue(row.form);
+  if (key === "movement") return Math.abs(numberValue(row.price_movement));
+  if (key === "price") return row.price;
+  if (key === "ownership") return row.ownership;
+  return row.horizon_projected;
+}
+
+function matchesTab(row: MarketRow, tab: ViewTab, ownedIds: Set<number>) {
+  if (tab === "All") return true;
+  if (tab === "Buy") return row.signal === "Buy";
+  if (tab === "Watch") return row.signal === "Watch";
+  if (tab === "Sell/Avoid") return row.signal === "Sell" || row.signal === "Avoid";
+  if (tab === "Rising") return row.trend === "up";
+  if (tab === "Falling") return row.trend === "down";
+  return ownedIds.has(row.id);
+}
+
+// PlayerVisual expects the app-wide Player shape; a MarketRow carries everything the photo/shirt/
+// initials fallback chain needs (code + team + position), so bridge the two here.
+function rowVisualPlayer(row: MarketRow): Player {
+  return {
+    id: row.id,
+    code: row.code ?? undefined,
+    name: row.name,
+    team: row.team,
+    position: row.position,
+    price: row.price,
+    projected: row.next_projected,
+    ownership: row.ownership,
+    status: row.status,
+    risk: "Low",
+    trend: row.trend ?? undefined,
+    price_movement: row.price_movement ?? undefined,
+    form: row.form ?? undefined,
+    three_gw_projected: row.three_gw_projected ?? undefined,
+    fixture: row.fixture ?? undefined,
+    fixture_difficulty: row.fixture_difficulty ?? undefined,
+  };
 }
 
 function MarketStat({ label, value, detail }: { label: string; value: string; detail: string }) {
@@ -190,7 +337,7 @@ function MovementTicker({ signals, onSelect }: { signals: MarketSignal[]; onSele
               </span>
             </span>
             <span className="text-right">
-              <span className={`block text-lg font-black ${trendClass(signal.player)}`}>{trendGlyph(signal.player)}</span>
+              <span className={`block text-lg font-black ${trendClass(signal.player.trend)}`}>{trendGlyph(signal.player.trend)}</span>
               <span className="block text-[10px] font-black text-[#6C7195]">{signal.score ?? "—"}</span>
             </span>
           </button>
@@ -227,8 +374,8 @@ function FilterButton({
 function MarketToolbar({
   search,
   onSearch,
-  signal,
-  onSignal,
+  tab,
+  onTab,
   position,
   onPosition,
   team,
@@ -241,29 +388,31 @@ function MarketToolbar({
   onSortDirection,
   teams,
   resultCount,
+  horizon,
 }: {
   search: string;
   onSearch: (value: string) => void;
-  signal: SignalFilter;
-  onSignal: (value: SignalFilter) => void;
+  tab: ViewTab;
+  onTab: (value: ViewTab) => void;
   position: PositionFilter;
   onPosition: (value: PositionFilter) => void;
   team: string;
   onTeam: (value: string) => void;
   maxPrice: number;
   onMaxPrice: (value: number) => void;
-  sortKey: SortKey;
-  onSortKey: (value: SortKey) => void;
+  sortKey: RowSortKey;
+  onSortKey: (value: RowSortKey) => void;
   sortDirection: SortDirection;
   onSortDirection: () => void;
   teams: string[];
   resultCount: number;
+  horizon: number;
 }) {
   return (
     <section className="sticky top-2 z-20 rounded-2xl border border-[#E1E7F2] bg-white/95 p-4 shadow-[0_18px_45px_rgba(15,23,60,0.08)] backdrop-blur-xl">
       <div className="flex flex-col gap-3 xl:flex-row xl:items-center">
         <label className="relative min-w-0 flex-1">
-          <span className="sr-only">Search player market</span>
+          <span className="sr-only">Search the player market</span>
           <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[#6C7195]">⌕</span>
           <input
             value={search}
@@ -290,25 +439,24 @@ function MarketToolbar({
             className="h-12 rounded-xl border border-[#DCE3F0] bg-white px-3 text-xs font-black text-[#101947] outline-none focus:border-[#6C1DFF]"
             aria-label="Maximum price"
           >
-            <option value={0}>Any price</option>
-            <option value={5}>Under £5.0m</option>
-            <option value={6}>Under £6.0m</option>
-            <option value={7.5}>Under £7.5m</option>
-            <option value={10}>Under £10.0m</option>
+            {PRICE_OPTIONS.map((option) => (
+              <option key={option.value} value={option.value}>{option.label}</option>
+            ))}
           </select>
           <select
             value={sortKey}
-            onChange={(event) => onSortKey(event.target.value as SortKey)}
+            onChange={(event) => onSortKey(event.target.value as RowSortKey)}
             className="h-12 rounded-xl border border-[#DCE3F0] bg-white px-3 text-xs font-black text-[#101947] outline-none focus:border-[#6C1DFF]"
             aria-label="Sort market"
           >
+            <option value="horizon">{horizon}-GW projection</option>
+            <option value="next">Next-GW projection</option>
+            <option value="value">Points per £m</option>
             <option value="score">Market score</option>
-            <option value="projected">Next GW projection</option>
-            <option value="three_gw">3-GW projection</option>
             <option value="form">Form</option>
-            <option value="ownership">Ownership</option>
-            <option value="price_change">Price movement</option>
+            <option value="movement">Price movement</option>
             <option value="price">Price</option>
+            <option value="ownership">Ownership</option>
           </select>
           <button
             type="button"
@@ -321,8 +469,8 @@ function MarketToolbar({
       </div>
 
       <div className="mt-3 flex gap-2 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-        {SIGNALS.map((item) => (
-          <FilterButton key={item} active={signal === item} label={item} onClick={() => onSignal(item)} />
+        {VIEW_TABS.map((item) => (
+          <FilterButton key={item} active={tab === item} label={item} onClick={() => onTab(item)} />
         ))}
         <span className="mx-1 h-9 w-px shrink-0 bg-[#E1E7F2]" />
         {POSITIONS.map((item) => (
@@ -336,52 +484,50 @@ function MarketToolbar({
   );
 }
 
-function MarketTable({
-  signals,
+function MarketRowTable({
+  rows,
   selectedId,
   onSelect,
 }: {
-  signals: MarketSignal[];
+  rows: MarketRow[];
   selectedId?: number;
-  onSelect: (signal: MarketSignal) => void;
+  onSelect: (row: MarketRow) => void;
 }) {
   return (
     <section className="hidden overflow-hidden rounded-2xl border border-[#E1E7F2] bg-white shadow-[0_22px_60px_rgba(15,23,60,0.08)] md:block">
       <div className="overflow-x-auto">
-        <div className="min-w-[1120px]">
-          <div className="grid grid-cols-[42px_minmax(190px,1.7fr)_88px_72px_68px_80px_80px_62px_70px_100px_68px] items-center gap-3 border-b border-[#E1E7F2] bg-[#F6F8FC] px-4 py-3 text-[10px] font-black uppercase tracking-[0.12em] text-[#6C7195]">
-            <span>#</span><span>Player</span><span>Signal</span><span>Price</span><span>Move</span><span>Next GW</span><span>3-GW</span><span>Form</span><span>Owned</span><span>Fixture</span><span>Score</span>
+        <div className="min-w-[1080px]">
+          <div className="grid grid-cols-[42px_minmax(190px,1.7fr)_60px_72px_68px_86px_86px_78px_70px_68px] items-center gap-3 border-b border-[#E1E7F2] bg-[#F6F8FC] px-4 py-3 text-[10px] font-black uppercase tracking-[0.12em] text-[#6C7195]">
+            <span>#</span><span>Player</span><span>Pos</span><span>Price</span><span>Own</span><span>Signal</span><span>Next GW</span><span>Horizon</span><span>Pts/£m</span><span>Score</span>
           </div>
           <div className="divide-y divide-[#EDF0F6]">
-            {signals.map((signal, index) => {
-              const player = signal.player;
-              const selected = player.id === selectedId;
+            {rows.map((row, index) => {
+              const selected = row.id === selectedId;
               return (
                 <button
-                  key={`market-row-${player.id}`}
+                  key={`market-row-${row.id}`}
                   type="button"
-                  onClick={() => onSelect(signal)}
-                  className={`grid w-full grid-cols-[42px_minmax(190px,1.7fr)_88px_72px_68px_80px_80px_62px_70px_100px_68px] items-center gap-3 px-4 py-3 text-left transition ${
+                  onClick={() => onSelect(row)}
+                  className={`grid w-full grid-cols-[42px_minmax(190px,1.7fr)_60px_72px_68px_86px_86px_78px_70px_68px] items-center gap-3 px-4 py-3 text-left transition ${
                     selected ? "bg-[#F4EFFF]" : "bg-white hover:bg-[#FBFCFF]"
                   }`}
                 >
                   <span className="text-xs font-black text-[#9299B3]">{String(index + 1).padStart(2, "0")}</span>
                   <span className="flex min-w-0 items-center gap-3">
-                    <PlayerVisual player={player} size="sm" />
+                    <PlayerVisual player={rowVisualPlayer(row)} size="sm" />
                     <span className="min-w-0">
-                      <span className="block truncate text-sm font-black text-[#101947]">{player.name}</span>
-                      <span className="block text-xs font-bold text-[#6C7195]">{player.team} · {player.position}</span>
+                      <span className="block truncate text-sm font-black text-[#101947]">{row.name}</span>
+                      <span className="block text-xs font-bold text-[#6C7195]">{row.team}</span>
                     </span>
                   </span>
-                  <span><SignalBadge value={signal.signal} /></span>
-                  <span className="text-sm font-black text-[#101947]">{formatPrice(player.price)}</span>
-                  <span className={`text-sm font-black ${trendClass(player)}`}>{formatMovement(player.price_movement)}</span>
-                  <span className="text-sm font-black text-[#00A85A]">{formatProjection(player.projected)}</span>
-                  <span className="text-sm font-black text-[#6C1DFF]">{formatProjection(player.three_gw_projected)}</span>
-                  <span className="text-sm font-black text-[#101947]">{numberValue(player.form).toFixed(1)}</span>
-                  <span className="text-sm font-black text-[#101947]">{numberValue(player.ownership).toFixed(1)}%</span>
-                  <span><FixturePill fixture={player.fixture ?? "TBC"} difficulty={player.fixture_difficulty ?? 3} /></span>
-                  <span className="text-right text-base font-black text-[#101947]">{signal.score ?? "—"}</span>
+                  <span className="text-xs font-black text-[#4D5680]">{row.position}</span>
+                  <span className="text-sm font-black text-[#101947]">{formatPrice(row.price)}</span>
+                  <span className="text-sm font-black text-[#101947]">{row.ownership.toFixed(1)}%</span>
+                  <span>{row.signal ? <SignalBadge value={row.signal} /> : <span className="rounded-lg bg-[#F1F3F8] px-2.5 py-1 text-[11px] font-black text-[#8A93AC] ring-1 ring-[#E1E7F2]">Unranked</span>}</span>
+                  <span className="text-sm font-black text-[#00A85A]">{formatProjection(row.next_projected)}</span>
+                  <span className="text-sm font-black text-[#6C1DFF]">{formatProjection(row.horizon_projected)}</span>
+                  <span className="text-sm font-black text-[#101947]">{row.value_per_million.toFixed(1)}</span>
+                  <span className="text-right text-base font-black text-[#101947]">{row.score ?? "—"}</span>
                 </button>
               );
             })}
@@ -392,45 +538,42 @@ function MarketTable({
   );
 }
 
-function MobileMarketCards({ signals, onSelect }: { signals: MarketSignal[]; onSelect: (signal: MarketSignal) => void }) {
+function MobileMarketRowCards({ rows, onSelect }: { rows: MarketRow[]; onSelect: (row: MarketRow) => void }) {
   return (
     <div className="grid gap-3 md:hidden">
-      {signals.map((signal, index) => {
-        const player = signal.player;
-        return (
-          <button
-            key={`mobile-market-${player.id}`}
-            type="button"
-            onClick={() => onSelect(signal)}
-            className="rounded-2xl border border-[#E1E7F2] bg-white p-4 text-left shadow-[0_14px_34px_rgba(15,23,60,0.06)] transition active:scale-[0.99]"
-          >
-            <div className="flex items-start gap-3">
-              <span className="pt-1 text-[10px] font-black text-[#9299B3]">{String(index + 1).padStart(2, "0")}</span>
-              <PlayerVisual player={player} size="sm" />
-              <div className="min-w-0 flex-1">
-                <div className="flex items-start justify-between gap-2">
-                  <div className="min-w-0">
-                    <p className="truncate text-base font-black text-[#101947]">{player.name}</p>
-                    <p className="text-xs font-bold text-[#6C7195]">{player.team} · {player.position} · {formatPrice(player.price)}</p>
-                  </div>
-                  <SignalBadge value={signal.signal} />
+      {rows.map((row, index) => (
+        <button
+          key={`mobile-market-${row.id}`}
+          type="button"
+          onClick={() => onSelect(row)}
+          className="rounded-2xl border border-[#E1E7F2] bg-white p-4 text-left shadow-[0_14px_34px_rgba(15,23,60,0.06)] transition active:scale-[0.99]"
+        >
+          <div className="flex items-start gap-3">
+            <span className="pt-1 text-[10px] font-black text-[#9299B3]">{String(index + 1).padStart(2, "0")}</span>
+            <PlayerVisual player={rowVisualPlayer(row)} size="sm" />
+            <div className="min-w-0 flex-1">
+              <div className="flex items-start justify-between gap-2">
+                <div className="min-w-0">
+                  <p className="truncate text-base font-black text-[#101947]">{row.name}</p>
+                  <p className="text-xs font-bold text-[#6C7195]">{row.team} · {row.position} · {formatPrice(row.price)}</p>
                 </div>
-                <div className="mt-3 grid grid-cols-4 gap-2">
-                  <MobileMetric label="Next" value={formatProjection(player.projected)} tone="green" />
-                  <MobileMetric label="3-GW" value={formatProjection(player.three_gw_projected)} tone="purple" />
-                  <MobileMetric label="Form" value={numberValue(player.form).toFixed(1)} />
-                  <MobileMetric label="Score" value={signal.score == null ? "—" : String(signal.score)} />
-                </div>
-                <div className="mt-3 flex items-center justify-between gap-3">
-                  <FixturePill fixture={player.fixture ?? "TBC"} difficulty={player.fixture_difficulty ?? 3} />
-                  <span className={`text-xs font-black ${trendClass(player)}`}>{trendGlyph(player)} {formatMovement(player.price_movement)}</span>
-                  <span className="text-xs font-black text-[#4D5680]">{numberValue(player.ownership).toFixed(1)}% own</span>
-                </div>
+                {row.signal ? <SignalBadge value={row.signal} /> : <span className="shrink-0 rounded-lg bg-[#F1F3F8] px-2.5 py-1 text-[11px] font-black text-[#8A93AC] ring-1 ring-[#E1E7F2]">Unranked</span>}
+              </div>
+              <div className="mt-3 grid grid-cols-4 gap-2">
+                <MobileMetric label="Next" value={formatProjection(row.next_projected)} tone="green" />
+                <MobileMetric label="Horizon" value={formatProjection(row.horizon_projected)} tone="purple" />
+                <MobileMetric label="Pts/£m" value={row.value_per_million.toFixed(1)} />
+                <MobileMetric label="Score" value={row.score == null ? "—" : String(row.score)} />
+              </div>
+              <div className="mt-3 flex items-center justify-between gap-3">
+                {row.fixture ? <FixturePill fixture={row.fixture} difficulty={row.fixture_difficulty ?? 3} /> : <span className="text-xs font-bold text-[#9299B3]">No signal fixture data</span>}
+                <span className={`text-xs font-black ${trendClass(row.trend)}`}>{trendGlyph(row.trend)} {formatMovement(row.price_movement)}</span>
+                <span className="text-xs font-black text-[#4D5680]">{row.ownership.toFixed(1)}% own</span>
               </div>
             </div>
-          </button>
-        );
-      })}
+          </div>
+        </button>
+      ))}
     </div>
   );
 }
@@ -445,8 +588,11 @@ function MobileMetric({ label, value, tone = "default" }: { label: string; value
   );
 }
 
-function PlayerDetail({ signal, onClose, mobile = false }: { signal: MarketSignal; onClose?: () => void; mobile?: boolean }) {
-  const player = signal.player;
+function PlayerDetail({ row, onClose, mobile = false }: { row: MarketRow; onClose?: () => void; mobile?: boolean }) {
+  const gameweeks = Object.entries(row.projections)
+    .map(([gw, points]) => ({ gw: Number(gw), points }))
+    .sort((a, b) => a.gw - b.gw);
+
   return (
     <aside className={`${mobile ? "h-full overflow-y-auto rounded-t-[26px]" : "sticky top-[168px] rounded-2xl"} border border-[#E1E7F2] bg-white p-5 shadow-[0_24px_70px_rgba(15,23,60,0.16)]`}>
       {mobile ? (
@@ -457,61 +603,96 @@ function PlayerDetail({ signal, onClose, mobile = false }: { signal: MarketSigna
       ) : null}
       <div className="flex items-start justify-between gap-3">
         <div className="flex min-w-0 items-center gap-3">
-          <PlayerVisual player={player} size="lg" />
+          <PlayerVisual player={rowVisualPlayer(row)} size="lg" />
           <div className="min-w-0">
-            <p className="truncate text-2xl font-black text-[#101947]">{player.name}</p>
-            <p className="mt-1 text-sm font-bold text-[#6C7195]">{player.team} · {player.position} · {formatPrice(player.price)}</p>
+            <p className="truncate text-2xl font-black text-[#101947]">{row.name}</p>
+            <p className="mt-1 text-sm font-bold text-[#6C7195]">{row.team} · {row.position} · {formatPrice(row.price)}</p>
           </div>
         </div>
-        <SignalBadge value={signal.signal} />
+        {row.signal ? <SignalBadge value={row.signal} /> : <span className="shrink-0 rounded-lg bg-[#F1F3F8] px-2.5 py-1 text-[11px] font-black text-[#8A93AC] ring-1 ring-[#E1E7F2]">Unranked</span>}
       </div>
 
-      <div className="mt-5 rounded-2xl border border-[#E1E7F2] bg-[#FBFCFF] p-4">
-        <div className="flex items-center justify-between gap-3">
-          <div>
-            <p className="text-[10px] font-black uppercase tracking-[0.14em] text-[#6C7195]">Market score</p>
-            <p className="mt-1 text-3xl font-black text-[#101947]">{signal.score ?? "—"}</p>
+      {row.signal ? (
+        <div className="mt-5 rounded-2xl border border-[#E1E7F2] bg-[#FBFCFF] p-4">
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <p className="text-[10px] font-black uppercase tracking-[0.14em] text-[#6C7195]">Market score</p>
+              <p className="mt-1 text-3xl font-black text-[#101947]">{row.score ?? "—"}</p>
+            </div>
+            <div className={`rounded-xl border px-3 py-2 text-right ${signalTone(row.signal)}`}>
+              <p className="text-[10px] font-black uppercase tracking-[0.12em]">Trend</p>
+              <p className="mt-1 text-lg font-black">{trendGlyph(row.trend)} {row.trend ?? "flat"}</p>
+            </div>
           </div>
-          <div className={`rounded-xl border px-3 py-2 text-right ${signalTone(signal.signal)}`}>
-            <p className="text-[10px] font-black uppercase tracking-[0.12em]">Trend</p>
-            <p className="mt-1 text-lg font-black">{trendGlyph(player)} {player.trend ?? "flat"}</p>
-          </div>
+          {row.score != null ? (
+            <div className="mt-4 h-2 overflow-hidden rounded-full bg-[#E7EBF3]">
+              <div className="h-full rounded-full bg-[#6C1DFF] transition-all" style={{ width: `${Math.max(0, Math.min(100, row.score))}%` }} />
+            </div>
+          ) : null}
         </div>
-        {signal.score != null ? (
-          <div className="mt-4 h-2 overflow-hidden rounded-full bg-[#E7EBF3]">
-            <div className="h-full rounded-full bg-[#6C1DFF] transition-all" style={{ width: `${Math.max(0, Math.min(100, signal.score))}%` }} />
+      ) : (
+        <div className="mt-5 rounded-2xl border border-dashed border-[#E1E7F2] bg-[#FBFCFF] p-4">
+          <p className="text-xs font-semibold leading-5 text-[#6C7195]">
+            Not yet in the market signal engine&apos;s ranked set — the projection breakdown below is still real.
+          </p>
+        </div>
+      )}
+
+      <div className="mt-4 grid grid-cols-2 gap-3">
+        <DetailMetric label="Next GW" value={`${formatProjection(row.next_projected)} pts`} tone="green" />
+        <DetailMetric label="Horizon total" value={`${formatProjection(row.horizon_projected)} pts`} tone="purple" />
+        <DetailMetric label="Ownership" value={`${row.ownership.toFixed(1)}%`} />
+        <DetailMetric label="Points per £m" value={row.value_per_million.toFixed(1)} />
+        {row.form != null ? <DetailMetric label="Form" value={row.form.toFixed(1)} /> : null}
+        {row.price_movement != null ? (
+          <DetailMetric label="Price movement" value={formatMovement(row.price_movement)} tone={numberValue(row.price_movement) >= 0 ? "green" : "red"} />
+        ) : null}
+        {row.fixture ? (
+          <div className="rounded-xl border border-[#E1E7F2] bg-white p-3">
+            <p className="text-[10px] font-black uppercase tracking-[0.12em] text-[#6C7195]">Next fixture</p>
+            <div className="mt-2"><FixturePill fixture={row.fixture} difficulty={row.fixture_difficulty ?? 3} /></div>
           </div>
         ) : null}
       </div>
 
-      <div className="mt-4 grid grid-cols-2 gap-3">
-        <DetailMetric label="Next GW" value={`${formatProjection(player.projected)} pts`} tone="green" />
-        <DetailMetric label="3-GW total" value={`${formatProjection(player.three_gw_projected)} pts`} tone="purple" />
-        <DetailMetric label="Ownership" value={`${numberValue(player.ownership).toFixed(1)}%`} />
-        <DetailMetric label="Form" value={numberValue(player.form).toFixed(1)} />
-        <DetailMetric label="Price movement" value={formatMovement(player.price_movement)} tone={numberValue(player.price_movement) >= 0 ? "green" : "red"} />
-        <div className="rounded-xl border border-[#E1E7F2] bg-white p-3">
-          <p className="text-[10px] font-black uppercase tracking-[0.12em] text-[#6C7195]">Next fixture</p>
-          <div className="mt-2"><FixturePill fixture={player.fixture ?? "TBC"} difficulty={player.fixture_difficulty ?? 3} /></div>
+      {gameweeks.length ? (
+        <div className="mt-4 rounded-2xl border border-[#E1E7F2] bg-white p-4">
+          <p className="text-[10px] font-black uppercase tracking-[0.12em] text-[#6C7195]">Projection by gameweek</p>
+          <div className="mt-3 space-y-2">
+            {gameweeks.map(({ gw, points }) => {
+              const width = row.horizon_projected > 0 ? Math.max(6, Math.min(100, (points / row.horizon_projected) * gameweeks.length * 25)) : 6;
+              return (
+                <div key={gw} className="flex items-center gap-3">
+                  <span className="w-8 shrink-0 text-xs font-black text-[#6C7195]">GW{gw}</span>
+                  <div className="h-2 min-w-0 flex-1 overflow-hidden rounded-full bg-[#EEF1F8]">
+                    <div className="h-full rounded-full bg-[#00A568]" style={{ width: `${width}%` }} />
+                  </div>
+                  <span className="w-10 shrink-0 text-right text-xs font-black text-[#101947]">{points.toFixed(1)}</span>
+                </div>
+              );
+            })}
+          </div>
         </div>
-      </div>
+      ) : null}
 
       <div className="mt-4 rounded-2xl border border-[#E1E7F2] bg-[#F7F4FF] p-4">
         <p className="text-xs font-black uppercase tracking-[0.14em] text-[#6C1DFF]">Market thesis</p>
-        <p className="mt-2 text-sm font-semibold leading-6 text-[#4D5680]">{signal.reason || "The market engine has ranked this player from projection, fixtures, minutes, ownership and value signals."}</p>
+        <p className="mt-2 text-sm font-semibold leading-6 text-[#4D5680]">
+          {row.reason || "The market engine hasn't ranked this player yet - it currently covers the strongest signals only. The projection and value numbers above are real regardless."}
+        </p>
       </div>
 
-      {player.status !== "Available" ? (
+      {row.status !== "Available" ? (
         <div className="mt-4 rounded-xl border border-[#FFD7E3] bg-[#FFF4F7] p-3 text-sm font-bold text-[#C80046]">
-          Availability: {player.status}. Treat the projection with additional caution.
+          Availability: {row.status}. Treat the projection with additional caution.
         </div>
       ) : null}
 
       <div className="mt-5 grid grid-cols-2 gap-3">
-        <Link href={`/compare?player_a=${player.api_id ?? player.id}`} className="rounded-xl border border-[#6C1DFF] bg-white px-4 py-3 text-center text-sm font-black text-[#6C1DFF] transition hover:bg-[#F4EFFF]">
+        <Link href={`/compare?player_a=${row.id}`} className="rounded-xl border border-[#6C1DFF] bg-white px-4 py-3 text-center text-sm font-black text-[#6C1DFF] transition hover:bg-[#F4EFFF]">
           Compare
         </Link>
-        <Link href={`/watchlist?player_id=${player.api_id ?? player.id}`} className="rounded-xl bg-[#6C1DFF] px-4 py-3 text-center text-sm font-black text-white shadow-[0_14px_30px_rgba(108,29,255,0.24)]">
+        <Link href={`/watchlist?player_id=${row.id}`} className="rounded-xl bg-[#6C1DFF] px-4 py-3 text-center text-sm font-black text-white shadow-[0_14px_30px_rgba(108,29,255,0.24)]">
           Watch player
         </Link>
       </div>
@@ -526,317 +707,6 @@ function DetailMetric({ label, value, tone = "default" }: { label: string; value
       <p className="text-[10px] font-black uppercase tracking-[0.12em] text-[#6C7195]">{label}</p>
       <p className={`mt-1 text-xl font-black ${toneClass}`}>{value}</p>
     </div>
-  );
-}
-
-function OwnedAlerts({ signals, onSelect }: { signals: MarketSignal[]; onSelect: (signal: MarketSignal) => void }) {
-  return (
-    <section className="rounded-2xl border border-[#E1E7F2] bg-white p-5 shadow-[0_18px_45px_rgba(15,23,60,0.06)]">
-      <div className="flex flex-wrap items-end justify-between gap-3">
-        <div>
-          <p className="text-xs font-black uppercase tracking-[0.16em] text-[#6C1DFF]">My squad exposure</p>
-          <h2 className="mt-1 text-2xl font-black text-[#101947]">Owned-player alerts</h2>
-          <p className="mt-1 text-sm font-semibold text-[#6C7195]">Market pressure affecting players already in your team.</p>
-        </div>
-        <span className="rounded-full bg-[#F4EFFF] px-3 py-2 text-xs font-black text-[#6C1DFF]">{signals.length} alerts</span>
-      </div>
-      {signals.length ? (
-        <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-          {signals.slice(0, 6).map((signal) => (
-            <button key={`owned-${signal.player.id}`} type="button" onClick={() => onSelect(signal)} className="rounded-xl border border-[#E1E7F2] bg-[#FBFCFF] p-3 text-left transition hover:border-[#BFA8FF]">
-              <div className="flex items-center gap-3">
-                <PlayerVisual player={signal.player} size="sm" />
-                <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-black text-[#101947]">{signal.player.name}</p>
-                  <p className="text-xs font-bold text-[#6C7195]">{signal.player.team} · {signal.player.position}</p>
-                </div>
-                <SignalBadge value={signal.signal} />
-              </div>
-              <p className="mt-3 line-clamp-2 text-xs font-semibold leading-5 text-[#4D5680]">{signal.reason}</p>
-            </button>
-          ))}
-        </div>
-      ) : (
-        <p className="mt-4 rounded-xl bg-[#F6F8FC] p-4 text-sm font-semibold text-[#6C7195]">No owned-player market alerts are active.</p>
-      )}
-    </section>
-  );
-}
-
-type ExplorerSortKey = "horizon" | "next" | "value" | "price" | "ownership";
-
-const EXPLORER_PAGE_SIZE = 30;
-
-const EXPLORER_PRICE_OPTIONS = [
-  { value: 0, label: "Any price" },
-  { value: 4.5, label: "Under £4.5m" },
-  { value: 5, label: "Under £5.0m" },
-  { value: 5.5, label: "Under £5.5m" },
-  { value: 6, label: "Under £6.0m" },
-  { value: 6.5, label: "Under £6.5m" },
-  { value: 7.5, label: "Under £7.5m" },
-  { value: 8.5, label: "Under £8.5m" },
-  { value: 10, label: "Under £10.0m" },
-  { value: 12, label: "Under £12.0m" },
-];
-
-function explorerSortValue(player: ExplorerPlayer, key: ExplorerSortKey) {
-  if (key === "next") return player.next_projected;
-  if (key === "value") return player.value_per_million;
-  if (key === "price") return player.price;
-  if (key === "ownership") return player.ownership;
-  return player.horizon_projected;
-}
-
-// PlayerVisual expects the app-wide Player shape; the explorer's flat row carries everything the
-// photo/shirt/initials fallback chain needs (code + short team name), so bridge the two here.
-function explorerVisualPlayer(player: ExplorerPlayer): Player {
-  const position = (["GK", "DEF", "MID", "FWD"] as const).includes(player.position as "GK" | "DEF" | "MID" | "FWD")
-    ? (player.position as Player["position"])
-    : "MID";
-  return {
-    id: player.id,
-    code: player.code ?? undefined,
-    name: player.name,
-    team: player.team,
-    position,
-    price: player.price,
-    projected: player.next_projected,
-    ownership: player.ownership,
-    status: "Available",
-    risk: "Low",
-  };
-}
-
-// The full-pool explorer: every player with a real projection in the window, filterable by
-// price/position/club and sortable by projection - the question the ranked signal board above
-// structurally can't answer, because it only ever carries the top ~100 signals.
-function PlayerExplorerSection() {
-  const [data, setData] = useState<PlayerExplorerData | null>(null);
-  const [loadError, setLoadError] = useState("");
-  const [search, setSearch] = useState("");
-  const [position, setPosition] = useState<PositionFilter>("All");
-  const [team, setTeam] = useState("");
-  const [maxPrice, setMaxPrice] = useState(0);
-  const [sortKey, setSortKey] = useState<ExplorerSortKey>("horizon");
-  const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
-  const [visible, setVisible] = useState(EXPLORER_PAGE_SIZE);
-
-  useEffect(() => {
-    let cancelled = false;
-    getPlayerExplorer()
-      .then((result) => {
-        if (!cancelled) setData(result.data);
-      })
-      .catch((error) => {
-        if (!cancelled) setLoadError(error instanceof Error ? error.message : "Player pool failed to load.");
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
-  useEffect(() => {
-    setVisible(EXPLORER_PAGE_SIZE);
-  }, [search, position, team, maxPrice, sortKey, sortDirection]);
-
-  if (loadError) {
-    return (
-      <section className="rounded-2xl border border-[#E1E7F2] bg-white p-6 shadow-[0_18px_45px_rgba(15,23,60,0.06)]">
-        <p className="text-xs font-black uppercase tracking-[0.16em] text-[#6C1DFF]">Player explorer</p>
-        <p className="mt-2 text-sm font-semibold text-[#6C7195]">The full player pool failed to load: {loadError}</p>
-      </section>
-    );
-  }
-
-  if (!data) {
-    return (
-      <section className="rounded-2xl border border-[#E1E7F2] bg-white p-6 shadow-[0_18px_45px_rgba(15,23,60,0.06)]">
-        <p className="text-xs font-black uppercase tracking-[0.16em] text-[#6C1DFF]">Player explorer</p>
-        <div className="mt-3 flex items-center gap-3">
-          <span className="h-5 w-5 animate-spin rounded-full border-2 border-[#6C1DFF] border-t-transparent" aria-hidden />
-          <p className="text-sm font-semibold text-[#6C7195]">Loading the full player pool…</p>
-        </div>
-      </section>
-    );
-  }
-
-  const gwWindow = data.gameweeks.length
-    ? `GW${data.gameweeks[0]}–GW${data.gameweeks[data.gameweeks.length - 1]}`
-    : "upcoming gameweeks";
-  const teams = Array.from(new Set(data.players.map((player) => player.team).filter(Boolean))).sort();
-
-  const query = search.trim().toLowerCase();
-  const filtered = data.players
-    .filter((player) => !query || player.name.toLowerCase().includes(query) || player.team.toLowerCase().includes(query))
-    .filter((player) => position === "All" || player.position === position)
-    .filter((player) => !team || player.team === team)
-    .filter((player) => !maxPrice || player.price <= maxPrice)
-    .sort((a, b) => {
-      const delta = explorerSortValue(a, sortKey) - explorerSortValue(b, sortKey);
-      if (delta !== 0) return sortDirection === "desc" ? -delta : delta;
-      return a.name.localeCompare(b.name);
-    });
-  const shown = filtered.slice(0, visible);
-
-  return (
-    <section className="rounded-2xl border border-[#E1E7F2] bg-white p-4 shadow-[0_18px_45px_rgba(15,23,60,0.06)] sm:p-5">
-      <div className="flex flex-wrap items-end justify-between gap-3">
-        <div>
-          <p className="text-xs font-black uppercase tracking-[0.16em] text-[#6C1DFF]">Player explorer</p>
-          <h2 className="mt-1 text-2xl font-black text-[#101947]">The full player pool</h2>
-          <p className="mt-1 text-xs font-semibold text-[#6C7195]">
-            Every player with a live model projection for {gwWindow} — screen by price, position and club.
-          </p>
-        </div>
-        <span className="rounded-full bg-[#F4EFFF] px-3 py-2 text-xs font-black text-[#6C1DFF]">
-          {filtered.length} of {data.player_count} players
-        </span>
-      </div>
-
-      <div className="mt-4 flex flex-col gap-3 xl:flex-row xl:items-center">
-        <label className="relative min-w-0 flex-1">
-          <span className="sr-only">Search the player pool</span>
-          <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[#6C7195]">⌕</span>
-          <input
-            value={search}
-            onChange={(event) => setSearch(event.target.value)}
-            placeholder="Search player or club"
-            className="h-12 w-full rounded-xl border border-[#DCE3F0] bg-[#FBFCFF] pl-10 pr-4 text-sm font-bold text-[#101947] outline-none transition placeholder:text-[#9299B3] focus:border-[#6C1DFF] focus:ring-4 focus:ring-[#6C1DFF]/10"
-          />
-        </label>
-        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 xl:flex xl:shrink-0">
-          <select
-            value={team}
-            onChange={(event) => setTeam(event.target.value)}
-            className="h-12 rounded-xl border border-[#DCE3F0] bg-white px-3 text-xs font-black text-[#101947] outline-none focus:border-[#6C1DFF]"
-            aria-label="Filter pool by club"
-          >
-            <option value="">All clubs</option>
-            {teams.map((club) => (
-              <option key={club} value={club}>{club}</option>
-            ))}
-          </select>
-          <select
-            value={maxPrice}
-            onChange={(event) => setMaxPrice(Number(event.target.value))}
-            className="h-12 rounded-xl border border-[#DCE3F0] bg-white px-3 text-xs font-black text-[#101947] outline-none focus:border-[#6C1DFF]"
-            aria-label="Maximum price in pool"
-          >
-            {EXPLORER_PRICE_OPTIONS.map((option) => (
-              <option key={option.value} value={option.value}>{option.label}</option>
-            ))}
-          </select>
-          <select
-            value={sortKey}
-            onChange={(event) => setSortKey(event.target.value as ExplorerSortKey)}
-            className="h-12 rounded-xl border border-[#DCE3F0] bg-white px-3 text-xs font-black text-[#101947] outline-none focus:border-[#6C1DFF]"
-            aria-label="Sort pool"
-          >
-            <option value="horizon">{data.horizon}-GW projection</option>
-            <option value="next">Next-GW projection</option>
-            <option value="value">Points per £m</option>
-            <option value="price">Price</option>
-            <option value="ownership">Ownership</option>
-          </select>
-          <button
-            type="button"
-            onClick={() => setSortDirection((current) => (current === "desc" ? "asc" : "desc"))}
-            className="h-12 rounded-xl border border-[#DCE3F0] bg-white px-3 text-xs font-black text-[#6C1DFF] transition hover:border-[#6C1DFF]"
-          >
-            {sortDirection === "desc" ? "Highest first ↓" : "Lowest first ↑"}
-          </button>
-        </div>
-      </div>
-
-      <div className="mt-3 flex gap-2 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-        {POSITIONS.map((item) => (
-          <FilterButton key={item} active={position === item} label={item} onClick={() => setPosition(item)} />
-        ))}
-      </div>
-
-      {shown.length ? (
-        <>
-          {/* Desktop: dense table with a projection column per gameweek */}
-          <div className="mt-4 hidden overflow-x-auto md:block">
-            <table className="w-full min-w-[760px] border-separate border-spacing-0 text-left">
-              <thead>
-                <tr className="text-[10px] font-black uppercase tracking-[0.1em] text-[#6C7195]">
-                  <th className="border-b border-[#E1E7F2] px-3 py-2">Player</th>
-                  <th className="border-b border-[#E1E7F2] px-3 py-2">Pos</th>
-                  <th className="border-b border-[#E1E7F2] px-3 py-2">Price</th>
-                  <th className="border-b border-[#E1E7F2] px-3 py-2">Own</th>
-                  {data.gameweeks.map((gw) => (
-                    <th key={gw} className="border-b border-[#E1E7F2] px-3 py-2 text-right">GW{gw}</th>
-                  ))}
-                  <th className="border-b border-[#E1E7F2] px-3 py-2 text-right">{data.horizon}-GW</th>
-                  <th className="border-b border-[#E1E7F2] px-3 py-2 text-right">Pts/£m</th>
-                </tr>
-              </thead>
-              <tbody>
-                {shown.map((player) => (
-                  <tr key={player.id} className="transition hover:bg-[#FBFAFF]">
-                    <td className="border-b border-[#EFF2F8] px-3 py-2">
-                      <div className="flex min-w-0 items-center gap-2.5">
-                        <PlayerVisual player={explorerVisualPlayer(player)} size="sm" />
-                        <div className="min-w-0">
-                          <p className="truncate text-sm font-black text-[#101947]">{player.name}</p>
-                          <p className="truncate text-[10px] font-bold text-[#6C7195]">{player.team}</p>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="border-b border-[#EFF2F8] px-3 py-2 text-xs font-black text-[#4D5680]">{player.position}</td>
-                    <td className="border-b border-[#EFF2F8] px-3 py-2 text-xs font-black text-[#101947]">{formatPrice(player.price)}</td>
-                    <td className="border-b border-[#EFF2F8] px-3 py-2 text-xs font-bold text-[#6C7195]">{player.ownership.toFixed(1)}%</td>
-                    {data.gameweeks.map((gw) => (
-                      <td key={gw} className="border-b border-[#EFF2F8] px-3 py-2 text-right text-xs font-bold text-[#4D5680]">
-                        {formatProjection(player.projections[String(gw)])}
-                      </td>
-                    ))}
-                    <td className="border-b border-[#EFF2F8] px-3 py-2 text-right text-sm font-black text-[#00A568]">{player.horizon_projected.toFixed(1)}</td>
-                    <td className="border-b border-[#EFF2F8] px-3 py-2 text-right text-xs font-black text-[#6C1DFF]">{player.value_per_million.toFixed(1)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-
-          {/* Mobile: compact cards */}
-          <div className="mt-4 space-y-2 md:hidden">
-            {shown.map((player) => (
-              <article key={player.id} className="flex items-center gap-3 rounded-xl border border-[#E1E7F2] bg-[#FBFCFF] p-3">
-                <PlayerVisual player={explorerVisualPlayer(player)} size="sm" />
-                <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-black text-[#101947]">{player.name}</p>
-                  <p className="truncate text-[10px] font-bold text-[#6C7195]">
-                    {player.team} · {player.position} · {formatPrice(player.price)} · {player.ownership.toFixed(1)}% own
-                  </p>
-                </div>
-                <div className="shrink-0 text-right">
-                  <p className="text-base font-black text-[#00A568]">{player.horizon_projected.toFixed(1)}</p>
-                  <p className="text-[9px] font-black uppercase tracking-[0.08em] text-[#6C7195]">{data.horizon}-GW pts</p>
-                </div>
-              </article>
-            ))}
-          </div>
-
-          {filtered.length > visible ? (
-            <button
-              type="button"
-              onClick={() => setVisible((current) => current + EXPLORER_PAGE_SIZE)}
-              className="mt-4 w-full rounded-xl border border-[#D8C9FF] bg-[#F8F5FF] px-4 py-3 text-sm font-black text-[#6C1DFF] transition hover:bg-[#F1E8FF]"
-            >
-              Show {Math.min(EXPLORER_PAGE_SIZE, filtered.length - visible)} more of {filtered.length - visible} remaining
-            </button>
-          ) : null}
-        </>
-      ) : (
-        <div className="mt-4 rounded-xl border border-dashed border-[#CDD4E3] bg-white p-8 text-center">
-          <p className="text-base font-black text-[#101947]">No players match this screen.</p>
-          <p className="mt-1 text-xs font-semibold text-[#6C7195]">Loosen the price cap or clear a filter.</p>
-        </div>
-      )}
-    </section>
   );
 }
 
@@ -886,19 +756,27 @@ export function MarketContent({
   });
   const [directory, setDirectory] = useState<PlayerDirectoryEntry[]>([]);
 
+  // Full player pool - fetched separately from the signal board (different endpoint, returns
+  // instantly). While it's loading, buildMarketRows([], signals) still produces a full table from
+  // signal data alone (same rows the page always showed), so there's no second blocking spinner -
+  // the table just gains rows once the pool resolves.
+  const [explorerData, setExplorerData] = useState<PlayerExplorerData | null>(null);
+  const [explorerError, setExplorerError] = useState("");
+
   const [search, setSearch] = useState("");
-  const [signalFilter, setSignalFilter] = useState<SignalFilter>(
-    SIGNALS.includes(initialSignal as SignalFilter) ? (initialSignal as SignalFilter) : "All",
+  const [tab, setTab] = useState<ViewTab>(
+    (VIEW_TABS as readonly string[]).includes(initialSignal) ? (initialSignal as ViewTab) : "All",
   );
   const [positionFilter, setPositionFilter] = useState<PositionFilter>(
     POSITIONS.includes(initialPosition as PositionFilter) ? (initialPosition as PositionFilter) : "All",
   );
   const [teamFilter, setTeamFilter] = useState(initialTeam);
   const [maxPrice, setMaxPrice] = useState(initialMaxPrice || 0);
-  const [sortKey, setSortKey] = useState<SortKey>("score");
+  const [sortKey, setSortKey] = useState<RowSortKey>("horizon");
   const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [mobileDetailOpen, setMobileDetailOpen] = useState(false);
+  const [visible, setVisible] = useState(PAGE_SIZE);
 
   useEffect(() => {
     let cancelled = false;
@@ -913,6 +791,24 @@ export function MarketContent({
       cancelled = true;
     };
   }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    getPlayerExplorer()
+      .then((result) => {
+        if (!cancelled) setExplorerData(result.data);
+      })
+      .catch((error) => {
+        if (!cancelled) setExplorerError(error instanceof Error ? error.message : "Player pool failed to load.");
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    setVisible(PAGE_SIZE);
+  }, [search, tab, positionFilter, teamFilter, maxPrice, sortKey, sortDirection]);
 
   if (listState.phase === "error") return <ErrorState message={listState.message} />;
   if (listState.phase !== "ready") {
@@ -940,42 +836,54 @@ export function MarketContent({
 
   const universe = marketUniverse(board);
   const ownedIds = new Set(board.owned_squad_alerts.map((item) => item.player.id));
-  const teams = Array.from(new Set(universe.map((item) => item.player.team).filter(Boolean))).sort();
+  const pool = explorerData?.players ?? [];
+  const horizon = explorerData?.horizon || 5;
+  const gwWindow = explorerData?.gameweeks.length
+    ? `GW${explorerData.gameweeks[0]}–GW${explorerData.gameweeks[explorerData.gameweeks.length - 1]}`
+    : "the current window";
+
+  const allRows = buildMarketRows(pool, universe);
+  const teams = Array.from(new Set(allRows.map((row) => row.team).filter(Boolean))).sort();
 
   const query = search.trim().toLowerCase();
-  const filteredSignals = universe
-    .filter((item) => !query || item.player.name.toLowerCase().includes(query) || item.player.team.toLowerCase().includes(query))
-    .filter((item) => signalFilter === "All" || signalFilter === "My squad" || item.signal === signalFilter)
-    .filter((item) => signalFilter !== "My squad" || ownedIds.has(item.player.id))
-    .filter((item) => positionFilter === "All" || item.player.position === positionFilter)
-    .filter((item) => !teamFilter || item.player.team === teamFilter)
-    .filter((item) => !maxPrice || item.player.price <= maxPrice)
+  const filteredRows = allRows
+    .filter((row) => !query || row.name.toLowerCase().includes(query) || row.team.toLowerCase().includes(query))
+    .filter((row) => matchesTab(row, tab, ownedIds))
+    .filter((row) => positionFilter === "All" || row.position === positionFilter)
+    .filter((row) => !teamFilter || row.team === teamFilter)
+    .filter((row) => !maxPrice || row.price <= maxPrice)
     .sort((a, b) => {
-      const delta = scoreForSort(a, sortKey) - scoreForSort(b, sortKey);
+      const delta = rowSortValue(a, sortKey) - rowSortValue(b, sortKey);
       if (delta !== 0) return sortDirection === "desc" ? -delta : delta;
-      return a.player.name.localeCompare(b.player.name);
+      return a.name.localeCompare(b.name);
     });
+  const shownRows = filteredRows.slice(0, visible);
 
-  const selectedSignal =
-    filteredSignals.find((item) => item.player.id === selectedId) ??
-    universe.find((item) => item.player.id === selectedId) ??
-    filteredSignals[0] ??
-    universe[0];
+  const selectedRow =
+    filteredRows.find((row) => row.id === selectedId) ??
+    allRows.find((row) => row.id === selectedId) ??
+    shownRows[0] ??
+    allRows[0];
 
-  const buys = universe.filter((item) => item.signal === "Buy");
-  const sells = universe.filter((item) => item.signal === "Sell" || item.signal === "Avoid");
-  const rising = universe.filter((item) => item.player.trend === "up");
-  const falling = universe.filter((item) => item.player.trend === "down");
-  const averageProjection = universe.length
-    ? universe.reduce((sum, item) => sum + numberValue(item.player.projected), 0) / universe.length
+  const buys = allRows.filter((row) => row.signal === "Buy");
+  const sells = allRows.filter((row) => row.signal === "Sell" || row.signal === "Avoid");
+  const rising = allRows.filter((row) => row.trend === "up");
+  const falling = allRows.filter((row) => row.trend === "down");
+  const averageProjection = allRows.length
+    ? allRows.reduce((sum, row) => sum + row.next_projected, 0) / allRows.length
     : 0;
   const ticker = [...universe].sort((a, b) => {
     const movementDelta = Math.abs(numberValue(b.player.price_movement)) - Math.abs(numberValue(a.player.price_movement));
     return movementDelta || numberValue(b.score) - numberValue(a.score);
   });
 
-  function selectSignal(item: MarketSignal, mobile = false) {
-    setSelectedId(item.player.id);
+  function selectRow(row: MarketRow, mobile = false) {
+    setSelectedId(row.id);
+    if (mobile) setMobileDetailOpen(true);
+  }
+
+  function selectSignalFromTicker(signal: MarketSignal, mobile = false) {
+    setSelectedId(signal.player.id);
     if (mobile) setMobileDetailOpen(true);
   }
 
@@ -993,13 +901,13 @@ export function MarketContent({
                 </span>
                 <DataModeBadge source={{ mode: "real", label: "Real backend connected" }} />
               </div>
-              <h1 className="mt-4 text-3xl font-black tracking-tight sm:text-5xl">Trade the projection market, not the noise.</h1>
-              <p className="mt-3 max-w-xl text-sm font-semibold leading-6 text-white/65 sm:text-base">
-                Rank the live market feed returned by the model using projection, value, form, fixtures, ownership and conviction. Open any row for the full thesis.
+              <h1 className="mt-3 text-2xl font-black tracking-tight sm:text-3xl">Player Market</h1>
+              <p className="mt-2 max-w-xl text-xs font-semibold leading-5 text-white/60 sm:text-sm">
+                The full player pool for {gwWindow}, screened by price, position, ownership and market signal — click any row for the full thesis.
               </p>
             </div>
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 xl:min-w-[560px]">
-              <MarketStat label="Market depth" value={String(universe.length)} detail="ranked players" />
+              <MarketStat label="Market depth" value={String(allRows.length)} detail="players in pool" />
               <MarketStat label="Buy signals" value={String(buys.length)} detail="positive setups" />
               <MarketStat label="Risk exits" value={String(sells.length)} detail="sell or avoid" />
               <MarketStat label="Avg projection" value={averageProjection.toFixed(1)} detail="next-GW points" />
@@ -1009,18 +917,18 @@ export function MarketContent({
             <span className="rounded-full bg-white/[0.07] px-3 py-2">↗ {rising.length} rising</span>
             <span className="rounded-full bg-white/[0.07] px-3 py-2">↘ {falling.length} falling</span>
             <span className="rounded-full bg-white/[0.07] px-3 py-2">◎ {board.owned_squad_alerts.length} squad alerts</span>
-            <span className="rounded-full bg-white/[0.07] px-3 py-2">Updated from live model output</span>
+            <span className="rounded-full bg-white/[0.07] px-3 py-2">{explorerData ? "Full pool loaded" : "Loading full pool…"}</span>
           </div>
         </div>
       </section>
 
-      <MovementTicker signals={ticker} onSelect={(item) => selectSignal(item, true)} />
+      <MovementTicker signals={ticker} onSelect={(item) => selectSignalFromTicker(item, true)} />
 
       <MarketToolbar
         search={search}
         onSearch={setSearch}
-        signal={signalFilter}
-        onSignal={setSignalFilter}
+        tab={tab}
+        onTab={setTab}
         position={positionFilter}
         onPosition={setPositionFilter}
         team={teamFilter}
@@ -1032,15 +940,22 @@ export function MarketContent({
         sortDirection={sortDirection}
         onSortDirection={() => setSortDirection((current) => (current === "desc" ? "asc" : "desc"))}
         teams={teams}
-        resultCount={filteredSignals.length}
+        resultCount={filteredRows.length}
+        horizon={horizon}
       />
+
+      {explorerError ? (
+        <p className="rounded-xl border border-dashed border-[#FFD2DF] bg-[#FFF6F9] px-4 py-3 text-xs font-semibold text-[#C80046]">
+          The full player pool failed to load ({explorerError}) — showing the market&apos;s ranked signals only.
+        </p>
+      ) : null}
 
       <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_360px]">
         <div className="min-w-0 space-y-3">
           <div className="flex items-end justify-between gap-4 px-1">
             <div>
-              <p className="text-xs font-black uppercase tracking-[0.16em] text-[#6C1DFF]">Market board</p>
-              <h2 className="mt-1 text-2xl font-black text-[#101947]">{filteredSignals.length} ranked players</h2>
+              <p className="text-xs font-black uppercase tracking-[0.16em] text-[#6C1DFF]">{tab === "All" ? "Full market" : tab}</p>
+              <h2 className="mt-1 text-2xl font-black text-[#101947]">{filteredRows.length} players</h2>
             </div>
             {board.full_market_locked ? (
               <span className="rounded-full bg-[#FFF4D7] px-3 py-2 text-xs font-black text-[#9A6400]">Preview depth</span>
@@ -1049,10 +964,19 @@ export function MarketContent({
             )}
           </div>
 
-          {filteredSignals.length ? (
+          {shownRows.length ? (
             <>
-              <MarketTable signals={filteredSignals} selectedId={selectedSignal?.player.id} onSelect={(item) => selectSignal(item)} />
-              <MobileMarketCards signals={filteredSignals} onSelect={(item) => selectSignal(item, true)} />
+              <MarketRowTable rows={shownRows} selectedId={selectedRow?.id} onSelect={(row) => selectRow(row)} />
+              <MobileMarketRowCards rows={shownRows} onSelect={(row) => selectRow(row, true)} />
+              {filteredRows.length > visible ? (
+                <button
+                  type="button"
+                  onClick={() => setVisible((current) => current + PAGE_SIZE)}
+                  className="w-full rounded-xl border border-[#D8C9FF] bg-[#F8F5FF] px-4 py-3 text-sm font-black text-[#6C1DFF] transition hover:bg-[#F1E8FF]"
+                >
+                  Show {Math.min(PAGE_SIZE, filteredRows.length - visible)} more of {filteredRows.length - visible} remaining
+                </button>
+              ) : null}
             </>
           ) : (
             <section className="rounded-2xl border border-dashed border-[#CDD4E3] bg-white p-10 text-center shadow-[0_18px_45px_rgba(15,23,60,0.05)]">
@@ -1062,7 +986,7 @@ export function MarketContent({
                 type="button"
                 onClick={() => {
                   setSearch("");
-                  setSignalFilter("All");
+                  setTab("All");
                   setPositionFilter("All");
                   setTeamFilter("");
                   setMaxPrice(0);
@@ -1075,12 +999,8 @@ export function MarketContent({
           )}
         </div>
 
-        <div className="hidden xl:block">{selectedSignal ? <PlayerDetail signal={selectedSignal} /> : null}</div>
+        <div className="hidden xl:block">{selectedRow ? <PlayerDetail row={selectedRow} /> : null}</div>
       </div>
-
-      <OwnedAlerts signals={board.owned_squad_alerts} onSelect={(item) => selectSignal(item, true)} />
-
-      <PlayerExplorerSection />
 
       {board.full_market_locked ? (
         <section className="rounded-[22px] border border-[#17002F] bg-[#17002F] p-6 text-white shadow-[0_24px_60px_rgba(55,0,60,0.18)]">
@@ -1102,10 +1022,10 @@ export function MarketContent({
 
       <SignalGuide board={board} />
 
-      {mobileDetailOpen && selectedSignal ? (
+      {mobileDetailOpen && selectedRow ? (
         <div className="fixed inset-0 z-[80] flex items-end bg-[#05070D]/55 p-0 backdrop-blur-sm xl:hidden" onClick={() => setMobileDetailOpen(false)}>
           <div className="max-h-[88vh] w-full" onClick={(event) => event.stopPropagation()}>
-            <PlayerDetail signal={selectedSignal} mobile onClose={() => setMobileDetailOpen(false)} />
+            <PlayerDetail row={selectedRow} mobile onClose={() => setMobileDetailOpen(false)} />
           </div>
         </div>
       ) : null}
