@@ -12,8 +12,11 @@ import { ErrorState } from "@/components/states";
 import {
   analyseStockMarketSquad,
   getMarketBoard,
+  getPlayerExplorer,
   getPlayersDirectory,
+  type ExplorerPlayer,
   type PlayerDirectoryEntry,
+  type PlayerExplorerData,
 } from "@/lib/api";
 import type { MarketBoard, MarketSignal, Player } from "@/lib/types";
 
@@ -560,6 +563,283 @@ function OwnedAlerts({ signals, onSelect }: { signals: MarketSignal[]; onSelect:
   );
 }
 
+type ExplorerSortKey = "horizon" | "next" | "value" | "price" | "ownership";
+
+const EXPLORER_PAGE_SIZE = 30;
+
+const EXPLORER_PRICE_OPTIONS = [
+  { value: 0, label: "Any price" },
+  { value: 4.5, label: "Under £4.5m" },
+  { value: 5, label: "Under £5.0m" },
+  { value: 5.5, label: "Under £5.5m" },
+  { value: 6, label: "Under £6.0m" },
+  { value: 6.5, label: "Under £6.5m" },
+  { value: 7.5, label: "Under £7.5m" },
+  { value: 8.5, label: "Under £8.5m" },
+  { value: 10, label: "Under £10.0m" },
+  { value: 12, label: "Under £12.0m" },
+];
+
+function explorerSortValue(player: ExplorerPlayer, key: ExplorerSortKey) {
+  if (key === "next") return player.next_projected;
+  if (key === "value") return player.value_per_million;
+  if (key === "price") return player.price;
+  if (key === "ownership") return player.ownership;
+  return player.horizon_projected;
+}
+
+// PlayerVisual expects the app-wide Player shape; the explorer's flat row carries everything the
+// photo/shirt/initials fallback chain needs (code + short team name), so bridge the two here.
+function explorerVisualPlayer(player: ExplorerPlayer): Player {
+  const position = (["GK", "DEF", "MID", "FWD"] as const).includes(player.position as "GK" | "DEF" | "MID" | "FWD")
+    ? (player.position as Player["position"])
+    : "MID";
+  return {
+    id: player.id,
+    code: player.code ?? undefined,
+    name: player.name,
+    team: player.team,
+    position,
+    price: player.price,
+    projected: player.next_projected,
+    ownership: player.ownership,
+    status: "Available",
+    risk: "Low",
+  };
+}
+
+// The full-pool explorer: every player with a real projection in the window, filterable by
+// price/position/club and sortable by projection - the question the ranked signal board above
+// structurally can't answer, because it only ever carries the top ~100 signals.
+function PlayerExplorerSection() {
+  const [data, setData] = useState<PlayerExplorerData | null>(null);
+  const [loadError, setLoadError] = useState("");
+  const [search, setSearch] = useState("");
+  const [position, setPosition] = useState<PositionFilter>("All");
+  const [team, setTeam] = useState("");
+  const [maxPrice, setMaxPrice] = useState(0);
+  const [sortKey, setSortKey] = useState<ExplorerSortKey>("horizon");
+  const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
+  const [visible, setVisible] = useState(EXPLORER_PAGE_SIZE);
+
+  useEffect(() => {
+    let cancelled = false;
+    getPlayerExplorer()
+      .then((result) => {
+        if (!cancelled) setData(result.data);
+      })
+      .catch((error) => {
+        if (!cancelled) setLoadError(error instanceof Error ? error.message : "Player pool failed to load.");
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    setVisible(EXPLORER_PAGE_SIZE);
+  }, [search, position, team, maxPrice, sortKey, sortDirection]);
+
+  if (loadError) {
+    return (
+      <section className="rounded-2xl border border-[#E1E7F2] bg-white p-6 shadow-[0_18px_45px_rgba(15,23,60,0.06)]">
+        <p className="text-xs font-black uppercase tracking-[0.16em] text-[#6C1DFF]">Player explorer</p>
+        <p className="mt-2 text-sm font-semibold text-[#6C7195]">The full player pool failed to load: {loadError}</p>
+      </section>
+    );
+  }
+
+  if (!data) {
+    return (
+      <section className="rounded-2xl border border-[#E1E7F2] bg-white p-6 shadow-[0_18px_45px_rgba(15,23,60,0.06)]">
+        <p className="text-xs font-black uppercase tracking-[0.16em] text-[#6C1DFF]">Player explorer</p>
+        <div className="mt-3 flex items-center gap-3">
+          <span className="h-5 w-5 animate-spin rounded-full border-2 border-[#6C1DFF] border-t-transparent" aria-hidden />
+          <p className="text-sm font-semibold text-[#6C7195]">Loading the full player pool…</p>
+        </div>
+      </section>
+    );
+  }
+
+  const gwWindow = data.gameweeks.length
+    ? `GW${data.gameweeks[0]}–GW${data.gameweeks[data.gameweeks.length - 1]}`
+    : "upcoming gameweeks";
+  const teams = Array.from(new Set(data.players.map((player) => player.team).filter(Boolean))).sort();
+
+  const query = search.trim().toLowerCase();
+  const filtered = data.players
+    .filter((player) => !query || player.name.toLowerCase().includes(query) || player.team.toLowerCase().includes(query))
+    .filter((player) => position === "All" || player.position === position)
+    .filter((player) => !team || player.team === team)
+    .filter((player) => !maxPrice || player.price <= maxPrice)
+    .sort((a, b) => {
+      const delta = explorerSortValue(a, sortKey) - explorerSortValue(b, sortKey);
+      if (delta !== 0) return sortDirection === "desc" ? -delta : delta;
+      return a.name.localeCompare(b.name);
+    });
+  const shown = filtered.slice(0, visible);
+
+  return (
+    <section className="rounded-2xl border border-[#E1E7F2] bg-white p-4 shadow-[0_18px_45px_rgba(15,23,60,0.06)] sm:p-5">
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <p className="text-xs font-black uppercase tracking-[0.16em] text-[#6C1DFF]">Player explorer</p>
+          <h2 className="mt-1 text-2xl font-black text-[#101947]">The full player pool</h2>
+          <p className="mt-1 text-xs font-semibold text-[#6C7195]">
+            Every player with a live model projection for {gwWindow} — screen by price, position and club.
+          </p>
+        </div>
+        <span className="rounded-full bg-[#F4EFFF] px-3 py-2 text-xs font-black text-[#6C1DFF]">
+          {filtered.length} of {data.player_count} players
+        </span>
+      </div>
+
+      <div className="mt-4 flex flex-col gap-3 xl:flex-row xl:items-center">
+        <label className="relative min-w-0 flex-1">
+          <span className="sr-only">Search the player pool</span>
+          <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[#6C7195]">⌕</span>
+          <input
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
+            placeholder="Search player or club"
+            className="h-12 w-full rounded-xl border border-[#DCE3F0] bg-[#FBFCFF] pl-10 pr-4 text-sm font-bold text-[#101947] outline-none transition placeholder:text-[#9299B3] focus:border-[#6C1DFF] focus:ring-4 focus:ring-[#6C1DFF]/10"
+          />
+        </label>
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 xl:flex xl:shrink-0">
+          <select
+            value={team}
+            onChange={(event) => setTeam(event.target.value)}
+            className="h-12 rounded-xl border border-[#DCE3F0] bg-white px-3 text-xs font-black text-[#101947] outline-none focus:border-[#6C1DFF]"
+            aria-label="Filter pool by club"
+          >
+            <option value="">All clubs</option>
+            {teams.map((club) => (
+              <option key={club} value={club}>{club}</option>
+            ))}
+          </select>
+          <select
+            value={maxPrice}
+            onChange={(event) => setMaxPrice(Number(event.target.value))}
+            className="h-12 rounded-xl border border-[#DCE3F0] bg-white px-3 text-xs font-black text-[#101947] outline-none focus:border-[#6C1DFF]"
+            aria-label="Maximum price in pool"
+          >
+            {EXPLORER_PRICE_OPTIONS.map((option) => (
+              <option key={option.value} value={option.value}>{option.label}</option>
+            ))}
+          </select>
+          <select
+            value={sortKey}
+            onChange={(event) => setSortKey(event.target.value as ExplorerSortKey)}
+            className="h-12 rounded-xl border border-[#DCE3F0] bg-white px-3 text-xs font-black text-[#101947] outline-none focus:border-[#6C1DFF]"
+            aria-label="Sort pool"
+          >
+            <option value="horizon">{data.horizon}-GW projection</option>
+            <option value="next">Next-GW projection</option>
+            <option value="value">Points per £m</option>
+            <option value="price">Price</option>
+            <option value="ownership">Ownership</option>
+          </select>
+          <button
+            type="button"
+            onClick={() => setSortDirection((current) => (current === "desc" ? "asc" : "desc"))}
+            className="h-12 rounded-xl border border-[#DCE3F0] bg-white px-3 text-xs font-black text-[#6C1DFF] transition hover:border-[#6C1DFF]"
+          >
+            {sortDirection === "desc" ? "Highest first ↓" : "Lowest first ↑"}
+          </button>
+        </div>
+      </div>
+
+      <div className="mt-3 flex gap-2 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        {POSITIONS.map((item) => (
+          <FilterButton key={item} active={position === item} label={item} onClick={() => setPosition(item)} />
+        ))}
+      </div>
+
+      {shown.length ? (
+        <>
+          {/* Desktop: dense table with a projection column per gameweek */}
+          <div className="mt-4 hidden overflow-x-auto md:block">
+            <table className="w-full min-w-[760px] border-separate border-spacing-0 text-left">
+              <thead>
+                <tr className="text-[10px] font-black uppercase tracking-[0.1em] text-[#6C7195]">
+                  <th className="border-b border-[#E1E7F2] px-3 py-2">Player</th>
+                  <th className="border-b border-[#E1E7F2] px-3 py-2">Pos</th>
+                  <th className="border-b border-[#E1E7F2] px-3 py-2">Price</th>
+                  <th className="border-b border-[#E1E7F2] px-3 py-2">Own</th>
+                  {data.gameweeks.map((gw) => (
+                    <th key={gw} className="border-b border-[#E1E7F2] px-3 py-2 text-right">GW{gw}</th>
+                  ))}
+                  <th className="border-b border-[#E1E7F2] px-3 py-2 text-right">{data.horizon}-GW</th>
+                  <th className="border-b border-[#E1E7F2] px-3 py-2 text-right">Pts/£m</th>
+                </tr>
+              </thead>
+              <tbody>
+                {shown.map((player) => (
+                  <tr key={player.id} className="transition hover:bg-[#FBFAFF]">
+                    <td className="border-b border-[#EFF2F8] px-3 py-2">
+                      <div className="flex min-w-0 items-center gap-2.5">
+                        <PlayerVisual player={explorerVisualPlayer(player)} size="sm" />
+                        <div className="min-w-0">
+                          <p className="truncate text-sm font-black text-[#101947]">{player.name}</p>
+                          <p className="truncate text-[10px] font-bold text-[#6C7195]">{player.team}</p>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="border-b border-[#EFF2F8] px-3 py-2 text-xs font-black text-[#4D5680]">{player.position}</td>
+                    <td className="border-b border-[#EFF2F8] px-3 py-2 text-xs font-black text-[#101947]">{formatPrice(player.price)}</td>
+                    <td className="border-b border-[#EFF2F8] px-3 py-2 text-xs font-bold text-[#6C7195]">{player.ownership.toFixed(1)}%</td>
+                    {data.gameweeks.map((gw) => (
+                      <td key={gw} className="border-b border-[#EFF2F8] px-3 py-2 text-right text-xs font-bold text-[#4D5680]">
+                        {formatProjection(player.projections[String(gw)])}
+                      </td>
+                    ))}
+                    <td className="border-b border-[#EFF2F8] px-3 py-2 text-right text-sm font-black text-[#00A568]">{player.horizon_projected.toFixed(1)}</td>
+                    <td className="border-b border-[#EFF2F8] px-3 py-2 text-right text-xs font-black text-[#6C1DFF]">{player.value_per_million.toFixed(1)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Mobile: compact cards */}
+          <div className="mt-4 space-y-2 md:hidden">
+            {shown.map((player) => (
+              <article key={player.id} className="flex items-center gap-3 rounded-xl border border-[#E1E7F2] bg-[#FBFCFF] p-3">
+                <PlayerVisual player={explorerVisualPlayer(player)} size="sm" />
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm font-black text-[#101947]">{player.name}</p>
+                  <p className="truncate text-[10px] font-bold text-[#6C7195]">
+                    {player.team} · {player.position} · {formatPrice(player.price)} · {player.ownership.toFixed(1)}% own
+                  </p>
+                </div>
+                <div className="shrink-0 text-right">
+                  <p className="text-base font-black text-[#00A568]">{player.horizon_projected.toFixed(1)}</p>
+                  <p className="text-[9px] font-black uppercase tracking-[0.08em] text-[#6C7195]">{data.horizon}-GW pts</p>
+                </div>
+              </article>
+            ))}
+          </div>
+
+          {filtered.length > visible ? (
+            <button
+              type="button"
+              onClick={() => setVisible((current) => current + EXPLORER_PAGE_SIZE)}
+              className="mt-4 w-full rounded-xl border border-[#D8C9FF] bg-[#F8F5FF] px-4 py-3 text-sm font-black text-[#6C1DFF] transition hover:bg-[#F1E8FF]"
+            >
+              Show {Math.min(EXPLORER_PAGE_SIZE, filtered.length - visible)} more of {filtered.length - visible} remaining
+            </button>
+          ) : null}
+        </>
+      ) : (
+        <div className="mt-4 rounded-xl border border-dashed border-[#CDD4E3] bg-white p-8 text-center">
+          <p className="text-base font-black text-[#101947]">No players match this screen.</p>
+          <p className="mt-1 text-xs font-semibold text-[#6C7195]">Loosen the price cap or clear a filter.</p>
+        </div>
+      )}
+    </section>
+  );
+}
+
 function SignalGuide({ board }: { board: MarketBoard }) {
   const groups: MarketSignal["signal"][] = ["Buy", "Watch", "Hold", "Sell", "Avoid"];
   return (
@@ -799,6 +1079,8 @@ export function MarketContent({
       </div>
 
       <OwnedAlerts signals={board.owned_squad_alerts} onSelect={(item) => selectSignal(item, true)} />
+
+      <PlayerExplorerSection />
 
       {board.full_market_locked ? (
         <section className="rounded-[22px] border border-[#17002F] bg-[#17002F] p-6 text-white shadow-[0_24px_60px_rgba(55,0,60,0.18)]">

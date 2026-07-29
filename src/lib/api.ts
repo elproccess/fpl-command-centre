@@ -1395,6 +1395,84 @@ export async function getPlayerComparison(playerIds: number[] = [7, 101]): Promi
   return requestJson(`/decision-centre/compare?player_ids=${safeIds.join(",")}`, { apiName: "getPlayerComparison", disableFallback: true, throwOnPending: true }, playerComparison, adaptComparison);
 }
 
+export type ExplorerPlayer = {
+  id: number;
+  code: number | null;
+  name: string;
+  team: string;
+  team_id: number;
+  team_short_name: string | null;
+  position: string;
+  price: number;
+  ownership: number;
+  status: string | null;
+  projections: Record<string, number>;
+  next_projected: number;
+  horizon_projected: number;
+  value_per_million: number;
+};
+
+export type PlayerExplorerData = {
+  gameweek: number;
+  horizon: number;
+  gameweeks: number[];
+  player_count: number;
+  players: ExplorerPlayer[];
+};
+
+const emptyExplorer: PlayerExplorerData = { gameweek: 0, horizon: 0, gameweeks: [], player_count: 0, players: [] };
+
+// The FULL browsable player pool with per-GW projections (see backend player_explorer): every
+// player with a real projection in the window, price/ownership included, so the Market page can
+// answer "best projected under £6.0m" over the whole league - the signal board can't (it only
+// ever carries the top ~100 ranked signals).
+export async function getPlayerExplorer(): Promise<ApiResult<PlayerExplorerData>> {
+  return requestJson<PlayerExplorerData>(
+    "/player-stock-market/explorer",
+    { apiName: "getPlayerExplorer", timeoutMs: 60000, disableFallback: true },
+    emptyExplorer,
+    (raw, fallback) => {
+      if (!isRecord(raw) || !Array.isArray(raw.players)) return fallback;
+      const gameweeks = Array.isArray(raw.gameweeks) ? raw.gameweeks.map((value) => asNumber(value, 0)).filter((value) => value > 0) : [];
+      const players = raw.players
+        .filter(isRecord)
+        .map((item) => {
+          const projections: Record<string, number> = {};
+          if (isRecord(item.projections)) {
+            for (const [key, value] of Object.entries(item.projections)) {
+              const points = asNumber(value, 0);
+              if (points > 0) projections[key] = points;
+            }
+          }
+          return {
+            id: asNumber(item.id, 0),
+            code: typeof item.code === "number" ? item.code : null,
+            name: asString(item.name, ""),
+            team: asString(item.team, ""),
+            team_id: asNumber(item.team_id, 0),
+            team_short_name: typeof item.team_short_name === "string" ? item.team_short_name : null,
+            position: asString(item.position, "MID"),
+            price: asNumber(item.price, 0),
+            ownership: asNumber(item.ownership, 0),
+            status: typeof item.status === "string" ? item.status : null,
+            projections,
+            next_projected: asNumber(item.next_projected, 0),
+            horizon_projected: asNumber(item.horizon_projected, 0),
+            value_per_million: asNumber(item.value_per_million, 0),
+          };
+        })
+        .filter((entry) => entry.id > 0 && entry.name && entry.price > 0);
+      return {
+        gameweek: asNumber(raw.gameweek, 0),
+        horizon: asNumber(raw.horizon, 0),
+        gameweeks,
+        player_count: players.length,
+        players,
+      };
+    },
+  );
+}
+
 export type PlayerDirectoryEntry = {
   player_id: number;
   web_name: string;
