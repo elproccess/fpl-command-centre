@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { DataModeBadge } from "@/components/app-shell";
 import { SignalBadge } from "@/components/badges";
 import { CompareAnyTwoPlayers } from "@/components/compare-any-two-players";
@@ -583,6 +583,63 @@ function MobileMarketRowCards({ rows, onSelect }: { rows: MarketRow[]; onSelect:
   );
 }
 
+function pagerWindow(page: number, totalPages: number): (number | "ellipsis")[] {
+  const clip = (value: number) => Math.min(totalPages - 1, Math.max(0, value));
+  const keep = Array.from(new Set([0, clip(page - 1), page, clip(page + 1), totalPages - 1])).sort((a, b) => a - b);
+  const items: (number | "ellipsis")[] = [];
+  keep.forEach((value, index) => {
+    if (index > 0 && value - keep[index - 1] > 1) items.push("ellipsis");
+    items.push(value);
+  });
+  return items;
+}
+
+function MarketPager({ page, totalPages, onPage }: { page: number; totalPages: number; onPage: (page: number) => void }) {
+  const items = pagerWindow(page, totalPages);
+  const buttonBase = "min-w-[36px] rounded-xl px-3 py-2 text-sm font-black transition";
+  return (
+    <nav className="flex flex-wrap items-center justify-center gap-2 pt-1" aria-label="Market page navigation">
+      <button
+        type="button"
+        onClick={() => onPage(Math.max(0, page - 1))}
+        disabled={page === 0}
+        className={`${buttonBase} border border-[#D8C9FF] bg-white text-[#6C1DFF] hover:bg-[#F8F5FF] disabled:cursor-not-allowed disabled:opacity-40`}
+      >
+        ‹ Prev
+      </button>
+      {items.map((item, index) =>
+        item === "ellipsis" ? (
+          <span key={`ellipsis-${index}`} className="px-1 text-sm font-black text-[#9299B3]">
+            …
+          </span>
+        ) : (
+          <button
+            key={item}
+            type="button"
+            onClick={() => onPage(item)}
+            aria-current={item === page ? "page" : undefined}
+            className={`${buttonBase} ${
+              item === page
+                ? "bg-[#6C1DFF] text-white shadow-[0_10px_24px_rgba(108,29,255,0.3)]"
+                : "border border-[#E0E5EF] bg-white text-[#4D5680] hover:bg-[#F8F5FF]"
+            }`}
+          >
+            {item + 1}
+          </button>
+        ),
+      )}
+      <button
+        type="button"
+        onClick={() => onPage(Math.min(totalPages - 1, page + 1))}
+        disabled={page === totalPages - 1}
+        className={`${buttonBase} border border-[#D8C9FF] bg-white text-[#6C1DFF] hover:bg-[#F8F5FF] disabled:cursor-not-allowed disabled:opacity-40`}
+      >
+        Next ›
+      </button>
+    </nav>
+  );
+}
+
 function MobileMetric({ label, value, tone = "default" }: { label: string; value: string; tone?: "default" | "green" | "purple" }) {
   const toneClass = tone === "green" ? "text-[#00A85A]" : tone === "purple" ? "text-[#6C1DFF]" : "text-[#0A1031]";
   return (
@@ -781,7 +838,8 @@ export function MarketContent({
   const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [mobileDetailOpen, setMobileDetailOpen] = useState(false);
-  const [visible, setVisible] = useState(PAGE_SIZE);
+  const [page, setPage] = useState(0);
+  const resultsTopRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -812,7 +870,7 @@ export function MarketContent({
   }, []);
 
   useEffect(() => {
-    setVisible(PAGE_SIZE);
+    setPage(0);
   }, [search, tab, positionFilter, teamFilter, maxPrice, sortKey, sortDirection]);
 
   if (listState.phase === "error") return <ErrorState message={listState.message} />;
@@ -862,7 +920,9 @@ export function MarketContent({
       if (delta !== 0) return sortDirection === "desc" ? -delta : delta;
       return a.name.localeCompare(b.name);
     });
-  const shownRows = filteredRows.slice(0, visible);
+  const totalPages = Math.max(1, Math.ceil(filteredRows.length / PAGE_SIZE));
+  const currentPage = Math.min(page, totalPages - 1);
+  const shownRows = filteredRows.slice(currentPage * PAGE_SIZE, currentPage * PAGE_SIZE + PAGE_SIZE);
 
   const selectedRow =
     filteredRows.find((row) => row.id === selectedId) ??
@@ -958,7 +1018,7 @@ export function MarketContent({
       ) : null}
 
       <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_360px]">
-        <div className="min-w-0 space-y-3">
+        <div ref={resultsTopRef} className="min-w-0 space-y-3">
           <div className="flex items-end justify-between gap-4 px-1">
             <div>
               <p className="text-xs font-black uppercase tracking-[0.16em] text-[#6C1DFF]">{tab === "All" ? "Full market" : tab}</p>
@@ -975,14 +1035,15 @@ export function MarketContent({
             <>
               <MarketRowTable rows={shownRows} selectedId={selectedRow?.id} onSelect={(row) => selectRow(row)} />
               <MobileMarketRowCards rows={shownRows} onSelect={(row) => selectRow(row, true)} />
-              {filteredRows.length > visible ? (
-                <button
-                  type="button"
-                  onClick={() => setVisible((current) => current + PAGE_SIZE)}
-                  className="w-full rounded-xl border border-[#D8C9FF] bg-[#F8F5FF] px-4 py-3 text-sm font-black text-[#6C1DFF] transition hover:bg-[#F1E8FF]"
-                >
-                  Show {Math.min(PAGE_SIZE, filteredRows.length - visible)} more of {filteredRows.length - visible} remaining
-                </button>
+              {totalPages > 1 ? (
+                <MarketPager
+                  page={currentPage}
+                  totalPages={totalPages}
+                  onPage={(next) => {
+                    setPage(next);
+                    resultsTopRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+                  }}
+                />
               ) : null}
             </>
           ) : (
