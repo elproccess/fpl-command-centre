@@ -894,10 +894,17 @@ export function emptyPlannerRoute(): PlannerRoute {
 
 function adaptMarketBoard(raw: unknown, fallback: MarketBoard): MarketBoard {
   if (!isRecord(raw)) return fallback;
+  // rising_assets is a MOMENTUM ranking (transfers/form), a different sort from buy_now (value +
+  // market score + risk) - a cheap, low-momentum buy signal (exactly the profile a real buy_now
+  // pick usually has pre-season) can clear buy_now without ever appearing in rising_assets. Not
+  // including buy_now here meant every genuine buy signal that didn't ALSO happen to rank highly
+  // by momentum was silently dropped before reaching the page (found live: backend reported 9
+  // buy_now players, the page showed 1 - whichever one coincidentally also ranked in rising_assets).
+  const buyNow = asArray(raw.buy_now);
   const rising = asArray(raw.rising_assets ?? raw.buy_now);
   const falling = asArray(raw.falling_assets ?? raw.sell_watch);
   const owned = asArray(raw.owned_player_alerts);
-  const all = [...rising, ...falling, ...asArray(raw.avoid_traps), ...owned];
+  const all = [...buyNow, ...rising, ...falling, ...asArray(raw.avoid_traps), ...owned];
 
   return {
     ...fallback,
