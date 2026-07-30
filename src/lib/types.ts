@@ -246,7 +246,7 @@ export type PlannerRoute = {
 
 export type MarketSignal = {
   player: Player;
-  signal: "Buy" | "Hold" | "Sell" | "Avoid" | "Watch";
+  signal: "Buy" | "Hold" | "Sell" | "Avoid" | "Watch" | "Fringe";
   score: number | null;
   reason: string;
 };

@@ -357,7 +357,11 @@ function backendSignal(raw: unknown, fallback: MarketSignal): MarketSignal {
     recommendation.includes("buy") ? "Buy" :
     recommendation.includes("sell") ? "Sell" :
     recommendation.includes("avoid") || recommendation.includes("trap") ? "Avoid" :
-    recommendation.includes("hold") ? "Hold" : "Watch";
+    recommendation.includes("hold") ? "Hold" :
+    // "fringe" (real player, no claim on regular minutes) is distinct from the generic "no
+    // strong buy/sell case" default - checked before the fallback, not matched by any of the
+    // substring checks above, so it must not silently collapse into "Watch".
+    recommendation.includes("fringe") ? "Fringe" : "Watch";
 
   return normalizeMarketSignal(
     {

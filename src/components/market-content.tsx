@@ -21,11 +21,15 @@ import {
 import type { MarketBoard, MarketSignal, Player } from "@/lib/types";
 
 const SIGNAL_ORDER: Record<MarketSignal["signal"], number> = {
-  Buy: 5,
-  Watch: 4,
-  Hold: 3,
+  Buy: 6,
+  Watch: 5,
+  Hold: 4,
   Sell: 2,
   Avoid: 1,
+  // Ranks below every real signal (including Watch) in a merge tie-break - a genuine "no strong
+  // call" verdict on a real player always wins over "no real claim on minutes yet" if a player
+  // somehow appears under both.
+  Fringe: 0,
 };
 
 const POSITIONS = ["All", "GK", "DEF", "MID", "FWD"] as const;
@@ -711,13 +715,13 @@ function DetailMetric({ label, value, tone = "default" }: { label: string; value
 }
 
 function SignalGuide({ board }: { board: MarketBoard }) {
-  const groups: MarketSignal["signal"][] = ["Buy", "Watch", "Hold", "Sell", "Avoid"];
+  const groups: MarketSignal["signal"][] = ["Buy", "Watch", "Hold", "Sell", "Avoid", "Fringe"];
   return (
     <details className="rounded-2xl border border-[#E1E7F2] bg-white p-5 shadow-[0_18px_45px_rgba(15,23,60,0.06)]">
       <summary className="cursor-pointer list-none text-base font-black text-[#0A1031] marker:hidden">
         How market signals are classified <span className="float-right text-[#6C1DFF]">＋</span>
       </summary>
-      <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-5">
+      <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-6">
         {groups.map((group) => (
           <div key={group} className="rounded-xl border border-[#E1E7F2] bg-[#FBFCFF] p-3">
             <SignalBadge value={group} />

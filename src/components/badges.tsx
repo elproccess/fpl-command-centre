@@ -28,6 +28,11 @@ export function SignalBadge({ value }: { value: string }) {
         ? "bg-[#E90052]/10 text-[#C80046] ring-[#E90052]/25"
         : value === "Watch"
           ? "bg-[#6C1DFF]/10 text-[#6C1DFF] ring-[#6C1DFF]/20"
-          : "bg-[#00B8FF]/10 text-[#007AA8] ring-[#00B8FF]/25";
+          : value === "Fringe"
+            // Deliberately flatter/greyer than every other badge - "no real claim on minutes"
+            // reads as a lower tier than Watch's genuine "no strong call on a real player",
+            // not just a different color for its own sake.
+            ? "bg-[#8B93A8]/12 text-[#5B6478] ring-[#8B93A8]/25"
+            : "bg-[#00B8FF]/10 text-[#007AA8] ring-[#00B8FF]/25";
   return <span className={`rounded-lg px-3 py-1 text-xs font-black ring-1 ${tone}`}>{value}</span>;
 }
