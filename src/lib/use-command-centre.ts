@@ -282,6 +282,7 @@ function importedSafeMarket(players: Player[]): MarketBoard {
     falling_players: [],
     owned_squad_alerts: alerts,
     market_alerts: alerts,
+    all_players: alerts,
     top_free_limit: usageState.market_signal_limit,
     full_market_locked: true,
     signal_explanations: {

@@ -181,6 +181,7 @@ function mergeSignals(signals: MarketSignal[]) {
 
 function marketUniverse(board: MarketBoard) {
   return mergeSignals([
+    ...board.all_players,
     ...board.market_alerts,
     ...board.rising_players,
     ...board.falling_players,

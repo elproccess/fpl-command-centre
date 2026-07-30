@@ -909,6 +909,11 @@ function adaptMarketBoard(raw: unknown, fallback: MarketBoard): MarketBoard {
   const falling = asArray(raw.falling_assets ?? raw.sell_watch);
   const owned = asArray(raw.owned_player_alerts);
   const all = [...buyNow, ...rising, ...falling, ...asArray(raw.avoid_traps), ...owned];
+  // Every category above (including `all`) is capped to a top-N ranking - a player who doesn't
+  // rank highly in ANY single category never reached the page at all (found live: 503 of 554
+  // scored players showed as generic "Unranked" even though the backend had already given every
+  // one of them a real Buy/Watch/Fringe/Sell/Hold verdict). all_players is uncapped.
+  const allPlayers = asArray(raw.all_players);
 
   return {
     ...fallback,
@@ -916,6 +921,7 @@ function adaptMarketBoard(raw: unknown, fallback: MarketBoard): MarketBoard {
     falling_players: falling.map((signal, index) => backendSignal(signal, fallback.falling_players[index] ?? fallback.market_alerts[0])).slice(0, 10),
     owned_squad_alerts: owned.length ? owned.map((signal, index) => backendSignal(signal, fallback.owned_squad_alerts[index] ?? fallback.market_alerts[0])) : [],
     market_alerts: all.length ? all.map((signal, index) => backendSignal(signal, fallback.market_alerts[index] ?? fallback.market_alerts[0])).slice(0, 20) : [],
+    all_players: allPlayers.length ? allPlayers.map((signal, index) => backendSignal(signal, fallback.all_players[index] ?? fallback.market_alerts[0])) : fallback.all_players,
   };
 }
 

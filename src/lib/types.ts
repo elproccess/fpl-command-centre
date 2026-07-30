@@ -389,6 +389,11 @@ export type MarketBoard = {
   falling_players: MarketSignal[];
   owned_squad_alerts: MarketSignal[];
   market_alerts: MarketSignal[];
+  // Every player the market engine scored, uncapped (unlike market_alerts, which is capped to a
+  // handful for the ticker/hero-stat use cases it already serves) - the source for "does this
+  // player have a real Buy/Watch/Fringe/Sell/Hold verdict" across the whole pool, not just
+  // whoever happened to rank into a top-N category list.
+  all_players: MarketSignal[];
   top_free_limit: number;
   full_market_locked: boolean;
   signal_explanations: Record<MarketSignal["signal"], string>;

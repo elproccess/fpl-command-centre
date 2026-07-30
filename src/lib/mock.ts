@@ -373,6 +373,7 @@ export const marketBoard: MarketBoard = {
   falling_players: marketSignals.filter((signal) => signal.player.trend === "down").slice(0, 5),
   owned_squad_alerts: marketSignals.filter((signal) => squadPlayers.some((player) => player.id === signal.player.id)),
   market_alerts: marketSignals,
+  all_players: marketSignals,
   top_free_limit: usageState.market_signal_limit,
   full_market_locked: !usageState.has_full_market,
   signal_explanations: {
