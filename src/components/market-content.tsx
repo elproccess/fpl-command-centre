@@ -850,18 +850,6 @@ export function MarketContent({
   const allRows = buildMarketRows(pool, universe);
   const teams = Array.from(new Set(allRows.map((row) => row.team).filter(Boolean))).sort();
 
-  if (typeof window !== "undefined") {
-    const sigCounts: Record<string, number> = {};
-    for (const row of allRows) {
-      const key = row.signal ?? "null";
-      sigCounts[key] = (sigCounts[key] ?? 0) + 1;
-    }
-    console.log("[DEBUG] universe.length=", universe.length, "pool.length=", pool.length, "allRows.length=", allRows.length, "signal counts=", sigCounts);
-    const buyRows = allRows.filter((row) => row.signal === "Buy");
-    console.log("[DEBUG] buy rows sample=", buyRows.slice(0, 5).map((r) => ({ name: r.name, score: r.score, id: r.id })));
-    console.log("[DEBUG] buy rows (30-40)=", buyRows.slice(30, 40).map((r) => ({ name: r.name, score: r.score, id: r.id })));
-  }
-
   const query = search.trim().toLowerCase();
   const filteredRows = allRows
     .filter((row) => !query || row.name.toLowerCase().includes(query) || row.team.toLowerCase().includes(query))
