@@ -304,10 +304,10 @@ function rowVisualPlayer(row: MarketRow): Player {
 
 function MarketStat({ label, value, detail }: { label: string; value: string; detail: string }) {
   return (
-    <div className="rounded-2xl border border-white/10 bg-white/[0.07] p-4 backdrop-blur-sm">
-      <p className="text-[10px] font-black uppercase tracking-[0.16em] text-white/50">{label}</p>
-      <p className="mt-2 text-2xl font-black text-white">{value}</p>
-      <p className="mt-1 text-xs font-semibold text-white/55">{detail}</p>
+    <div className="rounded-2xl border border-[#E0E5EF] bg-[#FAFBFD] p-4">
+      <p className="text-[10px] font-black uppercase tracking-[0.16em] text-[#6C7195]">{label}</p>
+      <p className="mt-2 text-2xl font-black text-[#0A1031]">{value}</p>
+      <p className="mt-1 text-xs font-semibold text-[#6C7195]">{detail}</p>
     </div>
   );
 }
@@ -318,7 +318,7 @@ function MovementTicker({ signals, onSelect }: { signals: MarketSignal[]; onSele
     <section className="overflow-hidden rounded-2xl border border-[#E1E7F2] bg-white shadow-[0_18px_45px_rgba(15,23,60,0.06)]">
       <div className="flex items-center gap-3 border-b border-[#E1E7F2] px-4 py-3">
         <span className="h-2 w-2 animate-pulse rounded-full bg-[#00A85A]" />
-        <p className="text-xs font-black uppercase tracking-[0.16em] text-[#101947]">Live market tape</p>
+        <p className="text-xs font-black uppercase tracking-[0.16em] text-[#0A1031]">Live market tape</p>
         <span className="text-xs font-bold text-[#6C7195]">Highest conviction and movement</span>
       </div>
       <div className="flex gap-3 overflow-x-auto px-4 py-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
@@ -331,7 +331,7 @@ function MovementTicker({ signals, onSelect }: { signals: MarketSignal[]; onSele
           >
             <PlayerVisual player={signal.player} size="sm" />
             <span className="min-w-0 flex-1">
-              <span className="block truncate text-sm font-black text-[#101947]">{signal.player.name}</span>
+              <span className="block truncate text-sm font-black text-[#0A1031]">{signal.player.name}</span>
               <span className="mt-0.5 block text-xs font-bold text-[#6C7195]">
                 {signal.player.team} · {formatPrice(signal.player.price)}
               </span>
@@ -418,14 +418,14 @@ function MarketToolbar({
             value={search}
             onChange={(event) => onSearch(event.target.value)}
             placeholder="Search player or club"
-            className="h-12 w-full rounded-xl border border-[#DCE3F0] bg-[#FBFCFF] pl-10 pr-4 text-sm font-bold text-[#101947] outline-none transition placeholder:text-[#9299B3] focus:border-[#6C1DFF] focus:ring-4 focus:ring-[#6C1DFF]/10"
+            className="h-12 w-full rounded-xl border border-[#DCE3F0] bg-[#FBFCFF] pl-10 pr-4 text-sm font-bold text-[#0A1031] outline-none transition placeholder:text-[#9299B3] focus:border-[#6C1DFF] focus:ring-4 focus:ring-[#6C1DFF]/10"
           />
         </label>
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 xl:flex xl:shrink-0">
           <select
             value={team}
             onChange={(event) => onTeam(event.target.value)}
-            className="h-12 rounded-xl border border-[#DCE3F0] bg-white px-3 text-xs font-black text-[#101947] outline-none focus:border-[#6C1DFF]"
+            className="h-12 rounded-xl border border-[#DCE3F0] bg-white px-3 text-xs font-black text-[#0A1031] outline-none focus:border-[#6C1DFF]"
             aria-label="Filter by team"
           >
             <option value="">All clubs</option>
@@ -436,7 +436,7 @@ function MarketToolbar({
           <select
             value={maxPrice}
             onChange={(event) => onMaxPrice(Number(event.target.value))}
-            className="h-12 rounded-xl border border-[#DCE3F0] bg-white px-3 text-xs font-black text-[#101947] outline-none focus:border-[#6C1DFF]"
+            className="h-12 rounded-xl border border-[#DCE3F0] bg-white px-3 text-xs font-black text-[#0A1031] outline-none focus:border-[#6C1DFF]"
             aria-label="Maximum price"
           >
             {PRICE_OPTIONS.map((option) => (
@@ -446,7 +446,7 @@ function MarketToolbar({
           <select
             value={sortKey}
             onChange={(event) => onSortKey(event.target.value as RowSortKey)}
-            className="h-12 rounded-xl border border-[#DCE3F0] bg-white px-3 text-xs font-black text-[#101947] outline-none focus:border-[#6C1DFF]"
+            className="h-12 rounded-xl border border-[#DCE3F0] bg-white px-3 text-xs font-black text-[#0A1031] outline-none focus:border-[#6C1DFF]"
             aria-label="Sort market"
           >
             <option value="horizon">{horizon}-GW projection</option>
@@ -516,18 +516,18 @@ function MarketRowTable({
                   <span className="flex min-w-0 items-center gap-3">
                     <PlayerVisual player={rowVisualPlayer(row)} size="sm" />
                     <span className="min-w-0">
-                      <span className="block truncate text-sm font-black text-[#101947]">{row.name}</span>
+                      <span className="block truncate text-sm font-black text-[#0A1031]">{row.name}</span>
                       <span className="block text-xs font-bold text-[#6C7195]">{row.team}</span>
                     </span>
                   </span>
                   <span className="text-xs font-black text-[#4D5680]">{row.position}</span>
-                  <span className="text-sm font-black text-[#101947]">{formatPrice(row.price)}</span>
-                  <span className="text-sm font-black text-[#101947]">{row.ownership.toFixed(1)}%</span>
+                  <span className="text-sm font-black text-[#0A1031]">{formatPrice(row.price)}</span>
+                  <span className="text-sm font-black text-[#0A1031]">{row.ownership.toFixed(1)}%</span>
                   <span>{row.signal ? <SignalBadge value={row.signal} /> : <span className="rounded-lg bg-[#F1F3F8] px-2.5 py-1 text-[11px] font-black text-[#8A93AC] ring-1 ring-[#E1E7F2]">Unranked</span>}</span>
                   <span className="text-sm font-black text-[#00A85A]">{formatProjection(row.next_projected)}</span>
                   <span className="text-sm font-black text-[#6C1DFF]">{formatProjection(row.horizon_projected)}</span>
-                  <span className="text-sm font-black text-[#101947]">{row.value_per_million.toFixed(1)}</span>
-                  <span className="text-right text-base font-black text-[#101947]">{row.score ?? "—"}</span>
+                  <span className="text-sm font-black text-[#0A1031]">{row.value_per_million.toFixed(1)}</span>
+                  <span className="text-right text-base font-black text-[#0A1031]">{row.score ?? "—"}</span>
                 </button>
               );
             })}
@@ -554,7 +554,7 @@ function MobileMarketRowCards({ rows, onSelect }: { rows: MarketRow[]; onSelect:
             <div className="min-w-0 flex-1">
               <div className="flex items-start justify-between gap-2">
                 <div className="min-w-0">
-                  <p className="truncate text-base font-black text-[#101947]">{row.name}</p>
+                  <p className="truncate text-base font-black text-[#0A1031]">{row.name}</p>
                   <p className="text-xs font-bold text-[#6C7195]">{row.team} · {row.position} · {formatPrice(row.price)}</p>
                 </div>
                 {row.signal ? <SignalBadge value={row.signal} /> : <span className="shrink-0 rounded-lg bg-[#F1F3F8] px-2.5 py-1 text-[11px] font-black text-[#8A93AC] ring-1 ring-[#E1E7F2]">Unranked</span>}
@@ -579,7 +579,7 @@ function MobileMarketRowCards({ rows, onSelect }: { rows: MarketRow[]; onSelect:
 }
 
 function MobileMetric({ label, value, tone = "default" }: { label: string; value: string; tone?: "default" | "green" | "purple" }) {
-  const toneClass = tone === "green" ? "text-[#00A85A]" : tone === "purple" ? "text-[#6C1DFF]" : "text-[#101947]";
+  const toneClass = tone === "green" ? "text-[#00A85A]" : tone === "purple" ? "text-[#6C1DFF]" : "text-[#0A1031]";
   return (
     <span className="rounded-lg bg-[#F6F8FC] px-2 py-2 text-center">
       <span className="block text-[9px] font-black uppercase tracking-[0.1em] text-[#9299B3]">{label}</span>
@@ -605,7 +605,7 @@ function PlayerDetail({ row, onClose, mobile = false }: { row: MarketRow; onClos
         <div className="flex min-w-0 items-center gap-3">
           <PlayerVisual player={rowVisualPlayer(row)} size="lg" />
           <div className="min-w-0">
-            <p className="truncate text-2xl font-black text-[#101947]">{row.name}</p>
+            <p className="truncate text-2xl font-black text-[#0A1031]">{row.name}</p>
             <p className="mt-1 text-sm font-bold text-[#6C7195]">{row.team} · {row.position} · {formatPrice(row.price)}</p>
           </div>
         </div>
@@ -617,7 +617,7 @@ function PlayerDetail({ row, onClose, mobile = false }: { row: MarketRow; onClos
           <div className="flex items-center justify-between gap-3">
             <div>
               <p className="text-[10px] font-black uppercase tracking-[0.14em] text-[#6C7195]">Market score</p>
-              <p className="mt-1 text-3xl font-black text-[#101947]">{row.score ?? "—"}</p>
+              <p className="mt-1 text-3xl font-black text-[#0A1031]">{row.score ?? "—"}</p>
             </div>
             <div className={`rounded-xl border px-3 py-2 text-right ${signalTone(row.signal)}`}>
               <p className="text-[10px] font-black uppercase tracking-[0.12em]">Trend</p>
@@ -667,7 +667,7 @@ function PlayerDetail({ row, onClose, mobile = false }: { row: MarketRow; onClos
                   <div className="h-2 min-w-0 flex-1 overflow-hidden rounded-full bg-[#EEF1F8]">
                     <div className="h-full rounded-full bg-[#00A568]" style={{ width: `${width}%` }} />
                   </div>
-                  <span className="w-10 shrink-0 text-right text-xs font-black text-[#101947]">{points.toFixed(1)}</span>
+                  <span className="w-10 shrink-0 text-right text-xs font-black text-[#0A1031]">{points.toFixed(1)}</span>
                 </div>
               );
             })}
@@ -701,7 +701,7 @@ function PlayerDetail({ row, onClose, mobile = false }: { row: MarketRow; onClos
 }
 
 function DetailMetric({ label, value, tone = "default" }: { label: string; value: string; tone?: "default" | "green" | "purple" | "red" }) {
-  const toneClass = tone === "green" ? "text-[#00A85A]" : tone === "purple" ? "text-[#6C1DFF]" : tone === "red" ? "text-[#E90052]" : "text-[#101947]";
+  const toneClass = tone === "green" ? "text-[#00A85A]" : tone === "purple" ? "text-[#6C1DFF]" : tone === "red" ? "text-[#E90052]" : "text-[#0A1031]";
   return (
     <div className="rounded-xl border border-[#E1E7F2] bg-white p-3">
       <p className="text-[10px] font-black uppercase tracking-[0.12em] text-[#6C7195]">{label}</p>
@@ -714,7 +714,7 @@ function SignalGuide({ board }: { board: MarketBoard }) {
   const groups: MarketSignal["signal"][] = ["Buy", "Watch", "Hold", "Sell", "Avoid"];
   return (
     <details className="rounded-2xl border border-[#E1E7F2] bg-white p-5 shadow-[0_18px_45px_rgba(15,23,60,0.06)]">
-      <summary className="cursor-pointer list-none text-base font-black text-[#101947] marker:hidden">
+      <summary className="cursor-pointer list-none text-base font-black text-[#0A1031] marker:hidden">
         How market signals are classified <span className="float-right text-[#6C1DFF]">＋</span>
       </summary>
       <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-5">
@@ -889,20 +889,22 @@ export function MarketContent({
 
   return (
     <div className="space-y-5">
-      <section className="relative overflow-hidden rounded-[26px] border border-[#111832] bg-[#070B28] p-5 text-white shadow-[0_30px_80px_rgba(7,11,40,0.28)] sm:p-7">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_12%_20%,rgba(0,230,168,0.18),transparent_32%),radial-gradient(circle_at_86%_15%,rgba(108,29,255,0.30),transparent_34%)]" />
-        <div className="absolute inset-0 opacity-20 [background-image:linear-gradient(rgba(255,255,255,.08)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.08)_1px,transparent_1px)] [background-size:42px_42px]" />
+      <section className="relative overflow-hidden rounded-[26px] border border-[#D9CCFF] bg-white p-5 shadow-[0_28px_72px_rgba(47,18,77,0.12)] sm:p-7">
+        <div className="pointer-events-none absolute inset-0">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_88%_14%,rgba(108,29,255,0.14),transparent_34%),radial-gradient(circle_at_8%_92%,rgba(0,168,86,0.08),transparent_28%)]" />
+          <div className="absolute -right-12 -top-16 h-48 w-48 rounded-full border border-[#6C1DFF]/10 sm:h-64 sm:w-64" />
+        </div>
         <div className="relative">
           <div className="flex flex-col gap-5 xl:flex-row xl:items-start xl:justify-between">
             <div className="max-w-2xl">
               <div className="flex flex-wrap items-center gap-3">
-                <span className="inline-flex items-center gap-2 rounded-full border border-[#00E6A8]/25 bg-[#00E6A8]/10 px-3 py-1.5 text-xs font-black uppercase tracking-[0.14em] text-[#A7F3D0]">
-                  <span className="h-2 w-2 animate-pulse rounded-full bg-[#00E6A8]" /> Live player market
+                <span className="inline-flex items-center gap-2 rounded-full border border-[#BCEBD2] bg-[#EDFFF5] px-3 py-1.5 text-xs font-black uppercase tracking-[0.14em] text-[#008F5A]">
+                  <span className="h-2 w-2 animate-pulse rounded-full bg-[#00A85A]" /> Live player market
                 </span>
                 <DataModeBadge source={{ mode: "real", label: "Real backend connected" }} />
               </div>
-              <h1 className="mt-3 text-2xl font-black tracking-tight sm:text-3xl">Player Market</h1>
-              <p className="mt-2 max-w-xl text-xs font-semibold leading-5 text-white/60 sm:text-sm">
+              <h1 className="mt-3 text-2xl font-black tracking-tight text-[#0A1031] sm:text-3xl">Player Market</h1>
+              <p className="mt-2 max-w-xl text-xs font-semibold leading-5 text-[#68718F] sm:text-sm">
                 The full player pool for {gwWindow}, screened by price, position, ownership and market signal — click any row for the full thesis.
               </p>
             </div>
@@ -913,11 +915,11 @@ export function MarketContent({
               <MarketStat label="Avg projection" value={averageProjection.toFixed(1)} detail="next-GW points" />
             </div>
           </div>
-          <div className="mt-6 flex flex-wrap gap-2 text-xs font-black text-white/60">
-            <span className="rounded-full bg-white/[0.07] px-3 py-2">↗ {rising.length} rising</span>
-            <span className="rounded-full bg-white/[0.07] px-3 py-2">↘ {falling.length} falling</span>
-            <span className="rounded-full bg-white/[0.07] px-3 py-2">◎ {board.owned_squad_alerts.length} squad alerts</span>
-            <span className="rounded-full bg-white/[0.07] px-3 py-2">{explorerData ? "Full pool loaded" : "Loading full pool…"}</span>
+          <div className="mt-6 flex flex-wrap gap-2 text-xs font-black text-[#4D5680]">
+            <span className="rounded-full border border-[#E0E5EF] bg-[#FAFBFD] px-3 py-2">↗ {rising.length} rising</span>
+            <span className="rounded-full border border-[#E0E5EF] bg-[#FAFBFD] px-3 py-2">↘ {falling.length} falling</span>
+            <span className="rounded-full border border-[#E0E5EF] bg-[#FAFBFD] px-3 py-2">◎ {board.owned_squad_alerts.length} squad alerts</span>
+            <span className="rounded-full border border-[#E0E5EF] bg-[#FAFBFD] px-3 py-2">{explorerData ? "Full pool loaded" : "Loading full pool…"}</span>
           </div>
         </div>
       </section>
@@ -955,7 +957,7 @@ export function MarketContent({
           <div className="flex items-end justify-between gap-4 px-1">
             <div>
               <p className="text-xs font-black uppercase tracking-[0.16em] text-[#6C1DFF]">{tab === "All" ? "Full market" : tab}</p>
-              <h2 className="mt-1 text-2xl font-black text-[#101947]">{filteredRows.length} players</h2>
+              <h2 className="mt-1 text-2xl font-black text-[#0A1031]">{filteredRows.length} players</h2>
             </div>
             {board.full_market_locked ? (
               <span className="rounded-full bg-[#FFF4D7] px-3 py-2 text-xs font-black text-[#9A6400]">Preview depth</span>
@@ -980,7 +982,7 @@ export function MarketContent({
             </>
           ) : (
             <section className="rounded-2xl border border-dashed border-[#CDD4E3] bg-white p-10 text-center shadow-[0_18px_45px_rgba(15,23,60,0.05)]">
-              <p className="text-xl font-black text-[#101947]">No players match this market screen.</p>
+              <p className="text-xl font-black text-[#0A1031]">No players match this market screen.</p>
               <p className="mt-2 text-sm font-semibold text-[#6C7195]">Clear one or more filters to restore market depth.</p>
               <button
                 type="button"
@@ -1003,17 +1005,19 @@ export function MarketContent({
       </div>
 
       {board.full_market_locked ? (
-        <section className="rounded-[22px] border border-[#17002F] bg-[#17002F] p-6 text-white shadow-[0_24px_60px_rgba(55,0,60,0.18)]">
-          <p className="text-xs font-black uppercase tracking-[0.18em] text-[#A7F3D0]">Market depth limited</p>
-          <h2 className="mt-2 text-2xl font-black">Unlock deeper ranked market coverage</h2>
-          <p className="mt-2 max-w-2xl text-sm font-semibold leading-6 text-white/65">Higher-tier depth exposes the additional market coverage returned by the backend while keeping the same live projection model and ranking tools.</p>
-          <Link href="/pricing" className="mt-5 inline-flex rounded-xl bg-[#00E6A8] px-5 py-3 text-sm font-black text-[#05070D]">View plans</Link>
+        <section className="flex flex-col gap-4 rounded-[24px] border border-dashed border-[#CDBAFA] bg-[#F8F4FF] p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
+          <div>
+            <p className="text-xs font-black uppercase tracking-[0.17em] text-[#6C1DFF]">Market depth limited</p>
+            <h2 className="mt-2 text-xl font-black text-[#0A1031]">Unlock deeper ranked market coverage</h2>
+            <p className="mt-2 max-w-2xl text-sm font-semibold text-[#68718F]">Higher-tier depth exposes the additional market coverage returned by the backend while keeping the same live projection model and ranking tools.</p>
+          </div>
+          <Link href="/pricing" className="inline-flex shrink-0 items-center justify-center rounded-xl bg-[#6C1DFF] px-5 py-3 text-sm font-black text-white shadow-[0_12px_28px_rgba(108,29,255,0.24)] transition hover:bg-[#5B16DD] focus:outline-none focus:ring-2 focus:ring-[#8D68FF] focus:ring-offset-2">View plans</Link>
         </section>
       ) : null}
 
       {directory.length ? (
         <details className="rounded-2xl border border-[#E1E7F2] bg-white p-5 shadow-[0_18px_45px_rgba(15,23,60,0.06)]">
-          <summary className="cursor-pointer list-none text-base font-black text-[#101947] marker:hidden">
+          <summary className="cursor-pointer list-none text-base font-black text-[#0A1031] marker:hidden">
             Open head-to-head player comparison <span className="float-right text-[#6C1DFF]">＋</span>
           </summary>
           <div className="mt-5"><CompareAnyTwoPlayers directory={directory} /></div>
