@@ -246,7 +246,7 @@ export type PlannerRoute = {
 
 export type MarketSignal = {
   player: Player;
-  signal: "Buy" | "Hold" | "Sell" | "Avoid" | "Watch" | "Fringe";
+  signal: "Buy" | "Hold" | "Sell" | "Avoid" | "Watch" | "Bench";
   score: number | null;
   reason: string;
 };
@@ -391,7 +391,7 @@ export type MarketBoard = {
   market_alerts: MarketSignal[];
   // Every player the market engine scored, uncapped (unlike market_alerts, which is capped to a
   // handful for the ticker/hero-stat use cases it already serves) - the source for "does this
-  // player have a real Buy/Watch/Fringe/Sell/Hold verdict" across the whole pool, not just
+  // player have a real Buy/Watch/Bench/Sell/Hold verdict" across the whole pool, not just
   // whoever happened to rank into a top-N category list.
   all_players: MarketSignal[];
   top_free_limit: number;

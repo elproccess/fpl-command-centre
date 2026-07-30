@@ -129,12 +129,13 @@ export function normalizeSquadHealth(raw: unknown, fallback: SquadHealth): Squad
 export function normalizeMarketSignal(raw: unknown, fallback: MarketSignal): MarketSignal {
   if (!isRecord(raw)) return fallback;
 
-  // Found live: "Fringe" wasn't in this whitelist, so every fringe-classified player silently
+  // Found live: a new signal value added here without also adding it to this whitelist silently
   // failed validation and fell back to fallback.signal - which, for any index beyond the short
   // mock signal list's length (nearly every one of 554 real players), resolved to the mock's
-  // first entry, itself "Buy". Every Fringe player rendered as a false Buy signal as a result.
+  // first entry, itself "Buy". Every value in the MarketSignal["signal"] union (types.ts) must be
+  // listed here too.
   const signal =
-    raw.signal === "Buy" || raw.signal === "Hold" || raw.signal === "Sell" || raw.signal === "Avoid" || raw.signal === "Watch" || raw.signal === "Fringe"
+    raw.signal === "Buy" || raw.signal === "Hold" || raw.signal === "Sell" || raw.signal === "Avoid" || raw.signal === "Watch" || raw.signal === "Bench"
       ? raw.signal
       : fallback.signal;
 

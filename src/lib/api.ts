@@ -358,10 +358,11 @@ function backendSignal(raw: unknown, fallback: MarketSignal): MarketSignal {
     recommendation.includes("sell") ? "Sell" :
     recommendation.includes("avoid") || recommendation.includes("trap") ? "Avoid" :
     recommendation.includes("hold") ? "Hold" :
-    // "fringe" (real player, no claim on regular minutes) is distinct from the generic "no
-    // strong buy/sell case" default - checked before the fallback, not matched by any of the
-    // substring checks above, so it must not silently collapse into "Watch".
-    recommendation.includes("fringe") ? "Fringe" : "Watch";
+    // Backend recommendation string stays "fringe" - no real claim on regular minutes, distinct
+    // from the generic "no strong buy/sell case" default. Displayed as "Bench" (plainer than the
+    // football-jargon "fringe"), checked before the fallback so it doesn't silently collapse
+    // into "Watch".
+    recommendation.includes("fringe") ? "Bench" : "Watch";
 
   return normalizeMarketSignal(
     {
@@ -912,7 +913,7 @@ function adaptMarketBoard(raw: unknown, fallback: MarketBoard): MarketBoard {
   // Every category above (including `all`) is capped to a top-N ranking - a player who doesn't
   // rank highly in ANY single category never reached the page at all (found live: 503 of 554
   // scored players showed as generic "Unranked" even though the backend had already given every
-  // one of them a real Buy/Watch/Fringe/Sell/Hold verdict). all_players is uncapped.
+  // one of them a real Buy/Watch/Bench/Sell/Hold verdict). all_players is uncapped.
   const allPlayers = asArray(raw.all_players);
 
   return {

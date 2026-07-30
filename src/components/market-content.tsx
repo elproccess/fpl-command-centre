@@ -29,7 +29,7 @@ const SIGNAL_ORDER: Record<MarketSignal["signal"], number> = {
   // Ranks below every real signal (including Watch) in a merge tie-break - a genuine "no strong
   // call" verdict on a real player always wins over "no real claim on minutes yet" if a player
   // somehow appears under both.
-  Fringe: 0,
+  Bench: 0,
 };
 
 const POSITIONS = ["All", "GK", "DEF", "MID", "FWD"] as const;
@@ -716,7 +716,7 @@ function DetailMetric({ label, value, tone = "default" }: { label: string; value
 }
 
 function SignalGuide({ board }: { board: MarketBoard }) {
-  const groups: MarketSignal["signal"][] = ["Buy", "Watch", "Hold", "Sell", "Avoid", "Fringe"];
+  const groups: MarketSignal["signal"][] = ["Buy", "Watch", "Hold", "Sell", "Avoid", "Bench"];
   return (
     <details className="rounded-2xl border border-[#E1E7F2] bg-white p-5 shadow-[0_18px_45px_rgba(15,23,60,0.06)]">
       <summary className="cursor-pointer list-none text-base font-black text-[#0A1031] marker:hidden">

@@ -291,7 +291,7 @@ function importedSafeMarket(players: Player[]): MarketBoard {
       Sell: "Backend analysis pending.",
       Avoid: "Backend analysis pending.",
       Watch: "Imported squad loaded while market analysis runs.",
-      Fringe: "Backend analysis pending.",
+      Bench: "Backend analysis pending.",
     },
   };
 }

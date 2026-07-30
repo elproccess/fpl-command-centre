@@ -382,7 +382,7 @@ export const marketBoard: MarketBoard = {
     Sell: "Risk, fixture, or value pressure is high enough to consider moving away.",
     Avoid: "Upside exists, but the downside is too large for the current price or role.",
     Watch: "Good signs, but wait for one more data point before buying.",
-    Fringe: "Limited recent minutes - no real claim on a regular starting spot yet.",
+    Bench: "Limited recent minutes - no real claim on a regular starting spot yet.",
   },
 };
 

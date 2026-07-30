@@ -28,7 +28,7 @@ export function SignalBadge({ value }: { value: string }) {
         ? "bg-[#E90052]/10 text-[#C80046] ring-[#E90052]/25"
         : value === "Watch"
           ? "bg-[#6C1DFF]/10 text-[#6C1DFF] ring-[#6C1DFF]/20"
-          : value === "Fringe"
+          : value === "Bench"
             // Deliberately flatter/greyer than every other badge - "no real claim on minutes"
             // reads as a lower tier than Watch's genuine "no strong call on a real player",
             // not just a different color for its own sake.
