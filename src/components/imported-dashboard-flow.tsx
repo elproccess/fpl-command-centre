@@ -234,7 +234,7 @@ function DesktopPitchPlayer({ player, role, loading }: { player: Player; role?: 
         </div>
         <PlayerRoleBadge role={role} />
       </div>
-      <div className="relative mt-1.5 w-[104px] overflow-hidden rounded-lg border border-white/16 bg-[#06172B]/88 px-2 py-1.5 text-center shadow-[0_8px_18px_rgba(0,0,0,0.24)] backdrop-blur-md">
+      <div className="relative mt-1.5 w-full max-w-[104px] overflow-hidden rounded-lg border border-white/16 bg-[#06172B]/88 px-2 py-1.5 text-center shadow-[0_8px_18px_rgba(0,0,0,0.24)] backdrop-blur-md">
         <p className="truncate text-[11px] font-black leading-tight text-white">{player.name}</p>
         <div className="mt-1 flex items-center justify-center gap-1.5">
           <span className="text-[9px] font-bold text-white/48">{player.team}</span>
@@ -934,9 +934,9 @@ function BenchRail({ players, loading }: { players: Player[]; loading?: boolean 
         <span className="rounded-full bg-[#F0E8FF] px-3 py-1 text-[9px] font-black text-[#6C1DFF]">{players.length} substitutes</span>
       </div>
 
-      <div className="flex snap-x gap-3 overflow-x-auto p-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden md:grid md:grid-cols-4 md:overflow-visible">
+      <div className="flex snap-x gap-3 overflow-x-auto p-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden md:grid md:grid-cols-2 md:overflow-visible 2xl:grid-cols-4">
         {players.map((player, index) => (
-          <article key={player.id} className="w-[210px] shrink-0 snap-start rounded-[17px] border border-[#E9E3EF] bg-[#FBFAFD] p-3 md:w-auto">
+          <article key={player.id} className="w-[210px] shrink-0 snap-start rounded-[17px] border border-[#E9E3EF] bg-[#FBFAFD] p-3 md:w-auto md:min-w-0">
             <div className="flex min-w-0 items-center gap-3">
               <span className="grid h-7 w-7 shrink-0 place-items-center rounded-[9px] bg-[#17052D] text-[9px] font-black text-white">{index + 1}</span>
               <PlayerVisual player={player} size="sm" />

@@ -53,11 +53,16 @@ function MetricTile({
   value,
   detail,
   tone = "default",
+  compact = false,
 }: {
   label: string;
   value: string;
   detail?: string;
   tone?: "default" | "green" | "purple" | "amber";
+  // Narrower contexts (e.g. the 3-column vice-captain panel in the sidebar rail) don't have room
+  // for the same big number size used in the wide 4-column captain hero row - without this the
+  // value truncates mid-digit (e.g. "85.93" becomes "8...").
+  compact?: boolean;
 }) {
   const valueClass =
     tone === "green"
@@ -69,11 +74,13 @@ function MetricTile({
           : "text-[#15052B]";
 
   return (
-    <div className="min-w-0 rounded-2xl border border-[#E9E3F1] bg-white px-3.5 py-3 sm:px-4 sm:py-4">
+    <div className={`min-w-0 rounded-2xl border border-[#E9E3F1] bg-white py-3 sm:py-4 ${compact ? "px-2.5 sm:px-3" : "px-3.5 sm:px-4"}`}>
       <p className="text-[9px] font-black uppercase tracking-[0.13em] text-[#85798F] sm:text-[10px]">
         {label}
       </p>
-      <p className={`mt-1.5 truncate text-xl font-black tracking-[-0.025em] sm:text-2xl ${valueClass}`}>
+      <p
+        className={`mt-1.5 truncate font-black tracking-[-0.025em] ${compact ? "text-xs sm:text-sm" : "text-xl sm:text-2xl"} ${valueClass}`}
+      >
         {value}
       </p>
       {detail ? <p className="mt-1 truncate text-[11px] font-semibold text-[#796D84]">{detail}</p> : null}
@@ -127,9 +134,9 @@ function ViceCaptainPanel({ option }: { option: CaptaincyOption }) {
         </div>
 
         <div className="mt-4 grid grid-cols-3 gap-2">
-          <MetricTile label="Projected" value={`${formatPoints(option.projected_points)} pts`} tone="green" />
-          <MetricTile label="Ceiling" value={option.ceiling != null ? formatPoints(option.ceiling, 0) : "—"} tone="purple" />
-          <MetricTile label="Safety" value={option.safety != null ? String(option.safety) : "—"} />
+          <MetricTile label="Projected" value={formatPoints(option.projected_points)} tone="green" compact />
+          <MetricTile label="Ceiling" value={option.ceiling != null ? formatPoints(option.ceiling, 0) : "—"} tone="purple" compact />
+          <MetricTile label="Safety" value={option.safety != null ? String(option.safety) : "—"} compact />
         </div>
 
         <div className="mt-3 flex flex-wrap items-center gap-2">
@@ -408,7 +415,7 @@ export function CaptaincyContent({ payload }: { payload: Record<string, unknown>
           <p className="text-xs font-semibold text-[#81758C]">Ranked by projection, ceiling, safety and minutes security</p>
         </div>
 
-        <div className="grid gap-4 p-5 md:grid-cols-2 xl:grid-cols-5 sm:p-6">
+        <div className="grid gap-4 p-5 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-5 sm:p-6">
           {shortlist.map((option, index) => (
             <CaptainOptionCard
               key={option.player.id}

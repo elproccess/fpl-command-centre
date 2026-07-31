@@ -501,9 +501,14 @@ function MarketRowTable({
   return (
     <section className="hidden overflow-hidden rounded-2xl border border-[#E1E7F2] bg-white shadow-[0_22px_60px_rgba(15,23,60,0.08)] md:block">
       <div className="overflow-x-auto">
-        <div className="min-w-[1080px]">
-          <div className="grid grid-cols-[42px_minmax(190px,1.7fr)_60px_72px_68px_86px_86px_78px_70px_68px] items-center gap-3 border-b border-[#E1E7F2] bg-[#F6F8FC] px-4 py-3 text-[10px] font-black uppercase tracking-[0.12em] text-[#6C7195]">
-            <span>#</span><span>Player</span><span>Pos</span><span>Price</span><span>Own</span><span>Signal</span><span>Next GW</span><span>Horizon</span><span>Pts/£m</span><span>Score</span>
+        {/* Below 2xl the sidebar-split layout leaves too little width for all 10 columns (they'd
+            either clip past this card's edge or force a scrollbar with no visible affordance) -
+            Horizon/Pts-per-£m/Score stay hidden until there's real room; they're already shown in
+            the detail panel for whichever row is selected. */}
+        <div className="min-w-[640px] 2xl:min-w-[1080px]">
+          <div className="grid grid-cols-[36px_minmax(160px,1.7fr)_48px_64px_56px_84px_72px] items-center gap-3 border-b border-[#E1E7F2] bg-[#F6F8FC] px-4 py-3 text-[10px] font-black uppercase tracking-[0.12em] text-[#6C7195] 2xl:grid-cols-[42px_minmax(190px,1.7fr)_60px_72px_68px_86px_86px_78px_70px_68px]">
+            <span>#</span><span>Player</span><span>Pos</span><span>Price</span><span>Own</span><span>Signal</span><span>Next GW</span>
+            <span className="hidden 2xl:block">Horizon</span><span className="hidden 2xl:block">Pts/£m</span><span className="hidden 2xl:block">Score</span>
           </div>
           <div className="divide-y divide-[#EDF0F6]">
             {rows.map((row, index) => {
@@ -513,7 +518,7 @@ function MarketRowTable({
                   key={`market-row-${row.id}`}
                   type="button"
                   onClick={() => onSelect(row)}
-                  className={`grid w-full grid-cols-[42px_minmax(190px,1.7fr)_60px_72px_68px_86px_86px_78px_70px_68px] items-center gap-3 px-4 py-3 text-left transition ${
+                  className={`grid w-full grid-cols-[36px_minmax(160px,1.7fr)_48px_64px_56px_84px_72px] items-center gap-3 px-4 py-3 text-left transition 2xl:grid-cols-[42px_minmax(190px,1.7fr)_60px_72px_68px_86px_86px_78px_70px_68px] ${
                     selected ? "bg-[#F4EFFF]" : "bg-white hover:bg-[#FBFCFF]"
                   }`}
                 >
@@ -530,9 +535,9 @@ function MarketRowTable({
                   <span className="text-sm font-black text-[#0A1031]">{row.ownership.toFixed(1)}%</span>
                   <span>{row.signal ? <SignalBadge value={row.signal} /> : <span className="rounded-lg bg-[#F1F3F8] px-2.5 py-1 text-[11px] font-black text-[#8A93AC] ring-1 ring-[#E1E7F2]">Unranked</span>}</span>
                   <span className="text-sm font-black text-[#00A85A]">{formatProjection(row.next_projected)}</span>
-                  <span className="text-sm font-black text-[#6C1DFF]">{formatProjection(row.horizon_projected)}</span>
-                  <span className="text-sm font-black text-[#0A1031]">{row.value_per_million.toFixed(1)}</span>
-                  <span className="text-right text-base font-black text-[#0A1031]">{row.score ?? "—"}</span>
+                  <span className="hidden text-sm font-black text-[#6C1DFF] 2xl:block">{formatProjection(row.horizon_projected)}</span>
+                  <span className="hidden text-sm font-black text-[#0A1031] 2xl:block">{row.value_per_million.toFixed(1)}</span>
+                  <span className="hidden text-right text-base font-black text-[#0A1031] 2xl:block">{row.score ?? "—"}</span>
                 </button>
               );
             })}
