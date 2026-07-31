@@ -15,6 +15,7 @@ import { ConfidenceBadge, RiskBadge } from "./badges";
 import { TransferRouteCard } from "./cards";
 import { PlayerSlotPicker } from "./compare-any-two-players";
 import { FixturePill, formatPrice } from "./fpl-ui";
+import { usePlayerDetail } from "./player-detail-modal";
 import { PlayerVisual, TeamShirtImage } from "./player-visual";
 
 type ScenarioMode = "transfer" | "captaincy";
@@ -199,19 +200,20 @@ function PlayerMetric({ label, value, tone = "default" }: { label: string; value
 
 function SquadPlayerCard({ label, player, tone }: { label: string; player: Player; tone: "pink" | "purple" }) {
   const labelClass = tone === "pink" ? "bg-[#FFF0F5] text-[#D9004A]" : "bg-[#F1E8FF] text-[#6C1DFF]";
+  const { open } = usePlayerDetail();
   return (
     <div className="rounded-2xl border border-[#E1E7F2] bg-white p-4">
       <div className="flex items-center justify-between gap-3">
         <span className={`rounded-lg px-3 py-1 text-[10px] font-black uppercase tracking-[0.14em] ${labelClass}`}>{label}</span>
         <FixturePill fixture={player.fixture ?? "TBC"} difficulty={player.fixture_difficulty ?? 3} />
       </div>
-      <div className="mt-4 flex items-center gap-3">
+      <button type="button" onClick={() => open(player)} className="mt-4 flex w-full items-center gap-3 text-left">
         <PlayerVisual player={player} size="sm" />
         <div className="min-w-0">
           <p className="truncate text-base font-black text-[#101947]">{player.name}</p>
           <p className="text-xs font-bold text-[#737A9B]">{player.team} / {player.position}</p>
         </div>
-      </div>
+      </button>
       <div className="mt-4 grid grid-cols-2 gap-2">
         <PlayerMetric label="Price" value={formatPrice(player.price)} />
         <PlayerMetric label="Next GW" value={points(player.projected)} tone="green" />
@@ -224,6 +226,7 @@ function SquadPlayerCard({ label, player, tone }: { label: string; player: Playe
 
 function IncomingPlayerCard({ entry, directoryStatus }: { entry: PlayerDirectoryEntry | null; directoryStatus: DirectoryStatus }) {
   const player = directoryEntryToPlayer(entry);
+  const { open } = usePlayerDetail();
   return (
     <div className="rounded-2xl border border-[#E1E7F2] bg-white p-4">
       <div className="flex items-center justify-between gap-3">
@@ -233,7 +236,7 @@ function IncomingPlayerCard({ entry, directoryStatus }: { entry: PlayerDirectory
         </span>
       </div>
       {player ? (
-        <div className="mt-4 flex min-h-[92px] items-center gap-3">
+        <button type="button" onClick={() => open(player)} className="mt-4 flex min-h-[92px] w-full items-center gap-3 text-left">
           <span className="grid h-12 w-12 shrink-0 place-items-center">
             <TeamShirtImage team={player.team} position={player.position} size={66} className="h-full w-full object-contain" />
           </span>
@@ -242,7 +245,7 @@ function IncomingPlayerCard({ entry, directoryStatus }: { entry: PlayerDirectory
             <p className="text-xs font-bold text-[#737A9B]">{player.team} / {player.position}</p>
             <p className="mt-2 text-xs font-black text-[#6C1DFF]">Full metrics appear in the analysed result</p>
           </div>
-        </div>
+        </button>
       ) : (
         <div className="mt-4 flex min-h-[92px] items-center justify-center rounded-xl border border-dashed border-[#DDE3F0] bg-[#FBFCFF] px-4 text-center">
           <p className="text-sm font-bold text-[#737A9B]">Choose a non-owned {directoryStatus === "loading" ? "player once loading completes" : "player"}.</p>
@@ -316,19 +319,20 @@ function ResultPlayerCard({ label, player, tone }: { label: string; player: Play
     purple: "bg-[#F1E8FF] text-[#6C1DFF]",
     cyan: "bg-[#E9F9FF] text-[#007EA8]",
   }[tone];
+  const { open } = usePlayerDetail();
   return (
     <article className="flex h-full flex-col rounded-2xl border border-[#E1E7F2] bg-white p-4 shadow-[0_14px_34px_rgba(15,23,60,0.05)]">
       <div className="flex items-center justify-between gap-3">
         <span className={`rounded-lg px-3 py-1 text-[10px] font-black uppercase tracking-[0.14em] ${toneClass}`}>{label}</span>
         <FixturePill fixture={player.fixture ?? "TBC"} difficulty={player.fixture_difficulty ?? 3} />
       </div>
-      <div className="mt-4 flex items-center gap-3">
+      <button type="button" onClick={() => open(player)} className="mt-4 flex w-full items-center gap-3 text-left">
         <PlayerVisual player={player} size="sm" />
         <div className="min-w-0">
           <p className="truncate text-base font-black text-[#101947]">{player.name}</p>
           <p className="text-xs font-bold text-[#737A9B]">{player.team} / {player.position}</p>
         </div>
-      </div>
+      </button>
       <div className="mt-4 grid grid-cols-2 gap-2">
         <PlayerMetric label="Price" value={formatPrice(player.price)} />
         <PlayerMetric label="Next GW" value={points(player.projected)} tone="green" />

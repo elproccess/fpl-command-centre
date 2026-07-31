@@ -3,6 +3,7 @@
 import { DataModeBadge } from "@/components/app-shell";
 import { ConfidenceBadge, RiskBadge } from "@/components/badges";
 import { FixturePill } from "@/components/fpl-ui";
+import { usePlayerDetail } from "@/components/player-detail-modal";
 import { PlayerVisual } from "@/components/player-visual";
 import { StillComputingPanel, usePolledAnalysis } from "@/components/polled-analysis";
 import { ErrorState } from "@/components/states";
@@ -95,8 +96,9 @@ function PlayerIdentity({
   option: CaptaincyOption;
   compact?: boolean;
 }) {
+  const { open } = usePlayerDetail();
   return (
-    <div className="flex min-w-0 items-center gap-3">
+    <button type="button" onClick={() => open(option.player)} className="flex min-w-0 items-center gap-3 text-left">
       <div className={compact ? "shrink-0" : "shrink-0 rounded-2xl border border-[#E5DDF1] bg-white p-1 shadow-sm"}>
         <PlayerVisual player={option.player} size={compact ? "sm" : "lg"} />
       </div>
@@ -108,7 +110,7 @@ function PlayerIdentity({
           {option.player.team} · {option.player.position}
         </p>
       </div>
-    </div>
+    </button>
   );
 }
 

@@ -1,5 +1,8 @@
+"use client";
+
 import type { Player, PlannerStep, TransferCandidate } from "@/lib/types";
 import { FixturePill, RiskText } from "./fpl-ui";
+import { usePlayerDetail } from "./player-detail-modal";
 import { PlayerVisual } from "./player-visual";
 
 const ACTION_LABEL: Record<string, { label: string; tone: string }> = {
@@ -25,6 +28,7 @@ function TransferMoveRow({ transfersOut, transfersIn, squadPoints }: { transfers
     out: transfersOut[index],
     in: transfersIn[index],
   }));
+  const { open } = usePlayerDetail();
 
   return (
     <div className="rounded-xl border border-[#E8DEF8] bg-white p-3">
@@ -37,21 +41,31 @@ function TransferMoveRow({ transfersOut, transfersIn, squadPoints }: { transfers
       <div className="mt-2 space-y-2">
         {pairs.map((pair, index) => (
           <div key={pair.out?.id ?? pair.in?.id ?? index} className="flex items-center gap-2">
-            <div className="flex min-w-0 flex-1 items-center gap-2">
+            <button
+              type="button"
+              disabled={!pair.out}
+              onClick={() => pair.out && open(pair.out)}
+              className="flex min-w-0 flex-1 items-center gap-2 text-left disabled:cursor-default"
+            >
               {pair.out ? <PlayerVisual player={pair.out} size="sm" /> : null}
               <div className="min-w-0">
                 <p className="truncate text-xs font-black uppercase tracking-[0.08em] text-[#E90052]">Out</p>
                 <p className="truncate text-sm font-black text-[#17002F]">{pair.out?.name ?? "TBC"}</p>
               </div>
-            </div>
+            </button>
             <span className="shrink-0 text-lg font-black text-[#8B7A9B]">&rarr;</span>
-            <div className="flex min-w-0 flex-1 items-center gap-2">
+            <button
+              type="button"
+              disabled={!pair.in}
+              onClick={() => pair.in && open(pair.in)}
+              className="flex min-w-0 flex-1 items-center gap-2 text-left disabled:cursor-default"
+            >
               {pair.in ? <PlayerVisual player={pair.in} size="sm" /> : null}
               <div className="min-w-0">
                 <p className="truncate text-xs font-black uppercase tracking-[0.08em] text-[#00A844]">In</p>
                 <p className="truncate text-sm font-black text-[#17002F]">{pair.in?.name ?? "TBC"}</p>
               </div>
-            </div>
+            </button>
           </div>
         ))}
       </div>
@@ -128,6 +142,7 @@ function ConsideredCandidates({
 }
 
 export function PlannerTimeline({ steps, isBaselineRoute }: { steps: PlannerStep[]; isBaselineRoute?: boolean }) {
+  const { open } = usePlayerDetail();
   // Grid column count matches the real step count (3-6) instead of a hardcoded 3, so a genuine
   // 5-GW plan lays out as one clean row on desktop instead of wrapping 3+2 with a connector bar
   // trailing off into nothing.
@@ -180,13 +195,18 @@ export function PlannerTimeline({ steps, isBaselineRoute }: { steps: PlannerStep
               <div className="mt-4 space-y-3">
                 <div className="rounded-xl border border-[#E8DEF8] bg-white p-3">
                   <p className="text-[10px] font-black uppercase tracking-[0.12em] text-[#7B688E]">Captain</p>
-                  <div className="mt-2 flex items-center gap-3">
+                  <button
+                    type="button"
+                    disabled={!step.captain}
+                    onClick={() => step.captain && open(step.captain)}
+                    className="mt-2 flex w-full items-center gap-3 text-left disabled:cursor-default"
+                  >
                     {step.captain ? <PlayerVisual player={step.captain} size="sm" /> : null}
                     <div className="min-w-0">
                       <p className="truncate font-black text-[#17002F]">{step.captain?.name ?? "TBC"}</p>
                       <p className="text-xs font-bold text-[#5D4A70]">{step.captain ? `${step.captain.team} / ${step.captain.position}` : "Captain model pending"}</p>
                     </div>
-                  </div>
+                  </button>
                 </div>
                 {hasTransfers ? <TransferMoveRow transfersOut={step.transfers_out ?? []} transfersIn={step.transfers_in ?? []} squadPoints={step.projected_points} /> : null}
                 <ConsideredCandidates candidates={step.transfer_candidates_considered ?? []} hadRealTransfer={hasTransfers} isBaselineRoute={isBaselineRoute} />

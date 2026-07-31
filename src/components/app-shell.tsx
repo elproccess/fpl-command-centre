@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { ReactNode, SVGProps } from "react";
+import { PlayerDetailProvider } from "@/components/player-detail-modal";
 import type { DataSourceStatus, UserGameState } from "@/lib/types";
 
 const fallbackState: UserGameState = {
@@ -406,40 +407,42 @@ export function AppShell({
   const onImportPage = pathname === "/import";
 
   return (
-    <div className="min-h-screen bg-[linear-gradient(180deg,#F8F7FB_0%,#F3F0F8_42%,#F7F8FB_100%)] text-[#11183C]">
-      <div className="flex min-h-screen">
-        <Sidebar state={state} />
+    <PlayerDetailProvider>
+      <div className="min-h-screen bg-[linear-gradient(180deg,#F8F7FB_0%,#F3F0F8_42%,#F7F8FB_100%)] text-[#11183C]">
+        <div className="flex min-h-screen">
+          <Sidebar state={state} />
 
-        <main className="min-w-0 flex-1 overflow-x-hidden">
-          <TopNav state={state} dataSource={dataSource} />
+          <main className="min-w-0 flex-1 overflow-x-hidden">
+            <TopNav state={state} dataSource={dataSource} />
 
-          <div className="mx-auto max-w-[1540px] px-3 py-5 sm:px-4 md:px-7 md:py-7 xl:px-9 xl:py-9">
-            <div className="mb-5 flex flex-col gap-4 border-b border-[#E1E5ED] pb-5 sm:flex-row sm:items-end sm:justify-between md:mb-7 md:pb-6">
-              <div className="min-w-0">
-                {eyebrow ? (
-                  <div className="mb-2 flex items-center gap-2">
-                    <span className="h-1.5 w-1.5 rounded-full bg-[#6C1DFF]" />
-                    <p className="text-xs font-black uppercase tracking-[0.15em] text-[#6C1DFF] sm:text-sm">{eyebrow}</p>
-                  </div>
+            <div className="mx-auto max-w-[1540px] px-3 py-5 sm:px-4 md:px-7 md:py-7 xl:px-9 xl:py-9">
+              <div className="mb-5 flex flex-col gap-4 border-b border-[#E1E5ED] pb-5 sm:flex-row sm:items-end sm:justify-between md:mb-7 md:pb-6">
+                <div className="min-w-0">
+                  {eyebrow ? (
+                    <div className="mb-2 flex items-center gap-2">
+                      <span className="h-1.5 w-1.5 rounded-full bg-[#6C1DFF]" />
+                      <p className="text-xs font-black uppercase tracking-[0.15em] text-[#6C1DFF] sm:text-sm">{eyebrow}</p>
+                    </div>
+                  ) : null}
+                  <h1 className="max-w-5xl text-[2rem] font-black leading-[0.98] tracking-[-0.045em] text-[#080D2B] sm:text-4xl md:text-5xl xl:text-[3.35rem]">{title}</h1>
+                </div>
+
+                {!onImportPage ? (
+                  <Link
+                    href="/import"
+                    className="inline-flex w-fit shrink-0 items-center justify-center gap-2 rounded-xl bg-[#6C1DFF] px-4 py-3 text-sm font-black text-white shadow-[0_14px_28px_rgba(108,29,255,0.22)] transition hover:-translate-y-0.5 hover:bg-[#5D14E6] focus:outline-none focus:ring-2 focus:ring-[#8D68FF] focus:ring-offset-2"
+                  >
+                    <Icon name="upload" className="h-4 w-4" />
+                    Import team
+                  </Link>
                 ) : null}
-                <h1 className="max-w-5xl text-[2rem] font-black leading-[0.98] tracking-[-0.045em] text-[#080D2B] sm:text-4xl md:text-5xl xl:text-[3.35rem]">{title}</h1>
               </div>
 
-              {!onImportPage ? (
-                <Link
-                  href="/import"
-                  className="inline-flex w-fit shrink-0 items-center justify-center gap-2 rounded-xl bg-[#6C1DFF] px-4 py-3 text-sm font-black text-white shadow-[0_14px_28px_rgba(108,29,255,0.22)] transition hover:-translate-y-0.5 hover:bg-[#5D14E6] focus:outline-none focus:ring-2 focus:ring-[#8D68FF] focus:ring-offset-2"
-                >
-                  <Icon name="upload" className="h-4 w-4" />
-                  Import team
-                </Link>
-              ) : null}
+              {children}
             </div>
-
-            {children}
-          </div>
-        </main>
+          </main>
+        </div>
       </div>
-    </div>
+    </PlayerDetailProvider>
   );
 }

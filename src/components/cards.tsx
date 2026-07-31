@@ -1,6 +1,9 @@
+"use client";
+
 import type { BestMove, MarketSignal, Player, PricingTier, SquadHealth, TransferRoute } from "@/lib/types";
 import { ConfidenceBadge, RiskBadge, SignalBadge } from "./badges";
 import { FixturePill, MiniTrend, NativeMetric, RiskText, formatPrice } from "./fpl-ui";
+import { usePlayerDetail } from "./player-detail-modal";
 import { PlayerVisual } from "./player-visual";
 import { TrustWarning } from "./states";
 
@@ -98,8 +101,9 @@ export function PlayerCard({ player, compact = false, loading = false }: { playe
   const noFixtureData = !loading && player.team_has_fixture === false;
   const projLabel = loading ? "…" : noFixtureData ? "—" : player.projected;
   const ownedLabel = loading ? "…" : `${player.ownership}%`;
+  const { open } = usePlayerDetail();
   return (
-    <article className={`${card} h-full p-4`}>
+    <button type="button" onClick={() => open(player)} className={`${card} h-full w-full p-4 text-left transition hover:-translate-y-0.5 hover:shadow-[0_22px_50px_rgba(55,0,60,0.12)]`}>
       <div className="flex items-center gap-4">
         <PlayerVisual player={player} size={compact ? "sm" : "md"} />
         <div className="min-w-0 flex-1">
@@ -128,7 +132,7 @@ export function PlayerCard({ player, compact = false, loading = false }: { playe
         <div className="mt-3"><FixturePill fixture={player.fixture} difficulty={player.fixture_difficulty} /></div>
       ) : null}
       {player.role ? <p className="mt-3 text-sm font-bold text-[#6C1DFF]">{player.role}</p> : null}
-    </article>
+    </button>
   );
 }
 
@@ -191,8 +195,9 @@ export function TransferRouteCard({ route }: { route: TransferRoute }) {
 }
 
 export function MarketSignalCard({ signal }: { signal: MarketSignal }) {
+  const { open } = usePlayerDetail();
   return (
-    <article className={`${card} h-full p-4`}>
+    <button type="button" onClick={() => open(signal.player)} className={`${card} h-full w-full p-4 text-left transition hover:-translate-y-0.5 hover:shadow-[0_22px_50px_rgba(55,0,60,0.12)]`}>
       <div className="flex items-center justify-between gap-3">
         <div className="flex min-w-0 items-center gap-3">
           <PlayerVisual player={signal.player} size="sm" />
@@ -218,7 +223,7 @@ export function MarketSignalCard({ signal }: { signal: MarketSignal }) {
       ) : (
         <p className="mt-4 text-xs font-semibold text-[#7B688E]">Score unavailable</p>
       )}
-    </article>
+    </button>
   );
 }
 

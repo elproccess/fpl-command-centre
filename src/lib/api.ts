@@ -27,6 +27,8 @@ import type {
   MultiGwPlanner,
   Player,
   PlayerComparison,
+  PlayerDetailCard,
+  PlayerGameweekProjection,
   PlannerRoute,
   TransferCandidate,
   ReviewAudit,
@@ -1532,6 +1534,72 @@ export async function getPlayerDecisionBreakdown(playerId: number): Promise<ApiR
 // confidence, and per-gameweek point components - not shown anywhere else in the UI.
 export async function getPlayerProjectionDetail(playerId: number): Promise<ApiResult<Record<string, unknown>>> {
   return requestJson(`/projections/player/${playerId}`, { apiName: "getPlayerProjectionDetail", disableFallback: true }, {});
+}
+
+// The same _market_card fields every row of /player-stock-market/market already carries, fetched
+// for one player - powers the global player-detail modal (see player-detail-modal.tsx) so a click
+// on ANY player row/chip anywhere in the app can show real xG/xA/minutes/starts/PPG/total points,
+// not just the projection number that type already has on it.
+export async function getPlayerDetailCard(playerId: number): Promise<ApiResult<PlayerDetailCard | null>> {
+  return requestJson<PlayerDetailCard | null>(
+    `/player-stock-market/player/${playerId}`,
+    { apiName: "getPlayerDetailCard", disableFallback: true },
+    null,
+    (raw) => {
+      if (!isRecord(raw)) return null;
+      const player = backendPlayer(raw, { ...PLACEHOLDER_PLAYER, id: playerId, api_id: playerId });
+      const recommendation = asString(raw.recommendation ?? raw.market_label, "").toLowerCase();
+      const signal: MarketSignal["signal"] =
+        recommendation.includes("buy") ? "Buy" :
+        recommendation.includes("sell") ? "Sell" :
+        recommendation.includes("avoid") || recommendation.includes("trap") ? "Avoid" :
+        recommendation.includes("hold") ? "Hold" :
+        recommendation.includes("fringe") ? "Bench" : "Watch";
+      const numberOrNull = (value: unknown) => (typeof value === "number" && Number.isFinite(value) ? value : null);
+      return {
+        player,
+        signal,
+        market_score: numberOrNull(raw.market_score),
+        value_score: numberOrNull(raw.value_score),
+        expected_goals: numberOrNull(raw.expected_goals),
+        expected_assists: numberOrNull(raw.expected_assists),
+        minutes: asNumber(raw.minutes, 0),
+        starts: asNumber(raw.starts, 0),
+        points_per_game: numberOrNull(raw.points_per_game),
+        total_points: numberOrNull(raw.total_points),
+        confidence_band: typeof raw.confidence_band === "string" ? raw.confidence_band : null,
+        reasons: asArray(raw.reasons).filter((item): item is string => typeof item === "string"),
+        why_not_buy: asArray(raw.why_not_buy).filter((item): item is string => typeof item === "string"),
+        why_not_sell: asArray(raw.why_not_sell).filter((item): item is string => typeof item === "string"),
+      };
+    },
+  );
+}
+
+// Real per-gameweek breakdown (opponent, difficulty, expected minutes, projected points) for the
+// player-detail modal's "next few gameweeks" strip - /projections/player/{id} carries a lot of
+// internal model-provenance noise alongside this; only the user-facing fields are kept here.
+export async function getPlayerGameweekProjections(playerId: number): Promise<ApiResult<PlayerGameweekProjection[]>> {
+  return requestJson<PlayerGameweekProjection[]>(
+    `/projections/player/${playerId}`,
+    { apiName: "getPlayerGameweekProjections", disableFallback: true },
+    [],
+    (raw) => {
+      if (!isRecord(raw) || !Array.isArray(raw.gameweeks)) return [];
+      return raw.gameweeks
+        .filter(isRecord)
+        .map((gw) => ({
+          gameweek: asNumber(gw.gameweek, 0),
+          points: asNumber(gw.projected_points, 0),
+          opponent: typeof gw.opponent === "string" ? gw.opponent : null,
+          home_away: gw.home_away === "H" || gw.home_away === "A" ? (gw.home_away as "H" | "A") : null,
+          difficulty: typeof gw.difficulty === "number" && Number.isFinite(gw.difficulty) ? gw.difficulty : null,
+          expected_minutes: typeof gw.expected_minutes === "number" && Number.isFinite(gw.expected_minutes) ? gw.expected_minutes : null,
+        }))
+        .filter((gw) => gw.gameweek > 0)
+        .sort((a, b) => a.gameweek - b.gameweek);
+    },
+  );
 }
 
 export async function getDecisionVariables(): Promise<ApiResult<Record<string, unknown>>> {

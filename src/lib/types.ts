@@ -251,6 +251,36 @@ export type MarketSignal = {
   reason: string;
 };
 
+// Powers the global "click any player, anywhere" detail card (see player-detail-modal.tsx).
+// Deliberately separate from Player/MarketSignal - it carries fields (xG, xA, minutes, starts,
+// PPG, total points, why-not-buy/sell) that only the single-player market card endpoint returns,
+// not the list endpoints those other types are built from.
+export type PlayerDetailCard = {
+  player: Player;
+  signal: MarketSignal["signal"];
+  market_score: number | null;
+  value_score: number | null;
+  expected_goals: number | null;
+  expected_assists: number | null;
+  minutes: number;
+  starts: number;
+  points_per_game: number | null;
+  total_points: number | null;
+  confidence_band: string | null;
+  reasons: string[];
+  why_not_buy: string[];
+  why_not_sell: string[];
+};
+
+export type PlayerGameweekProjection = {
+  gameweek: number;
+  points: number;
+  opponent: string | null;
+  home_away: "H" | "A" | null;
+  difficulty: number | null;
+  expected_minutes: number | null;
+};
+
 export type SquadHealth = {
   score: number | null;
   grade: "Strong" | "Stable" | "Fragile" | "Critical";

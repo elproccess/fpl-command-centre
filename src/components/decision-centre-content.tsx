@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { DataModeBadge } from "@/components/app-shell";
 import { ConfidenceBadge, RiskBadge } from "@/components/badges";
+import { usePlayerDetail } from "@/components/player-detail-modal";
 import { PlayerVisual, TeamShirtImage } from "@/components/player-visual";
 import { ErrorState } from "@/components/states";
 import { useStreamingAnalysis } from "@/components/polled-analysis";
@@ -311,6 +312,7 @@ function DecisionHero({
   pending?: boolean;
   heroPending?: boolean;
 }) {
+  const { open } = usePlayerDetail();
   const primaryTitle = pending
     ? "Finding your best move..."
     : noStrongMove
@@ -381,13 +383,23 @@ function DecisionHero({
           <Metric label="Free transfers" value={String(appState.free_transfers)} />
           <div className="col-span-2 min-w-0 rounded-2xl border border-[#EEE9F4] bg-[#FBFAFD] px-4 py-3.5 sm:col-span-1">
             <p className="text-[10px] font-extrabold uppercase tracking-[0.14em] text-[#81748E]">Captain</p>
-            <div className="mt-2 flex min-w-0 items-center gap-2.5">
-              {captain ? <PlayerVisual player={captain} size="sm" /> : <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-[#F2ECFF] text-[#6C1DFF]"><Spinner /></span>}
-              <div className="min-w-0">
-                <p className="truncate text-sm font-black text-[#19052D]">{captain?.name ?? "Finding captain..."}</p>
-                <p className="truncate text-[11px] font-semibold text-[#81748E]">{captain ? `${captain.team} · ${captain.position}` : "Captaincy analysis running"}</p>
+            {captain ? (
+              <button type="button" onClick={() => open(captain)} className="mt-2 flex w-full min-w-0 items-center gap-2.5 text-left">
+                <PlayerVisual player={captain} size="sm" />
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-black text-[#19052D]">{captain.name}</p>
+                  <p className="truncate text-[11px] font-semibold text-[#81748E]">{captain.team} · {captain.position}</p>
+                </div>
+              </button>
+            ) : (
+              <div className="mt-2 flex min-w-0 items-center gap-2.5">
+                <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-[#F2ECFF] text-[#6C1DFF]"><Spinner /></span>
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-black text-[#19052D]">Finding captain...</p>
+                  <p className="truncate text-[11px] font-semibold text-[#81748E]">Captaincy analysis running</p>
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
 
@@ -421,8 +433,13 @@ function Metric({ label, value, detail, tone = "default", loading = false }: { l
 
 function PlayerRow({ player, mode }: { player: Player; mode: "sell" | "buy" }) {
   const isSell = mode === "sell";
+  const { open } = usePlayerDetail();
   return (
-    <article className="flex items-center gap-3 rounded-2xl border border-[#EEE9F4] bg-white p-3 transition hover:border-[#D9CDEC] hover:shadow-[0_10px_28px_rgba(44,13,69,0.08)]">
+    <button
+      type="button"
+      onClick={() => open(player)}
+      className="flex w-full items-center gap-3 rounded-2xl border border-[#EEE9F4] bg-white p-3 text-left transition hover:border-[#D9CDEC] hover:shadow-[0_10px_28px_rgba(44,13,69,0.08)]"
+    >
       <PlayerVisual player={player} size="sm" />
       <div className="min-w-0 flex-1">
         <div className="flex items-center justify-between gap-2">
@@ -433,7 +450,7 @@ function PlayerRow({ player, mode }: { player: Player; mode: "sell" | "buy" }) {
         </div>
         <p className="mt-0.5 text-xs font-semibold text-[#81748E]">{player.team} · {player.position}</p>
       </div>
-    </article>
+    </button>
   );
 }
 

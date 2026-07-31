@@ -23,6 +23,7 @@ import { AppShell } from "./app-shell";
 import { BackgroundAnalysisStrip } from "./background-analysis-strip";
 import { MarketSignalCard, SquadHealthCard } from "./cards";
 import { DeadlineStrip } from "./fpl-ui";
+import { usePlayerDetail } from "./player-detail-modal";
 import { PlannerTimeline } from "./planner-timeline";
 import { PlayerVisual } from "./player-visual";
 import { usePolledAnalysis } from "./polled-analysis";
@@ -225,8 +226,9 @@ function PlayerRoleBadge({ role, compact = false }: { role?: "C" | "V"; compact?
 
 function DesktopPitchPlayer({ player, role, loading }: { player: Player; role?: "C" | "V"; loading?: boolean }) {
   const noFixtureData = !loading && player.team_has_fixture === false;
+  const { open } = usePlayerDetail();
   return (
-    <div className="group flex min-w-0 flex-col items-center">
+    <button type="button" onClick={() => open(player)} className="group flex min-w-0 flex-col items-center text-left">
       <div className="relative">
         <span className="absolute inset-x-2 bottom-0 h-7 rounded-full bg-black/22 blur-md transition group-hover:bg-black/30" />
         <div className="relative rounded-full ring-2 ring-white/20 transition duration-200 group-hover:-translate-y-1 group-hover:ring-white/45">
@@ -244,7 +246,7 @@ function DesktopPitchPlayer({ player, role, loading }: { player: Player; role?: 
           </span>
         </div>
       </div>
-    </div>
+    </button>
   );
 }
 
@@ -309,8 +311,9 @@ function DesktopPitch({ players, captainId, viceCaptainId, loading }: { players:
 
 function MobilePitchPlayer({ player, role, loading }: { player: Player; role?: "C" | "V"; loading?: boolean }) {
   const noFixtureData = !loading && player.team_has_fixture === false;
+  const { open } = usePlayerDetail();
   return (
-    <div className="flex min-w-0 flex-col items-center">
+    <button type="button" onClick={() => open(player)} className="flex min-w-0 flex-col items-center text-left">
       <div className="relative">
         <div className="rounded-full ring-1 ring-white/25">
           <PlayerVisual player={player} size="sm" />
@@ -323,7 +326,7 @@ function MobilePitchPlayer({ player, role, loading }: { player: Player; role?: "
           {noFixtureData ? "No fixture" : formatProjected(projected(player), loading)}
         </p>
       </div>
-    </div>
+    </button>
   );
 }
 
@@ -924,6 +927,7 @@ function RiskSummary({ risks }: { risks: string[] }) {
 }
 
 function BenchRail({ players, loading }: { players: Player[]; loading?: boolean }) {
+  const { open } = usePlayerDetail();
   return (
     <section className="mt-4 overflow-hidden rounded-[22px] border border-[#E4DDEC] bg-white shadow-[0_18px_45px_rgba(44,14,64,0.055)]">
       <div className="flex items-center justify-between gap-4 border-b border-[#EEE8F3] px-4 py-4 sm:px-5">
@@ -936,7 +940,12 @@ function BenchRail({ players, loading }: { players: Player[]; loading?: boolean 
 
       <div className="flex snap-x gap-3 overflow-x-auto p-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden md:grid md:grid-cols-2 md:overflow-visible 2xl:grid-cols-4">
         {players.map((player, index) => (
-          <article key={player.id} className="w-[210px] shrink-0 snap-start rounded-[17px] border border-[#E9E3EF] bg-[#FBFAFD] p-3 md:w-auto md:min-w-0">
+          <button
+            type="button"
+            onClick={() => open(player)}
+            key={player.id}
+            className="w-[210px] shrink-0 snap-start rounded-[17px] border border-[#E9E3EF] bg-[#FBFAFD] p-3 text-left transition hover:bg-[#F4EFFF] md:w-auto md:min-w-0"
+          >
             <div className="flex min-w-0 items-center gap-3">
               <span className="grid h-7 w-7 shrink-0 place-items-center rounded-[9px] bg-[#17052D] text-[9px] font-black text-white">{index + 1}</span>
               <PlayerVisual player={player} size="sm" />
@@ -955,7 +964,7 @@ function BenchRail({ players, loading }: { players: Player[]; loading?: boolean 
                 <p className="mt-1 text-[10px] font-black text-[#15052B]">{formatPrice(player.price)}</p>
               </div>
             </div>
-          </article>
+          </button>
         ))}
       </div>
     </section>
@@ -963,6 +972,7 @@ function BenchRail({ players, loading }: { players: Player[]; loading?: boolean 
 }
 
 function SquadSnapshot({ players, loading }: { players: Player[]; loading?: boolean }) {
+  const { open } = usePlayerDetail();
   return (
     <section className="mt-8">
       <DashboardSectionHeading
@@ -978,7 +988,12 @@ function SquadSnapshot({ players, loading }: { players: Player[]; loading?: bool
 
       <div className="mt-4 flex snap-x gap-3 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {players.map((player) => (
-          <article key={`${player.id}-${player.role}`} className="w-[220px] shrink-0 snap-start rounded-[18px] border border-[#E4DDEC] bg-white p-4 shadow-[0_14px_34px_rgba(44,14,64,0.05)]">
+          <button
+            type="button"
+            onClick={() => open(player)}
+            key={`${player.id}-${player.role}`}
+            className="w-[220px] shrink-0 snap-start rounded-[18px] border border-[#E4DDEC] bg-white p-4 text-left shadow-[0_14px_34px_rgba(44,14,64,0.05)] transition hover:-translate-y-0.5 hover:shadow-[0_18px_42px_rgba(44,14,64,0.09)]"
+          >
             <div className="flex min-w-0 items-center gap-3">
               <PlayerVisual player={player} size="sm" />
               <div className="min-w-0">
@@ -996,7 +1011,7 @@ function SquadSnapshot({ players, loading }: { players: Player[]; loading?: bool
                 <p className="mt-1 text-[10px] font-black text-[#15052B]">{loading ? "…" : `${player.ownership ?? 0}%`}</p>
               </div>
             </div>
-          </article>
+          </button>
         ))}
       </div>
     </section>
@@ -1045,8 +1060,13 @@ function AnalysisPlayerCard({
   value: string;
   tone: "green" | "purple";
 }) {
+  const { open } = usePlayerDetail();
   return (
-    <article className="relative overflow-hidden rounded-[22px] border border-[#E2DAEA] bg-white p-5 shadow-[0_18px_42px_rgba(44,14,64,0.055)]">
+    <button
+      type="button"
+      onClick={() => open(player)}
+      className="relative w-full overflow-hidden rounded-[22px] border border-[#E2DAEA] bg-white p-5 text-left shadow-[0_18px_42px_rgba(44,14,64,0.055)] transition hover:-translate-y-0.5 hover:shadow-[0_22px_50px_rgba(44,14,64,0.09)]"
+    >
       <div className={`absolute inset-x-0 top-0 h-1 ${tone === "green" ? "bg-[#00A86B]" : "bg-[#6C1DFF]"}`} />
       <p className={`text-[9px] font-black uppercase tracking-[0.15em] ${tone === "green" ? "text-[#008D57]" : "text-[#6C1DFF]"}`}>{label}</p>
       <div className="mt-4 flex min-w-0 items-center gap-3">
@@ -1058,7 +1078,7 @@ function AnalysisPlayerCard({
       </div>
       <p className={`mt-5 text-3xl font-black ${tone === "green" ? "text-[#008D57]" : "text-[#6C1DFF]"}`}>{value}</p>
       <p className="mt-1 text-[9px] font-semibold text-[#81758A]">Model recommendation · separate from current C/V</p>
-    </article>
+    </button>
   );
 }
 

@@ -23,6 +23,7 @@ import { FixturePill, formatPrice } from "@/components/fpl-ui";
 import { PlayerHeatmap } from "@/components/player-maps/PlayerHeatmap";
 import { RoleMapSummary } from "@/components/player-maps/RoleMapSummary";
 import { ShotMap } from "@/components/player-maps/ShotMap";
+import { usePlayerDetail } from "@/components/player-detail-modal";
 import { PlayerVisual } from "@/components/player-visual";
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -213,6 +214,7 @@ function MetricBattleRow({
 }
 
 function PlayerHero({ player, label, winner }: { player: Player; label: string; winner: boolean }) {
+  const { open } = usePlayerDetail();
   return (
     <article className={`relative overflow-hidden rounded-[24px] border bg-white p-4 shadow-[0_18px_50px_rgba(15,23,60,0.08)] sm:p-6 ${winner ? "border-[#00C56A] ring-2 ring-[#00C56A]/12" : "border-[#E1E6F0]"}`}>
       <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-[#6C1DFF] via-[#00B8FF] to-[#00C56A]" />
@@ -221,7 +223,7 @@ function PlayerHero({ player, label, winner }: { player: Player; label: string; 
         {winner ? <span className="rounded-full bg-[#E9FBF2] px-3 py-1 text-[10px] font-black uppercase tracking-[0.12em] text-[#008F49]">Model pick</span> : null}
       </div>
 
-      <div className="mt-5 flex items-center gap-4">
+      <button type="button" onClick={() => open(player)} className="mt-5 flex w-full items-center gap-4 text-left">
         <PlayerVisual player={player} size="lg" />
         <div className="min-w-0 flex-1">
           <h2 className="truncate text-2xl font-black tracking-tight text-[#101631] sm:text-3xl">{player.name}</h2>
@@ -231,7 +233,7 @@ function PlayerHero({ player, label, winner }: { player: Player; label: string; 
             <RiskBadge value={player.risk} />
           </div>
         </div>
-      </div>
+      </button>
 
       <div className="mt-5 grid grid-cols-2 gap-2 sm:grid-cols-3">
         <div className="rounded-xl bg-[#F7F8FC] p-3">

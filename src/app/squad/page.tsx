@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { AppShell } from "@/components/app-shell";
 import { PlayerCard } from "@/components/cards";
+import { usePlayerDetail } from "@/components/player-detail-modal";
 import { PlayerVisual } from "@/components/player-visual";
 import { RouteError } from "@/components/route-error";
 import { SavedSquadHealthPanel } from "@/components/saved-squad-health-panel";
@@ -201,8 +202,9 @@ function PlayerRoleBadge({ role, compact = false }: { role?: "C" | "V"; compact?
 }
 
 function DesktopPitchPlayer({ player, role }: { player: Player; role?: "C" | "V" }) {
+  const { open } = usePlayerDetail();
   return (
-    <div className="group flex min-w-0 flex-col items-center">
+    <button type="button" onClick={() => open(player)} className="group flex min-w-0 flex-col items-center text-left">
       <div className="relative">
         <span className="absolute inset-x-2 bottom-0 h-7 rounded-full bg-black/22 blur-md transition group-hover:bg-black/30" />
         <div className="relative rounded-full ring-2 ring-white/20 transition duration-200 group-hover:-translate-y-1 group-hover:ring-white/45">
@@ -218,7 +220,7 @@ function DesktopPitchPlayer({ player, role }: { player: Player; role?: "C" | "V"
           <span className="text-[9px] font-black text-[#9FF3CC]">{formatProjected(projected(player))}</span>
         </div>
       </div>
-    </div>
+    </button>
   );
 }
 
@@ -283,8 +285,9 @@ function DesktopPitch({ players, captainId, viceCaptainId }: { players: Player[]
 }
 
 function MobilePitchPlayer({ player, role }: { player: Player; role?: "C" | "V" }) {
+  const { open } = usePlayerDetail();
   return (
-    <div className="flex min-w-0 flex-col items-center">
+    <button type="button" onClick={() => open(player)} className="flex min-w-0 flex-col items-center text-left">
       <div className="relative">
         <div className="rounded-full ring-1 ring-white/25">
           <PlayerVisual player={player} size="sm" />
@@ -295,7 +298,7 @@ function MobilePitchPlayer({ player, role }: { player: Player; role?: "C" | "V" 
         <p className="truncate text-[8px] font-black leading-tight text-white">{player.name}</p>
         <p className="mt-0.5 truncate text-[8px] font-black text-[#9FF3CC]">{formatProjected(projected(player))}</p>
       </div>
-    </div>
+    </button>
   );
 }
 
@@ -751,6 +754,7 @@ function FlagSummary({ diagnostics }: { diagnostics: SquadHealthDiagnostics }) {
 }
 
 function BenchRail({ players }: { players: Player[] }) {
+  const { open } = usePlayerDetail();
   return (
     <section className="border-t border-[#E5DFEA] bg-white px-3 py-4 sm:px-5">
       <div className="mb-3 flex items-center justify-between gap-3">
@@ -762,7 +766,12 @@ function BenchRail({ players }: { players: Player[] }) {
       </div>
       <div className="flex snap-x gap-2.5 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden md:grid md:grid-cols-2 md:overflow-visible 2xl:grid-cols-4">
         {players.map((player, index) => (
-          <article key={player.id} className="w-[205px] shrink-0 snap-start rounded-2xl border border-[#E8E2EE] bg-[#FAF9FC] p-3 md:w-auto md:min-w-0">
+          <button
+            type="button"
+            onClick={() => open(player)}
+            key={player.id}
+            className="w-[205px] shrink-0 snap-start rounded-2xl border border-[#E8E2EE] bg-[#FAF9FC] p-3 text-left transition hover:bg-[#F2ECFF] md:w-auto md:min-w-0"
+          >
             <div className="flex items-center gap-2.5">
               <span className="grid h-7 w-7 shrink-0 place-items-center rounded-lg bg-[#F2ECFF] text-[10px] font-black text-[#6C1DFF]">{index + 1}</span>
               <PlayerVisual player={player} size="sm" />
@@ -775,7 +784,7 @@ function BenchRail({ players }: { players: Player[] }) {
               <span className="text-[9px] font-black uppercase tracking-[0.08em] text-[#81798F]">Projection</span>
               <span className="text-[11px] font-black text-[#00A568]">{formatProjected(projected(player))}</span>
             </div>
-          </article>
+          </button>
         ))}
       </div>
     </section>
