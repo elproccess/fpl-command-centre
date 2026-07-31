@@ -1540,7 +1540,25 @@ export async function getPlayerProjectionDetail(playerId: number): Promise<ApiRe
 // for one player - powers the global player-detail modal (see player-detail-modal.tsx) so a click
 // on ANY player row/chip anywhere in the app can show real xG/xA/minutes/starts/PPG/total points,
 // not just the projection number that type already has on it.
+//
+// The backend shares this endpoint's cache row with /market, and occasionally answers with a
+// {cache_status: "pending"/"running"} placeholder while that shared row is mid-refresh (see the
+// router's stale-reclaim path) - requestJson already keeps that placeholder from being misparsed
+// as a real card (analysisStatus is set instead of running it through normalize), but without a
+// retry here the modal would just show the player's basic info with none of the market stats,
+// which reads as "this feature doesn't have that data" rather than "still loading". The refresh
+// is a real background computation that reliably lands within a couple seconds once triggered
+// (see player_stock_market.py's caching comment), so a couple of short retries covers it.
 export async function getPlayerDetailCard(playerId: number): Promise<ApiResult<PlayerDetailCard | null>> {
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    const result = await fetchPlayerDetailCard(playerId);
+    if (result.analysisStatus !== "pending" && result.analysisStatus !== "running") return result;
+    await new Promise((resolve) => setTimeout(resolve, 1500));
+  }
+  return fetchPlayerDetailCard(playerId);
+}
+
+async function fetchPlayerDetailCard(playerId: number): Promise<ApiResult<PlayerDetailCard | null>> {
   return requestJson<PlayerDetailCard | null>(
     `/player-stock-market/player/${playerId}`,
     { apiName: "getPlayerDetailCard", disableFallback: true },
@@ -1576,30 +1594,44 @@ export async function getPlayerDetailCard(playerId: number): Promise<ApiResult<P
   );
 }
 
-// Real per-gameweek breakdown (opponent, difficulty, expected minutes, projected points) for the
-// player-detail modal's "next few gameweeks" strip - /projections/player/{id} carries a lot of
-// internal model-provenance noise alongside this; only the user-facing fields are kept here.
+// getPlayerExplorer already carries every player's per-GW projection map and is backed by a
+// direct table read (fast, no live recompute) - the player-detail modal used to instead hit
+// /projections/player/{id} for this, which recomputes that single player's projection from
+// scratch on every call (2-5s, completely uncached) and was the second half of the modal's
+// 10-20s+ open time (see getPlayerDetailCard's comment for the first half, now fixed backend-
+// side). This module-level cache means every player click within a few minutes of each other
+// shares the ONE explorer fetch instead of re-requesting the full ~600-player pool each time.
+let explorerCache: { promise: Promise<ApiResult<PlayerExplorerData>>; fetchedAt: number } | null = null;
+const EXPLORER_CACHE_TTL_MS = 5 * 60 * 1000;
+
+function getCachedPlayerExplorer(): Promise<ApiResult<PlayerExplorerData>> {
+  if (!explorerCache || Date.now() - explorerCache.fetchedAt > EXPLORER_CACHE_TTL_MS) {
+    explorerCache = { promise: getPlayerExplorer(), fetchedAt: Date.now() };
+  }
+  return explorerCache.promise;
+}
+
+// Per-gameweek projected points for the player-detail modal's "next few gameweeks" strip. Only
+// the points are available from this source (no opponent/difficulty/expected-minutes breakdown -
+// those fields stay null and the modal's GameweekStrip already renders fine without them), traded
+// for going from multi-second-per-click to effectively instant after the first pool fetch.
 export async function getPlayerGameweekProjections(playerId: number): Promise<ApiResult<PlayerGameweekProjection[]>> {
-  return requestJson<PlayerGameweekProjection[]>(
-    `/projections/player/${playerId}`,
-    { apiName: "getPlayerGameweekProjections", disableFallback: true },
-    [],
-    (raw) => {
-      if (!isRecord(raw) || !Array.isArray(raw.gameweeks)) return [];
-      return raw.gameweeks
-        .filter(isRecord)
-        .map((gw) => ({
-          gameweek: asNumber(gw.gameweek, 0),
-          points: asNumber(gw.projected_points, 0),
-          opponent: typeof gw.opponent === "string" ? gw.opponent : null,
-          home_away: gw.home_away === "H" || gw.home_away === "A" ? (gw.home_away as "H" | "A") : null,
-          difficulty: typeof gw.difficulty === "number" && Number.isFinite(gw.difficulty) ? gw.difficulty : null,
-          expected_minutes: typeof gw.expected_minutes === "number" && Number.isFinite(gw.expected_minutes) ? gw.expected_minutes : null,
+  const result = await getCachedPlayerExplorer();
+  const player = result.data.players.find((item) => item.id === playerId);
+  const gameweeks: PlayerGameweekProjection[] = player
+    ? Object.entries(player.projections)
+        .map(([gw, points]) => ({
+          gameweek: Number(gw),
+          points,
+          opponent: null,
+          home_away: null,
+          difficulty: null,
+          expected_minutes: null,
         }))
         .filter((gw) => gw.gameweek > 0)
-        .sort((a, b) => a.gameweek - b.gameweek);
-    },
-  );
+        .sort((a, b) => a.gameweek - b.gameweek)
+    : [];
+  return { data: gameweeks, source: result.source };
 }
 
 export async function getDecisionVariables(): Promise<ApiResult<Record<string, unknown>>> {
