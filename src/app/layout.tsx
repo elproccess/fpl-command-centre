@@ -14,6 +14,13 @@ const sora = Sora({
   weight: ["400", "500", "600", "700", "800"],
 });
 
+// Every route here reads live, per-request backend state (gameweek, projections, market data) -
+// without this, pages that don't explicitly opt in themselves (several were missing it) get
+// statically prerendered once at build time and served from cache with a full year's
+// Cache-Control, so a deploy's actual content changes never reach a browser/edge cache that
+// already holds the old response until that cache independently expires or is force-cleared.
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "FPL Command Centre",
   description: "Premium FPL decision assistant for your best move, captain pick, squad health, and 3-GW plan.",
