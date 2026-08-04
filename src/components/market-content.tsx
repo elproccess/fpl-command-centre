@@ -692,7 +692,7 @@ function PlayerDetail({ row, onClose, mobile = false }: { row: MarketRow; onClos
     .sort((a, b) => a.gw - b.gw);
 
   return (
-    <aside className={`${mobile ? "h-full overflow-y-auto rounded-t-[26px]" : "sticky top-[168px] max-h-[calc(100vh-192px)] overflow-y-auto rounded-2xl"} border border-[#E1E7F2] bg-white p-5 shadow-[0_24px_70px_rgba(15,23,60,0.16)]`}>
+    <aside className={`${mobile ? "min-h-0 flex-1 overflow-y-auto overscroll-contain rounded-t-[26px]" : "sticky top-[168px] max-h-[calc(100vh-192px)] overflow-y-auto rounded-2xl"} border border-[#E1E7F2] bg-white p-5 shadow-[0_24px_70px_rgba(15,23,60,0.16)]`}>
       {mobile ? (
         <div className="mb-4 flex items-center justify-between">
           <span className="h-1.5 w-12 rounded-full bg-[#DCE3F0]" />
@@ -879,6 +879,18 @@ export function MarketContent({
   const [mobileDetailOpen, setMobileDetailOpen] = useState(false);
   const [page, setPage] = useState(0);
   const resultsTopRef = useRef<HTMLDivElement | null>(null);
+
+  // Without this the fixed backdrop still lets touch scrolling fall through to the page behind
+  // it once the sheet's own content is shorter than the gesture's scroll distance - the user
+  // ends up scrolling the market table instead of the open card.
+  useEffect(() => {
+    if (!mobileDetailOpen) return;
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previous;
+    };
+  }, [mobileDetailOpen]);
 
   useEffect(() => {
     let cancelled = false;
@@ -1133,7 +1145,7 @@ export function MarketContent({
 
       {mobileDetailOpen && selectedRow ? (
         <div className="fixed inset-0 z-[80] flex items-end bg-[#05070D]/55 p-0 backdrop-blur-sm xl:hidden" onClick={() => setMobileDetailOpen(false)}>
-          <div className="max-h-[88vh] w-full" onClick={(event) => event.stopPropagation()}>
+          <div className="flex max-h-[88vh] w-full flex-col overflow-hidden" onClick={(event) => event.stopPropagation()}>
             <PlayerDetail row={selectedRow} mobile onClose={() => setMobileDetailOpen(false)} />
           </div>
         </div>
