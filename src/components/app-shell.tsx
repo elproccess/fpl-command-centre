@@ -310,6 +310,7 @@ function MobileTab({ item }: { item: NavItem }) {
 
 export function TopNav({ state = fallbackState, dataSource }: { state?: UserGameState; dataSource?: DataSourceStatus }) {
   const pathname = usePathname();
+  const onImportPage = pathname === "/import";
   const primaryMobile = navItems.slice(0, 4);
   const moreMobile = navItems.slice(4);
   const moreActive = moreMobile.some((item) => isActive(pathname, item.href));
@@ -323,6 +324,16 @@ export function TopNav({ state = fallbackState, dataSource }: { state?: UserGame
           </div>
 
           <div className="flex items-center gap-2 lg:hidden">
+            {!onImportPage ? (
+              <Link
+                href="/import"
+                aria-label="Import team"
+                title="Import team"
+                className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-[#DED3F8] bg-[#F8F5FF] text-[#6C1DFF] transition hover:bg-[#EFE6FF]"
+              >
+                <Icon name="upload" className="h-4.5 w-4.5" />
+              </Link>
+            ) : null}
             <span className="rounded-xl border border-[#DED3F8] bg-[#F8F5FF] px-3 py-2 text-xs font-black text-[#2F2350]">{state.gameweek_label}</span>
             <span className="grid h-10 w-10 place-items-center rounded-full bg-[#6C1DFF] text-xs font-black text-white shadow-[0_10px_22px_rgba(108,29,255,0.18)]">{initials(state.team_name)}</span>
           </div>
@@ -337,6 +348,15 @@ export function TopNav({ state = fallbackState, dataSource }: { state?: UserGame
               />
             </div>
             <DataModeBadge source={dataSource} />
+            {!onImportPage ? (
+              <Link
+                href="/import"
+                className="inline-flex shrink-0 items-center gap-1.5 rounded-xl border border-[#E1E5ED] bg-white px-3 py-2.5 text-sm font-black text-[#1A2142] transition hover:border-[#DED3F8] hover:bg-[#F8F5FF]"
+              >
+                <Icon name="upload" className="h-4 w-4 text-[#6C1DFF]" />
+                Import
+              </Link>
+            ) : null}
             <span className="rounded-xl border border-[#E1E5ED] bg-white px-3 py-2.5 text-sm font-black text-[#1A2142]">{state.gameweek_label}</span>
             <div className="grid h-10 w-10 place-items-center rounded-full bg-[#6C1DFF] text-xs font-black text-white">{initials(state.team_name)}</div>
           </div>
@@ -393,7 +413,6 @@ export function TopNav({ state = fallbackState, dataSource }: { state?: UserGame
 export function AppShell({
   children,
   title,
-  eyebrow,
   state = fallbackState,
   dataSource,
 }: {
@@ -403,9 +422,6 @@ export function AppShell({
   state?: UserGameState;
   dataSource?: DataSourceStatus;
 }) {
-  const pathname = usePathname();
-  const onImportPage = pathname === "/import";
-
   return (
     <PlayerDetailProvider>
       <div className="min-h-screen bg-[linear-gradient(180deg,#F8F7FB_0%,#F3F0F8_42%,#F7F8FB_100%)] text-[#11183C]">
@@ -416,26 +432,8 @@ export function AppShell({
             <TopNav state={state} dataSource={dataSource} />
 
             <div className="mx-auto max-w-[1540px] px-3 py-5 sm:px-4 md:px-7 md:py-7 xl:px-9 xl:py-9">
-              <div className="mb-5 flex flex-col gap-4 border-b border-[#E1E5ED] pb-5 sm:flex-row sm:items-end sm:justify-between md:mb-7 md:pb-6">
-                <div className="min-w-0">
-                  {eyebrow ? (
-                    <div className="mb-2 flex items-center gap-2">
-                      <span className="h-1.5 w-1.5 rounded-full bg-[#6C1DFF]" />
-                      <p className="text-xs font-black uppercase tracking-[0.15em] text-[#6C1DFF] sm:text-sm">{eyebrow}</p>
-                    </div>
-                  ) : null}
-                  <h1 className="max-w-5xl text-[2rem] font-black leading-[0.98] tracking-[-0.045em] text-[#080D2B] sm:text-4xl md:text-5xl xl:text-[3.35rem]">{title}</h1>
-                </div>
-
-                {!onImportPage ? (
-                  <Link
-                    href="/import"
-                    className="inline-flex w-fit shrink-0 items-center justify-center gap-2 rounded-xl bg-[#6C1DFF] px-4 py-3 text-sm font-black text-white shadow-[0_14px_28px_rgba(108,29,255,0.22)] transition hover:-translate-y-0.5 hover:bg-[#5D14E6] focus:outline-none focus:ring-2 focus:ring-[#8D68FF] focus:ring-offset-2"
-                  >
-                    <Icon name="upload" className="h-4 w-4" />
-                    Import team
-                  </Link>
-                ) : null}
+              <div className="mb-4 border-b border-[#E1E5ED] pb-4 md:mb-6 md:pb-5">
+                <h1 className="max-w-5xl text-xl font-black tracking-[-0.02em] text-[#080D2B] sm:text-2xl">{title}</h1>
               </div>
 
               {children}
