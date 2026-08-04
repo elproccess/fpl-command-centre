@@ -692,7 +692,7 @@ function PlayerDetail({ row, onClose, mobile = false }: { row: MarketRow; onClos
     .sort((a, b) => a.gw - b.gw);
 
   return (
-    <aside className={`${mobile ? "h-full overflow-y-auto rounded-t-[26px]" : "sticky top-[168px] rounded-2xl"} border border-[#E1E7F2] bg-white p-5 shadow-[0_24px_70px_rgba(15,23,60,0.16)]`}>
+    <aside className={`${mobile ? "h-full overflow-y-auto rounded-t-[26px]" : "sticky top-[168px] max-h-[calc(100vh-192px)] overflow-y-auto rounded-2xl"} border border-[#E1E7F2] bg-white p-5 shadow-[0_24px_70px_rgba(15,23,60,0.16)]`}>
       {mobile ? (
         <div className="mb-4 flex items-center justify-between">
           <span className="h-1.5 w-12 rounded-full bg-[#DCE3F0]" />
