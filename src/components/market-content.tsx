@@ -218,6 +218,12 @@ function buildMarketRows(pool: ExplorerPlayer[], signals: MarketSignal[]): Marke
   const asPosition = (value: string): MarketRow["position"] =>
     (["GK", "DEF", "MID", "FWD"] as const).includes(value as never) ? (value as MarketRow["position"]) : "MID";
 
+  // entry.status is the pool's own raw field (unranked players never get a signalPlayer at all,
+  // so reading only signalPlayer?.status silently forced every unranked injured/doubtful player
+  // to show as "Available").
+  const asStatus = (value: string | null | undefined): Player["status"] =>
+    value === "Doubt" || value === "Injured" || value === "Suspended" ? value : "Available";
+
   const rows: MarketRow[] = pool.map((entry) => {
     const signal = signalById.get(entry.id);
     const signalPlayer = signal?.player;
@@ -230,7 +236,7 @@ function buildMarketRows(pool: ExplorerPlayer[], signals: MarketSignal[]): Marke
       position: asPosition(entry.position),
       price: entry.price,
       ownership: entry.ownership,
-      status: signalPlayer?.status ?? "Available",
+      status: signalPlayer?.status ?? asStatus(entry.status),
       projections: entry.projections,
       next_projected: entry.next_projected,
       horizon_projected: entry.horizon_projected,
