@@ -343,7 +343,13 @@ function backendPlayer(raw: unknown, fallback: Player): Player {
       three_gw_projected: raw.three_gw_projected ?? raw.projected_points_horizon,
       price_movement: raw.cost_change_event ?? raw.price_movement,
       trend: asNumber(raw.transfers_in_event, 0) > asNumber(raw.transfers_out_event, 0) ? "up" : asNumber(raw.transfers_out_event, 0) > asNumber(raw.transfers_in_event, 0) ? "down" : "flat",
-      status: raw.status === "d" ? "Doubt" : raw.status === "i" ? "Injured" : raw.status === "s" ? "Suspended" : "Available",
+      // Most endpoints still send FPL's raw single-letter code ("d"/"i"/"s"); player-stock-market
+      // now sends the friendly label directly - accept either so this doesn't silently regress
+      // to "Available" for whichever shape a given endpoint happens to emit.
+      status:
+        raw.status === "Injured" || raw.status === "Doubt" || raw.status === "Suspended" || raw.status === "Available"
+          ? raw.status
+          : raw.status === "d" ? "Doubt" : raw.status === "i" ? "Injured" : raw.status === "s" ? "Suspended" : "Available",
       risk: riskFromScore(raw.risk_level ?? raw.risk_score, fallback.risk),
       role: raw.recommendation ?? raw.market_label ?? raw.role_archetype ?? raw.role,
       team_has_fixture: raw.team_has_fixture,
