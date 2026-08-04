@@ -104,6 +104,24 @@ function formatMovement(value: number | null | undefined) {
   return `${normalized > 0 ? "+" : ""}£${normalized.toFixed(1)}`;
 }
 
+function statusTone(status: Player["status"]) {
+  if (status === "Injured" || status === "Suspended") return "bg-[#FFEAF0] text-[#D9004A]";
+  if (status === "Doubt") return "bg-[#FFF3E0] text-[#B96800]";
+  return "";
+}
+
+// Sits next to the Buy/Sell/etc signal rather than replacing it - the signal is the action call,
+// this is the reason. A player can be "Sell" + healthy (bad fixtures) or "Sell" + "Injured" (why),
+// and collapsing those into one tag would lose the distinction.
+function StatusChip({ status }: { status: Player["status"] }) {
+  if (status === "Available") return null;
+  return (
+    <span className={`w-fit rounded-md px-1.5 py-0.5 text-[9px] font-black uppercase tracking-[0.06em] ${statusTone(status)}`}>
+      {status}
+    </span>
+  );
+}
+
 function signalTone(signal: MarketSignal["signal"]) {
   if (signal === "Buy") return "border-[#B7EFD0] bg-[#EFFFF5] text-[#008A46]";
   if (signal === "Sell") return "border-[#FFD2DF] bg-[#FFF0F5] text-[#D9004A]";
@@ -533,7 +551,10 @@ function MarketRowTable({
                   </span>
                   <span className="text-xs font-black text-[#4D5680]">{row.position}</span>
                   <span className="text-sm font-black text-[#0A1031]">{formatPrice(row.price)}</span>
-                  <span>{row.signal ? <SignalBadge value={row.signal} /> : <span className="rounded-lg bg-[#F1F3F8] px-2.5 py-1 text-[11px] font-black text-[#8A93AC] ring-1 ring-[#E1E7F2]">Unranked</span>}</span>
+                  <span className="flex flex-col items-start gap-1">
+                    {row.signal ? <SignalBadge value={row.signal} /> : <span className="rounded-lg bg-[#F1F3F8] px-2.5 py-1 text-[11px] font-black text-[#8A93AC] ring-1 ring-[#E1E7F2]">Unranked</span>}
+                    <StatusChip status={row.status} />
+                  </span>
                   <span className="text-sm font-black text-[#00A85A]">{formatProjection(row.next_projected)}</span>
                   <span className="hidden text-sm font-black text-[#0A1031] 2xl:block">{row.ownership.toFixed(1)}%</span>
                   <span className="hidden text-sm font-black text-[#6C1DFF] 2xl:block">{formatProjection(row.horizon_projected)}</span>
@@ -568,7 +589,10 @@ function MobileMarketRowCards({ rows, onSelect }: { rows: MarketRow[]; onSelect:
                   <p className="truncate text-base font-black text-[#0A1031]">{row.name}</p>
                   <p className="text-xs font-bold text-[#6C7195]">{row.team} · {row.position} · {formatPrice(row.price)}</p>
                 </div>
-                {row.signal ? <SignalBadge value={row.signal} /> : <span className="shrink-0 rounded-lg bg-[#F1F3F8] px-2.5 py-1 text-[11px] font-black text-[#8A93AC] ring-1 ring-[#E1E7F2]">Unranked</span>}
+                <span className="flex shrink-0 flex-col items-end gap-1">
+                  {row.signal ? <SignalBadge value={row.signal} /> : <span className="rounded-lg bg-[#F1F3F8] px-2.5 py-1 text-[11px] font-black text-[#8A93AC] ring-1 ring-[#E1E7F2]">Unranked</span>}
+                  <StatusChip status={row.status} />
+                </span>
               </div>
               <div className="mt-3 grid grid-cols-4 gap-2">
                 <MobileMetric label="Next" value={formatProjection(row.next_projected)} tone="green" />
@@ -677,7 +701,10 @@ function PlayerDetail({ row, onClose, mobile = false }: { row: MarketRow; onClos
             <p className="mt-1 text-sm font-bold text-[#6C7195]">{row.team} · {row.position} · {formatPrice(row.price)}</p>
           </div>
         </div>
-        {row.signal ? <SignalBadge value={row.signal} /> : <span className="shrink-0 rounded-lg bg-[#F1F3F8] px-2.5 py-1 text-[11px] font-black text-[#8A93AC] ring-1 ring-[#E1E7F2]">Unranked</span>}
+        <span className="flex shrink-0 flex-col items-end gap-1">
+          {row.signal ? <SignalBadge value={row.signal} /> : <span className="rounded-lg bg-[#F1F3F8] px-2.5 py-1 text-[11px] font-black text-[#8A93AC] ring-1 ring-[#E1E7F2]">Unranked</span>}
+          <StatusChip status={row.status} />
+        </span>
       </div>
 
       {row.signal ? (
