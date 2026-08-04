@@ -690,6 +690,7 @@ function PlayerDetail({ row, onClose, mobile = false }: { row: MarketRow; onClos
   const gameweeks = Object.entries(row.projections)
     .map(([gw, points]) => ({ gw: Number(gw), points }))
     .sort((a, b) => a.gw - b.gw);
+  const maxGwPoints = Math.max(0, ...gameweeks.map((item) => item.points));
 
   return (
     <aside className={`${mobile ? "min-h-0 flex-1 overflow-y-auto overscroll-contain rounded-t-[26px]" : "sticky top-[168px] max-h-[calc(100vh-192px)] overflow-y-auto rounded-2xl"} border border-[#E1E7F2] bg-white p-5 shadow-[0_24px_70px_rgba(15,23,60,0.16)]`}>
@@ -761,7 +762,7 @@ function PlayerDetail({ row, onClose, mobile = false }: { row: MarketRow; onClos
           <p className="text-[10px] font-black uppercase tracking-[0.12em] text-[#6C7195]">Projection by gameweek</p>
           <div className="mt-3 space-y-2">
             {gameweeks.map(({ gw, points }) => {
-              const width = row.horizon_projected > 0 ? Math.max(6, Math.min(100, (points / row.horizon_projected) * gameweeks.length * 25)) : 6;
+              const width = maxGwPoints > 0 ? Math.max(6, Math.min(100, (points / maxGwPoints) * 100)) : 6;
               return (
                 <div key={gw} className="flex items-center gap-3">
                   <span className="w-8 shrink-0 text-xs font-black text-[#6C7195]">GW{gw}</span>
