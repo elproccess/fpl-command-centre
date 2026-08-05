@@ -311,8 +311,9 @@ function MobileTab({ item }: { item: NavItem }) {
   );
 }
 
-export function TopNav({ title, state = fallbackState, dataSource }: { title?: string; state?: UserGameState; dataSource?: DataSourceStatus }) {
+export function TopNav({ title, state = fallbackState }: { title?: string; state?: UserGameState; dataSource?: DataSourceStatus }) {
   const pathname = usePathname();
+  const onImportPage = pathname === "/import";
   const primaryMobile = navItems.slice(0, 4);
   const moreMobile = navItems.slice(4);
   const moreActive = moreMobile.some((item) => isActive(pathname, item.href));
@@ -327,6 +328,16 @@ export function TopNav({ title, state = fallbackState, dataSource }: { title?: s
           <h1 className="hidden min-w-0 truncate text-lg font-black tracking-[-0.01em] text-[#080D2B] lg:block">{title}</h1>
 
           <div className="flex items-center gap-2 lg:hidden">
+            {!onImportPage ? (
+              <Link
+                href="/import"
+                aria-label="Import team"
+                title="Import team"
+                className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-[#DED3F8] bg-[#F8F5FF] text-[#6C1DFF] transition hover:bg-[#EFE6FF]"
+              >
+                <Icon name="upload" className="h-4.5 w-4.5" />
+              </Link>
+            ) : null}
             <span className="rounded-xl border border-[#DED3F8] bg-[#F8F5FF] px-3 py-2 text-xs font-black text-[#2F2350]">{state.gameweek_label}</span>
             <span className="grid h-10 w-10 place-items-center rounded-full bg-[#6C1DFF] text-xs font-black text-white shadow-[0_10px_22px_rgba(108,29,255,0.18)]">{initials(state.team_name)}</span>
           </div>
@@ -340,7 +351,15 @@ export function TopNav({ title, state = fallbackState, dataSource }: { title?: s
                 className="h-11 w-full rounded-xl border border-[#E1E5ED] bg-[#FAFBFD] pl-11 pr-4 text-sm font-semibold text-[#151C3D] outline-none transition placeholder:text-[#9298AA] focus:border-[#A98BFF] focus:bg-white focus:ring-4 focus:ring-[#6C1DFF]/8"
               />
             </div>
-            <DataModeBadge source={dataSource} />
+            {!onImportPage ? (
+              <Link
+                href="/import"
+                className="inline-flex shrink-0 items-center gap-1.5 rounded-xl border border-[#E1E5ED] bg-white px-3 py-2.5 text-sm font-black text-[#1A2142] transition hover:border-[#DED3F8] hover:bg-[#F8F5FF]"
+              >
+                <Icon name="upload" className="h-4 w-4 text-[#6C1DFF]" />
+                Import
+              </Link>
+            ) : null}
             <span className="rounded-xl border border-[#E1E5ED] bg-white px-3 py-2.5 text-sm font-black text-[#1A2142]">{state.gameweek_label}</span>
             <div className="grid h-10 w-10 place-items-center rounded-full bg-[#6C1DFF] text-xs font-black text-white">{initials(state.team_name)}</div>
           </div>
@@ -387,8 +406,6 @@ export function TopNav({ title, state = fallbackState, dataSource }: { title?: s
             </div>
           </details>
         </nav>
-
-        {dataSource ? <div className="mt-2 lg:hidden"><DataModeBadge source={dataSource} /></div> : null}
       </div>
     </header>
   );
