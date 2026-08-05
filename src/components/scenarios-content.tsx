@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { DataModeBadge } from "@/components/app-shell";
 import { analyseScenario, getPlayersDirectory, type PlayerDirectoryEntry } from "@/lib/api";
 import { usePolledAnalysis } from "@/components/polled-analysis";
 import { ScenarioBuilder } from "@/components/scenario-builder";
@@ -106,9 +105,6 @@ export function ScenariosContent({
 
   return (
     <>
-      <div className="mb-4 flex justify-end">
-        <DataModeBadge source={{ mode: "real", label: "Real backend connected" }} />
-      </div>
       <ScenarioBuilder
         players={players}
         payload={payload}

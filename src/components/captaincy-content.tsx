@@ -1,6 +1,5 @@
 "use client";
 
-import { DataModeBadge } from "@/components/app-shell";
 import { ConfidenceBadge, RiskBadge } from "@/components/badges";
 import { FixturePill } from "@/components/fpl-ui";
 import { usePlayerDetail } from "@/components/player-detail-modal";
@@ -302,10 +301,6 @@ export function CaptaincyContent({ payload }: { payload: Record<string, unknown>
 
   return (
     <div className="space-y-6 pb-10">
-      <div className="flex justify-end">
-        <DataModeBadge source={{ mode: "real", label: "Real backend connected" }} />
-      </div>
-
       <section className="relative overflow-hidden rounded-[28px] border border-[#CFBCFF] bg-white shadow-[0_26px_70px_rgba(53,14,82,0.11)]">
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_82%_18%,rgba(108,29,255,0.16),transparent_34%),radial-gradient(circle_at_10%_100%,rgba(0,168,107,0.09),transparent_32%)]" />
         <div className="pointer-events-none absolute right-[-28px] top-[-54px] text-[260px] font-black leading-none text-[#6C1DFF]/[0.045] sm:right-4 sm:top-[-72px] sm:text-[360px]">

@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { DataModeBadge } from "@/components/app-shell";
 import { SignalBadge } from "@/components/badges";
 import { CompareAnyTwoPlayers } from "@/components/compare-any-two-players";
 import { FixturePill, formatPrice } from "@/components/fpl-ui";
@@ -1018,7 +1017,6 @@ export function MarketContent({
                 <span className="inline-flex items-center gap-2 rounded-full border border-[#BCEBD2] bg-[#EDFFF5] px-3 py-1.5 text-xs font-black uppercase tracking-[0.14em] text-[#008F5A]">
                   <span className="h-2 w-2 animate-pulse rounded-full bg-[#00A85A]" /> Live player market
                 </span>
-                <DataModeBadge source={{ mode: "real", label: "Real backend connected" }} />
               </div>
               <h1 className="mt-3 text-2xl font-black tracking-tight text-[#0A1031] sm:text-3xl">Player Market</h1>
               <p className="mt-2 max-w-xl text-xs font-semibold leading-5 text-[#68718F] sm:text-sm">

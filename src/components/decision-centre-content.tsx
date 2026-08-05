@@ -3,7 +3,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { DataModeBadge } from "@/components/app-shell";
 import { ConfidenceBadge, RiskBadge } from "@/components/badges";
 import { usePlayerDetail } from "@/components/player-detail-modal";
 import { PlayerVisual, TeamShirtImage } from "@/components/player-visual";
@@ -577,16 +576,13 @@ export function DecisionCentreContent({
 
   return (
     <div className="space-y-6 pb-10">
-      <header className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="rounded-full bg-[#F2ECFF] px-3 py-1 text-[10px] font-black uppercase tracking-[0.14em] text-[#6C1DFF]">{appState.gameweek_label} decision</span>
-            <span className="text-xs font-bold text-[#81748E]">Updated from your imported squad</span>
-          </div>
-          <h1 className="mt-3 text-2xl font-black tracking-[-0.035em] text-[#19052D] sm:text-3xl">Your transfer decision</h1>
-          <p className="mt-1 max-w-2xl text-sm font-semibold leading-6 text-[#756781]">One recommendation, the evidence behind it, and the strongest alternatives.</p>
+      <header>
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="rounded-full bg-[#F2ECFF] px-3 py-1 text-[10px] font-black uppercase tracking-[0.14em] text-[#6C1DFF]">{appState.gameweek_label} decision</span>
+          <span className="text-xs font-bold text-[#81748E]">Updated from your imported squad</span>
         </div>
-        <DataModeBadge source={{ mode: "real", label: "Real backend connected" }} />
+        <h1 className="mt-3 text-2xl font-black tracking-[-0.035em] text-[#19052D] sm:text-3xl">Your transfer decision</h1>
+        <p className="mt-1 max-w-2xl text-sm font-semibold leading-6 text-[#756781]">One recommendation, the evidence behind it, and the strongest alternatives.</p>
       </header>
 
       <DecisionHero

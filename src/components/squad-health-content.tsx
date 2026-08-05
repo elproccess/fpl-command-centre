@@ -1,7 +1,6 @@
 "use client";
 
 import { RiskBadge } from "@/components/badges";
-import { DataModeBadge } from "@/components/app-shell";
 import { NativeMetric } from "@/components/fpl-ui";
 import { PlayerVisual } from "@/components/player-visual";
 import { ErrorState } from "@/components/states";
@@ -62,7 +61,6 @@ export function SquadHealthContent({ payload }: { payload: Record<string, unknow
 
   return (
     <>
-      <div className="mb-4 flex justify-end"><DataModeBadge source={{ mode: "real", label: "Real backend connected" }} /></div>
       <section className="rounded-2xl border border-[#111827] bg-[#070912] p-5 text-white shadow-[0_24px_60px_rgba(0,0,0,0.18)]">
         <div className="grid gap-5 lg:grid-cols-[0.75fr_1.25fr] lg:items-center">
           <div>
