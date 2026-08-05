@@ -192,15 +192,18 @@ function Icon({ name, className = "h-5 w-5", ...props }: SVGProps<SVGSVGElement>
   );
 }
 
-function BrandMark({ compact = false }: { compact?: boolean }) {
+// On mobile the page title lives here instead of in the scrollable page body - swaps the brand
+// name for the current page's title (logo glyph still anchors the brand), so "where am I" costs
+// zero extra width instead of a second header row squeezed onto an already-tight screen.
+function BrandMark({ compact = false, title }: { compact?: boolean; title?: string }) {
   return (
     <Link href="/dashboard" className="group flex min-w-0 items-center gap-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#8D68FF]">
       <span className={`grid shrink-0 place-items-center rounded-xl bg-[linear-gradient(145deg,#7C2CFF,#5A17E8)] font-black text-white shadow-[0_12px_28px_rgba(108,29,255,0.25)] transition group-hover:-translate-y-0.5 ${compact ? "h-10 w-10 text-lg" : "h-11 w-11 text-xl"}`}>
         M
       </span>
       <span className="min-w-0">
-        <span className={`block truncate font-black tracking-[-0.025em] text-[#0A1031] ${compact ? "text-base" : "text-lg"}`}>Matchday OS</span>
-        <span className="block truncate text-[11px] font-bold text-[#737B98]">FPL command layer</span>
+        <span className={`block truncate font-black tracking-[-0.025em] text-[#0A1031] ${compact ? "text-base" : "text-lg"}`}>{title || "Matchday OS"}</span>
+        <span className="block truncate text-[11px] font-bold text-[#737B98]">{title ? "Matchday OS" : "FPL command layer"}</span>
       </span>
     </Link>
   );
@@ -308,7 +311,7 @@ function MobileTab({ item }: { item: NavItem }) {
   );
 }
 
-export function TopNav({ state = fallbackState, dataSource }: { state?: UserGameState; dataSource?: DataSourceStatus }) {
+export function TopNav({ title, state = fallbackState, dataSource }: { title?: string; state?: UserGameState; dataSource?: DataSourceStatus }) {
   const pathname = usePathname();
   const primaryMobile = navItems.slice(0, 4);
   const moreMobile = navItems.slice(4);
@@ -317,10 +320,11 @@ export function TopNav({ state = fallbackState, dataSource }: { state?: UserGame
   return (
     <header className="sticky top-0 z-40 border-b border-[#E1E5ED] bg-white/95 px-3 py-3 shadow-[0_8px_28px_rgba(15,23,60,0.045)] backdrop-blur-xl sm:px-4 md:px-6">
       <div className="mx-auto max-w-[1540px]">
-        <div className="flex items-center justify-between gap-3 lg:justify-end">
-          <div className="lg:hidden">
-            <BrandMark compact />
+        <div className="flex items-center justify-between gap-3">
+          <div className="min-w-0 lg:hidden">
+            <BrandMark compact title={title} />
           </div>
+          <h1 className="hidden min-w-0 truncate text-lg font-black tracking-[-0.01em] text-[#080D2B] lg:block">{title}</h1>
 
           <div className="flex items-center gap-2 lg:hidden">
             <span className="rounded-xl border border-[#DED3F8] bg-[#F8F5FF] px-3 py-2 text-xs font-black text-[#2F2350]">{state.gameweek_label}</span>
@@ -409,12 +413,9 @@ export function AppShell({
           <Sidebar state={state} />
 
           <main className="min-w-0 flex-1 overflow-x-hidden">
-            <TopNav state={state} dataSource={dataSource} />
+            <TopNav title={title} state={state} dataSource={dataSource} />
 
             <div className="mx-auto max-w-[1540px] px-3 py-5 sm:px-4 md:px-7 md:py-7 xl:px-9 xl:py-9">
-              <div className="mb-4 border-b border-[#E1E5ED] pb-4 md:mb-6 md:pb-5">
-                <h1 className="max-w-5xl text-xl font-black tracking-[-0.02em] text-[#080D2B] sm:text-2xl">{title}</h1>
-              </div>
 
               {children}
             </div>
