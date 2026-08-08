@@ -418,30 +418,30 @@ const heroPlays: HeroPlay[] = [
     vcName: "Saka", vcPts: "7.6",
     coverage: "15/15", fallback: 0,
     routes: [
-      { label: "→ Watkins", isHold: false, outShirt: 43, outName: "Haaland", outMeta: "MCI - GBP15.5m", inShirt: 7, inCode: 106617, inName: "Watkins", inMeta: "AVL - GBP9.0m", gain: "+4.8", hit: 0, conf: "82%", risk: "Low", pts: "61.8", why: "Watkins has the stronger three-week fixture run while releasing GBP6.0m for GW3. Haaland remains the best captain this week.", chipFixture: "+2.1", chipForm: "+1.4", chipMinutes: "Secure" },
-      { label: "Sell Saliba, buy Gvardiol", isHold: false, outShirt: 3, outName: "Saliba", outMeta: "ARS - GBP6.2m", inShirt: 43, inCode: 244723, inName: "Gvardiol", inMeta: "MCI - GBP6.0m", gain: "+2.2", hit: 0, conf: "68%", risk: "Medium", pts: "59.4", why: "Saliba's fixture is tougher than Gvardiol's this week.", chipFixture: "+1.0", chipForm: "+0.6", chipMinutes: "Secure" },
+      { label: "→ Watkins", isHold: false, outShirt: 43, outName: "Haaland", outMeta: "MCI - GBP15.5m", inShirt: 7, inCode: 178301, inName: "Watkins", inMeta: "AVL - GBP9.0m", gain: "+4.8", hit: 0, conf: "82%", risk: "Low", pts: "61.8", why: "Watkins has the stronger three-week fixture run while releasing GBP6.0m for GW3. Haaland remains the best captain this week.", chipFixture: "+2.1", chipForm: "+1.4", chipMinutes: "Secure" },
+      { label: "Sell Saliba, buy Gvardiol", isHold: false, outShirt: 3, outName: "Saliba", outMeta: "ARS - GBP6.2m", inShirt: 43, inCode: 477424, inName: "Gvardiol", inMeta: "MCI - GBP6.0m", gain: "+2.2", hit: 0, conf: "68%", risk: "Medium", pts: "59.4", why: "Gvardiol projects for 5.6 points against 4.1 for Saliba this week - City's fixture is easier and he's a bigger clean-sheet threat.", chipFixture: "+1.0", chipForm: "+0.6", chipMinutes: "Secure" },
       { label: "Hold - no transfer", isHold: true, outShirt: 0, outName: "", outMeta: "", inShirt: 0, inCode: 0, inName: "", inMeta: "", gain: "+1.2", hit: 0, conf: "61%", risk: "Low", pts: "58.1", why: "No move clears the bar by enough to spend the free transfer yet.", chipFixture: "+0.3", chipForm: "+0.2", chipMinutes: "Secure" },
     ],
   },
   {
     gw: "GW2",
     capCode: 223094, capName: "Haaland", capMeta: "MCI (A) - BOU", capPts: "8.1",
-    vcName: "Salah", vcPts: "6.9",
+    vcName: "Watkins", vcPts: "6.9",
     coverage: "15/15", fallback: 0,
     routes: [
-      { label: "→ Gvardiol", isHold: false, outShirt: 6, outName: "Porro", outMeta: "TOT - GBP5.5m", inShirt: 43, inCode: 244723, inName: "Gvardiol", inMeta: "MCI - GBP6.0m", gain: "+3.1", hit: 0, conf: "75%", risk: "Low", pts: "63.2", why: "Fixture swing favours clean sheets from GW2 onward.", chipFixture: "+1.8", chipForm: "+0.9", chipMinutes: "Secure" },
-      { label: "Sell Saka, buy Palmer", isHold: false, outShirt: 3, outName: "Saka", outMeta: "ARS - GBP9.4m", inShirt: 8, inCode: 231747, inName: "Palmer", inMeta: "CHE - GBP10.8m", gain: "+1.8", hit: 0, conf: "70%", risk: "Medium", pts: "60.1", why: "Palmer's underlying numbers edge Saka's for this run.", chipFixture: "+0.9", chipForm: "+0.7", chipMinutes: "Secure" },
+      { label: "→ Gvardiol", isHold: false, outShirt: 6, outName: "Porro", outMeta: "TOT - GBP5.5m", inShirt: 43, inCode: 477424, inName: "Gvardiol", inMeta: "MCI - GBP6.0m", gain: "+3.1", hit: 0, conf: "75%", risk: "Low", pts: "63.2", why: "Fixture swing favours clean sheets from GW2 onward.", chipFixture: "+1.8", chipForm: "+0.9", chipMinutes: "Secure" },
+      { label: "Sell Saka, buy Palmer", isHold: false, outShirt: 3, outName: "Saka", outMeta: "ARS - GBP9.4m", inShirt: 8, inCode: 244851, inName: "Palmer", inMeta: "CHE - GBP10.8m", gain: "+1.8", hit: 0, conf: "70%", risk: "Medium", pts: "60.1", why: "Palmer's underlying numbers edge Saka's for this run.", chipFixture: "+0.9", chipForm: "+0.7", chipMinutes: "Secure" },
       { label: "Hold - no transfer", isHold: true, outShirt: 0, outName: "", outMeta: "", inShirt: 0, inCode: 0, inName: "", inMeta: "", gain: "+1.6", hit: 0, conf: "64%", risk: "Low", pts: "60.8", why: "Banking the transfer keeps flexibility for the bigger GW3 move.", chipFixture: "+0.4", chipForm: "+0.3", chipMinutes: "Secure" },
     ],
   },
   {
     gw: "GW3",
-    capCode: 118748, capName: "Salah", capMeta: "LIV (H) - BRE", capPts: "10.4",
+    capCode: 244851, capName: "Palmer", capMeta: "CHE (H) - BRE", capPts: "8.9",
     vcName: "Haaland", vcPts: "8.5",
     coverage: "14/15", fallback: 1,
     routes: [
-      { label: "→ Salah", isHold: false, outShirt: 8, outName: "Palmer", outMeta: "CHE - GBP10.8m", inShirt: 14, inCode: 118748, inName: "Salah", inMeta: "LIV - GBP14.5m", gain: "+2.9", hit: 4, conf: "79%", risk: "Medium", pts: "66.9", why: "Salah's ceiling overtakes Palmer's for this fixture, even after the hit.", chipFixture: "+1.6", chipForm: "+1.1", chipMinutes: "Secure" },
-      { label: "Sell Fernandes, buy Palmer", isHold: false, outShirt: 1, outName: "Fernandes", outMeta: "MUN - GBP8.6m", inShirt: 8, inCode: 231747, inName: "Palmer", inMeta: "CHE - GBP10.8m", gain: "+2.1", hit: 0, conf: "73%", risk: "Low", pts: "64.0", why: "Free transfer covers this move without a hit.", chipFixture: "+0.8", chipForm: "+0.6", chipMinutes: "Secure" },
+      { label: "→ Palmer", isHold: false, outShirt: 1, outName: "Fernandes", outMeta: "MUN - GBP8.6m", inShirt: 8, inCode: 244851, inName: "Palmer", inMeta: "CHE - GBP10.8m", gain: "+2.9", hit: 0, conf: "79%", risk: "Low", pts: "66.9", why: "Palmer's ceiling overtakes Fernandes's for this fixture, and the free transfer covers it without a hit.", chipFixture: "+1.6", chipForm: "+1.1", chipMinutes: "Secure" },
+      { label: "Sell Robinson, buy Gvardiol", isHold: false, outShirt: 54, outName: "Robinson", outMeta: "FUL - GBP5.0m", inShirt: 43, inCode: 477424, inName: "Gvardiol", inMeta: "MCI - GBP6.0m", gain: "+1.7", hit: 4, conf: "65%", risk: "Medium", pts: "64.0", why: "Gvardiol's fixture run is stronger, but the hit means it only pays off if he starts all three weeks.", chipFixture: "+0.8", chipForm: "+0.6", chipMinutes: "Secure" },
       { label: "Hold - no transfer", isHold: true, outShirt: 0, outName: "", outMeta: "", inShirt: 0, inCode: 0, inName: "", inMeta: "", gain: "+0.8", hit: 0, conf: "59%", risk: "Low", pts: "61.5", why: "Neither move clears the hit cost by a comfortable margin.", chipFixture: "+0.2", chipForm: "+0.1", chipMinutes: "Rotation risk" },
     ],
   },
@@ -459,31 +459,67 @@ function HeroTrendChart({ points, activeIndex }: { points: { gw: string; current
   const scaleY = (v: number) => top + (1 - (v - yMin) / (yMax - yMin)) * (h - top - bottom);
   const scaleX = (i: number) => left + i * xStep;
   const pathFor = (key: "current" | "withMove") => points.map((p, i) => `${i === 0 ? "M" : "L"}${scaleX(i)},${scaleY(p[key])}`).join(" ");
+  const LINE_DURATION = 0.9;
+  const cumulativeDistances = points.reduce<number[]>((acc, p, i) => {
+    if (i === 0) return [0];
+    const dx = scaleX(i) - scaleX(i - 1);
+    const dy = scaleY(p.withMove) - scaleY(points[i - 1].withMove);
+    return [...acc, acc[i - 1] + Math.sqrt(dx * dx + dy * dy)];
+  }, []);
+  const withMoveLength = cumulativeDistances[cumulativeDistances.length - 1];
+  const chartKey = `${activeIndex}-${points.map((p) => `${p.gw}:${p.withMove}`).join(",")}`;
   return (
-    <svg viewBox={`0 0 ${w} ${h + 12}`} className="w-full" aria-hidden="true">
+    <svg key={chartKey} viewBox={`0 0 ${w} ${h + 12}`} className="w-full" aria-hidden="true">
       <path d={pathFor("current")} fill="none" stroke="#5E7166" strokeWidth="1.75" strokeDasharray="3 3" />
-      <path d={pathFor("withMove")} fill="none" stroke="#A67BFF" strokeWidth="2.25" />
-      {points.map((p, i) => (
-        <g key={p.gw}>
-          <circle cx={scaleX(i)} cy={scaleY(p.current)} r="2" fill="#5E7166" />
-          <circle cx={scaleX(i)} cy={scaleY(p.withMove)} r={i === activeIndex ? 3.2 : 2.6} fill="#A67BFF" />
-          <text x={scaleX(i)} y={scaleY(p.withMove) - 5} textAnchor="middle" fontSize="6.5" fontWeight="900" fill="#A67BFF">{p.withMove.toFixed(1)}</text>
-          <text x={scaleX(i)} y={h + 10} textAnchor="middle" fontSize="6" fontWeight="700" fill="#6F8175">{p.gw}</text>
-        </g>
-      ))}
+      <path
+        d={pathFor("withMove")}
+        fill="none"
+        stroke="#A67BFF"
+        strokeWidth="2.25"
+        strokeLinecap="round"
+        strokeDasharray={withMoveLength}
+        strokeDashoffset={withMoveLength}
+        style={{ animation: `heroLineDraw ${LINE_DURATION}s linear forwards` }}
+      />
+      {points.map((p, i) => {
+        const delay = LINE_DURATION * (cumulativeDistances[i] / withMoveLength);
+        return (
+          <g key={p.gw} style={{ animation: `heroDotPop 0.32s ease-out ${delay}s both` }}>
+            <circle cx={scaleX(i)} cy={scaleY(p.current)} r="2" fill="#5E7166" />
+            <circle cx={scaleX(i)} cy={scaleY(p.withMove)} r={i === activeIndex ? 3.2 : 2.6} fill="#A67BFF" style={{ transformBox: "fill-box", transformOrigin: "center" }} />
+            <text x={scaleX(i)} y={scaleY(p.withMove) - 5} textAnchor="middle" fontSize="6.5" fontWeight="900" fill="#A67BFF">{p.withMove.toFixed(1)}</text>
+            <text x={scaleX(i)} y={h + 10} textAnchor="middle" fontSize="6" fontWeight="700" fill="#6F8175">{p.gw}</text>
+          </g>
+        );
+      })}
     </svg>
   );
 }
 
-function HeroPlayerCard({ shirt, name, meta, tone }: { shirt: number; name: string; meta: string; tone: "out" | "in" }) {
+function HeroPlayerCard({ shirt, code, name, meta, tone }: { shirt: number; code?: number; name: string; meta: string; tone: "out" | "in" }) {
+  const [photoBroken, setPhotoBroken] = useState(false);
   return (
     <div className={`flex-1 rounded-xl border p-2.5 text-center transition ${tone === "out" ? "border-[#3a2622]" : "border-[#1e3527]"} bg-[#1e3527]`}>
       <span className={`inline-block rounded-md px-1.5 py-0.5 text-[8px] font-black tracking-[0.08em] ${tone === "out" ? "bg-[#ff9f8f]/12 text-[#ff9f8f] border border-[#ff9f8f]/30" : "bg-[#7fe0ac]/12 text-[#7fe0ac] border border-[#7fe0ac]/30"}`}>
         {tone === "out" ? "OUT" : "IN"}
       </span>
-      <span className="mx-auto mt-1.5 block h-9 w-9">
-        <Image src={shirtUrl(shirt)} alt="" width={44} height={44} className="h-full w-full object-contain" style={{ filter: "drop-shadow(0 4px 6px rgba(0,0,0,0.4))" }} />
-      </span>
+      {code && !photoBroken ? (
+        <span className="relative mx-auto mt-1.5 block h-9 w-9 overflow-hidden rounded-full bg-[#0A140E] ring-1 ring-[#7fe0ac]/30">
+          <Image
+            key={code}
+            src={`https://resources.premierleague.com/premierleague/photos/players/110x140/p${code}.png`}
+            alt=""
+            fill
+            sizes="36px"
+            className="object-cover object-top"
+            onError={() => setPhotoBroken(true)}
+          />
+        </span>
+      ) : (
+        <span className="mx-auto mt-1.5 block h-9 w-9">
+          <Image src={shirtUrl(shirt)} alt="" width={44} height={44} className="h-full w-full object-contain" style={{ filter: "drop-shadow(0 4px 6px rgba(0,0,0,0.4))" }} />
+        </span>
+      )}
       <p className="mt-1.5 text-[11.5px] font-black text-[#F3EFE3]">{name}</p>
       <p className="mt-0.5 text-[9px] font-bold text-[#A9B8AB]">{meta}</p>
     </div>
@@ -541,7 +577,6 @@ function NewHero() {
   const autoTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const carouselStepRef = useRef(0);
   const mockupRef = useRef<HTMLDivElement | null>(null);
-  const outlookScrollRef = useRef<HTMLDivElement | null>(null);
   const play = heroPlays[gwIndex];
   const route = play.routes[altIndex];
 
@@ -594,17 +629,6 @@ function NewHero() {
     return () => {
       if (autoTimerRef.current) clearInterval(autoTimerRef.current);
     };
-  }, []);
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      const el = outlookScrollRef.current;
-      if (!el || window.innerWidth >= 640) return;
-      const cardWidth = el.firstElementChild instanceof HTMLElement ? el.firstElementChild.offsetWidth + 8 : el.clientWidth * 0.78;
-      const atEnd = el.scrollLeft + el.clientWidth >= el.scrollWidth - 4;
-      el.scrollTo({ left: atEnd ? 0 : el.scrollLeft + cardWidth, behavior: "smooth" });
-    }, 3200);
-    return () => clearInterval(timer);
   }, []);
 
   useEffect(() => {
@@ -760,7 +784,7 @@ function NewHero() {
                         <div className="relative z-[1] flex justify-evenly gap-1">
                           <HeroMiniPlayer shirt={43} name="Haaland" proj="9.8" captain />
                           <HeroMiniPlayer shirt={7} name="Watkins" proj="5.1" />
-                          <HeroMiniPlayer shirt={14} name="Salah" proj="8.4" />
+                          <HeroMiniPlayer shirt={14} name="Wirtz" proj="7.9" />
                         </div>
                         <div className="relative z-[1] flex justify-evenly gap-1">
                           <HeroMiniPlayer shirt={8} name="Palmer" proj="6.9" />
@@ -768,8 +792,8 @@ function NewHero() {
                           <HeroMiniPlayer shirt={1} name="Fernandes" proj="5.5" />
                         </div>
                         <div className="relative z-[1] flex justify-evenly gap-1">
-                          <HeroMiniPlayer shirt={3} name="Saliba" proj="4.8" />
-                          <HeroMiniPlayer shirt={43} name="Gvardiol" proj="5.0" />
+                          <HeroMiniPlayer shirt={3} name="Saliba" proj="4.1" />
+                          <HeroMiniPlayer shirt={43} name="Gvardiol" proj="5.6" />
                           <HeroMiniPlayer shirt={3} name="Gabriel" proj="4.6" />
                           <HeroMiniPlayer shirt={54} name="Robinson" proj="4.1" />
                         </div>
@@ -839,66 +863,77 @@ function NewHero() {
                             <line x1="1" y1="8" x2="26" y2="8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeDasharray="3 4" style={{ animation: "heroArrowCrawl 1.2s linear infinite" }} />
                             <path d="M22 3 L28 8 L22 13" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                           </svg>
-                          <HeroPlayerCard shirt={route.inShirt} name={route.inName} meta={route.inMeta} tone="in" />
+                          <HeroPlayerCard shirt={route.inShirt} code={route.inCode} name={route.inName} meta={route.inMeta} tone="in" />
                         </div>
                       )}
 
                       <p className="mt-3 text-[8.5px] font-black uppercase tracking-[0.1em] text-[#5E7166]">3-gameweek outlook</p>
-                      <div ref={outlookScrollRef} className="-mx-4 mt-1.5 flex snap-x snap-mandatory gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:grid sm:grid-cols-3 sm:overflow-visible sm:px-0 sm:pb-0">
-                        <div className="w-[78%] shrink-0 snap-start rounded-xl border border-[#A67BFF]/20 bg-[#1E3527] p-2.5 sm:w-auto sm:shrink">
-                          <p className="text-[7.5px] font-black uppercase tracking-[0.06em] text-[#A9B8AB]">Projection comparison</p>
-                          <HeroTrendChart
-                            points={heroPlays.map((p, i) => ({
-                              gw: p.gw,
-                              current: parseFloat(p.routes[2].pts),
-                              withMove: i === gwIndex ? parseFloat(route.pts) : parseFloat(p.routes[0].pts),
-                            }))}
-                            activeIndex={gwIndex}
-                          />
-                          <div className="mt-0.5 flex items-center justify-between text-[7px] font-bold">
-                            <span className="flex items-center gap-1 text-[#6F8175]">
-                              <span className="h-1.5 w-1.5 rounded-full bg-[#5E7166]" />
-                              Hold ({heroPlays.reduce((s, p) => s + parseFloat(p.routes[2].pts), 0).toFixed(1)})
-                            </span>
-                            <span className="flex items-center gap-1 text-[#A67BFF]">
-                              <span className="h-1.5 w-1.5 rounded-full bg-[#A67BFF]" />
-                              This route ({heroPlays.reduce((s, p, i) => s + (i === gwIndex ? parseFloat(route.pts) : parseFloat(p.routes[0].pts)), 0).toFixed(1)})
-                            </span>
+                      <div className="mt-1.5 grid grid-cols-3 gap-1.5 sm:gap-2">
+                        <div className="rounded-xl border border-[#A67BFF]/20 bg-[#1E3527] p-1.5 sm:p-2.5">
+                          <p className="text-[6.5px] font-black uppercase leading-tight tracking-[0.04em] text-[#A9B8AB] sm:text-[7.5px] sm:tracking-[0.06em]">Projection</p>
+                          <div className="hidden sm:block">
+                            <HeroTrendChart
+                              points={heroPlays.map((p, i) => ({
+                                gw: p.gw,
+                                current: parseFloat(p.routes[2].pts),
+                                withMove: i === gwIndex ? parseFloat(route.pts) : parseFloat(p.routes[0].pts),
+                              }))}
+                              activeIndex={gwIndex}
+                            />
+                            <div className="mt-0.5 flex items-center justify-between text-[7px] font-bold">
+                              <span className="flex items-center gap-1 text-[#6F8175]">
+                                <span className="h-1.5 w-1.5 rounded-full bg-[#5E7166]" />
+                                Hold ({heroPlays.reduce((s, p) => s + parseFloat(p.routes[2].pts), 0).toFixed(1)})
+                              </span>
+                              <span className="flex items-center gap-1 text-[#A67BFF]">
+                                <span className="h-1.5 w-1.5 rounded-full bg-[#A67BFF]" />
+                                This route ({heroPlays.reduce((s, p, i) => s + (i === gwIndex ? parseFloat(route.pts) : parseFloat(p.routes[0].pts)), 0).toFixed(1)})
+                              </span>
+                            </div>
+                          </div>
+                          <div className="mt-1 sm:hidden">
+                            <p className="text-[13px] font-black tabular-nums leading-none text-[#A67BFF]">
+                              {heroPlays.reduce((s, p, i) => s + (i === gwIndex ? parseFloat(route.pts) : parseFloat(p.routes[0].pts)), 0).toFixed(1)}
+                            </p>
+                            <p className="text-[6px] font-black uppercase tracking-[0.04em] text-[#6F8175]">3-gw total</p>
                           </div>
                         </div>
 
-                        <div className="group w-[78%] shrink-0 snap-start rounded-xl border border-[#E8B23D]/25 bg-[#1E3527] p-2.5 transition duration-200 hover:-translate-y-0.5 hover:border-[#E8B23D]/50 hover:bg-[#243D2C] sm:w-auto sm:shrink">
-                          <p className="text-[7.5px] font-black uppercase tracking-[0.06em] text-[#E8B23D]">Captain this week</p>
-                          <div className="mt-1.5 flex items-center gap-2">
-                            <div className="relative h-9 w-9 shrink-0">
+                        <div className="group rounded-xl border border-[#E8B23D]/25 bg-[#1E3527] p-1.5 transition duration-200 hover:-translate-y-0.5 hover:border-[#E8B23D]/50 hover:bg-[#243D2C] sm:p-2.5">
+                          <p className="text-[6.5px] font-black uppercase leading-tight tracking-[0.04em] text-[#E8B23D] sm:text-[7.5px] sm:tracking-[0.06em]">Captain</p>
+                          <div className="mt-1 flex items-center gap-1.5 sm:mt-1.5 sm:gap-2">
+                            <div className="relative h-6 w-6 shrink-0 sm:h-9 sm:w-9">
                               <span className="hero-armband-ring absolute inset-0 rounded-full" />
-                              <span className="relative block h-9 w-9 overflow-hidden rounded-full bg-[#0A140E]">
+                              <span className="relative block h-6 w-6 overflow-hidden rounded-full bg-[#0A140E] sm:h-9 sm:w-9">
                                 <Image key={`${play.gw}-cap`} src={`https://resources.premierleague.com/premierleague/photos/players/110x140/p${play.capCode}.png`} alt="" fill sizes="36px" className="object-cover object-top" />
                               </span>
-                              <span className="absolute -right-0.5 -top-0.5 grid h-4 w-4 place-items-center rounded-full border-[1.5px] border-[#1E3527] bg-[#E8B23D] text-[8px] font-black text-[#1C1300]">C</span>
+                              <span className="absolute -right-0.5 -top-0.5 grid h-3 w-3 place-items-center rounded-full border border-[#1E3527] bg-[#E8B23D] text-[6px] font-black text-[#1C1300] sm:h-4 sm:w-4 sm:border-[1.5px] sm:text-[8px]">C</span>
                             </div>
                             <div className="min-w-0 flex-1">
-                              <p className="truncate text-[11px] font-black text-[#F3EFE3]">{play.capName}</p>
-                              <p className="truncate text-[7.5px] font-bold text-[#A9B8AB]">{play.capMeta}</p>
+                              <p className="truncate text-[9px] font-black text-[#F3EFE3] sm:text-[11px]">{play.capName}</p>
+                              <p className="hidden truncate text-[7.5px] font-bold text-[#A9B8AB] sm:block">{play.capMeta}</p>
                             </div>
                             <div className="shrink-0 text-right">
-                              <p className="text-[13px] font-black tabular-nums text-[#E8B23D]">{play.capPts}</p>
-                              <p className="text-[6.5px] font-black uppercase tracking-[0.06em] text-[#6F8175]">Proj pts</p>
+                              <p className="text-[10px] font-black tabular-nums text-[#E8B23D] sm:text-[13px]">{play.capPts}</p>
+                              <p className="hidden text-[6.5px] font-black uppercase tracking-[0.06em] text-[#6F8175] sm:block">Proj pts</p>
                             </div>
                           </div>
-                          <div className="mt-1.5 flex items-center justify-between rounded-[6px] bg-[#0A140E]/40 px-1.5 py-1">
+                          <div className="mt-1.5 hidden items-center justify-between rounded-[6px] bg-[#0A140E]/40 px-1.5 py-1 sm:flex">
                             <span className="text-[6.5px] font-black uppercase tracking-[0.05em] text-[#6F8175]">Vice-captain</span>
                             <span className="text-[8.5px] font-black text-[#F3EFE3]">{play.vcName} &middot; {play.vcPts}</span>
                           </div>
                         </div>
 
-                        <div className="w-[78%] shrink-0 snap-start rounded-xl border border-[#F3EFE3]/[0.14] bg-[#1E3527] p-2.5 sm:w-auto sm:shrink">
-                          <p className="text-[7.5px] font-black uppercase tracking-[0.06em] text-[#A67BFF]">Why this move</p>
-                          <p className="mt-1.5 text-[9.5px] font-semibold leading-[1.4] text-[#A9B8AB]">{route.why}</p>
-                          <div className="mt-1.5 flex flex-wrap gap-1">
-                            <span className="rounded-full border border-[#7FE0AC]/25 bg-[#7FE0AC]/10 px-1.5 py-0.5 text-[6.5px] font-black text-[#7FE0AC]">Fixtures {route.chipFixture}</span>
-                            <span className="rounded-full border border-[#7FE0AC]/25 bg-[#7FE0AC]/10 px-1.5 py-0.5 text-[6.5px] font-black text-[#7FE0AC]">Form {route.chipForm}</span>
-                            <span className="rounded-full border border-[#F3EFE3]/[0.16] bg-[#0A140E]/40 px-1.5 py-0.5 text-[6.5px] font-black text-[#A9B8AB]">{route.chipMinutes}</span>
+                        <div className="rounded-xl border border-[#F3EFE3]/[0.14] bg-[#1E3527] p-1.5 sm:p-2.5">
+                          <p className="text-[6.5px] font-black uppercase leading-tight tracking-[0.04em] text-[#A67BFF] sm:text-[7.5px] sm:tracking-[0.06em]">Why</p>
+                          <p className="mt-1 line-clamp-2 text-[8px] font-semibold leading-[1.35] text-[#A9B8AB] sm:mt-1.5 sm:line-clamp-none sm:text-[9.5px] sm:leading-[1.4]">{route.why}</p>
+                          <div className="mt-1 sm:mt-1.5 sm:hidden">
+                            <span className="inline-block w-fit rounded-full border border-[#7FE0AC]/25 bg-[#7FE0AC]/10 px-1.5 py-0.5 text-[6px] font-black text-[#7FE0AC]">Fixtures {route.chipFixture} &middot; Form {route.chipForm}</span>
+                          </div>
+                          <div className="mt-1.5 hidden sm:flex sm:flex-wrap sm:gap-1">
+                            <span className="inline-block w-fit rounded-full border border-[#7FE0AC]/25 bg-[#7FE0AC]/10 px-1.5 py-0.5 text-[6.5px] font-black text-[#7FE0AC]">Fixtures {route.chipFixture}</span>
+                            <span className="inline-block w-fit rounded-full border border-[#7FE0AC]/25 bg-[#7FE0AC]/10 px-1.5 py-0.5 text-[6.5px] font-black text-[#7FE0AC]">Form {route.chipForm}</span>
+                            <span className="inline-block w-fit rounded-full border border-[#F3EFE3]/[0.16] bg-[#0A140E]/40 px-1.5 py-0.5 text-[6.5px] font-black text-[#A9B8AB]">{route.chipMinutes}</span>
                           </div>
                         </div>
                       </div>
@@ -931,10 +966,10 @@ function NewHero() {
           </div>
 
           <div className="flex h-full flex-col justify-start gap-2.5 pt-1">
-            <p className="text-[8.5px] font-black uppercase tracking-[0.1em] text-[#5E7166]">On this screen</p>
+            <p className={`text-[8.5px] font-black uppercase tracking-[0.1em] text-[#5E7166] ${view === "team" ? "hidden sm:block" : ""}`}>On this screen</p>
 
             {view === "team" ? (
-              <>
+              <div className="hidden sm:contents">
                 <div className="rounded-[12px] border border-[#7FE0AC]/25 bg-[#1E3527] p-3">
                   <div className="flex items-center justify-between gap-2">
                     <div>
@@ -1023,7 +1058,7 @@ function NewHero() {
                   </div>
                   <p className="mt-2 text-[8.5px] font-bold text-[#6F8175]">Open GW1 for the full reasoning &rarr;</p>
                 </div>
-              </>
+              </div>
             ) : (
               <>
                 <div
@@ -1051,33 +1086,35 @@ function NewHero() {
                   </ol>
                 </div>
 
-                <div
-                  onMouseEnter={() => setFocusStage("decide")}
-                  onMouseLeave={() => setFocusStage(null)}
-                  className={`rounded-[12px] border p-3 transition ${focusStage === "decide" ? "border-[#A67BFF]/50 bg-[#A67BFF]/[0.08]" : "border-[#F3EFE3]/[0.14] bg-[#1E3527]"}`}
-                >
-                  <p className="text-[9px] font-black uppercase tracking-[0.08em] text-[#A9B8AB]">Data coverage</p>
-                  <div className="mt-1.5 flex items-end justify-between gap-2">
-                    <span className="text-[17px] font-black tabular-nums text-[#F3EFE3]">{play.coverage}</span>
-                    <span className="shrink-0 rounded-md bg-[#F3EFE3]/[0.08] px-1.5 py-0.5 text-[8px] font-black text-[#A9B8AB]">{play.fallback} fallback</span>
+                <div className="hidden sm:contents">
+                  <div
+                    onMouseEnter={() => setFocusStage("decide")}
+                    onMouseLeave={() => setFocusStage(null)}
+                    className={`rounded-[12px] border p-3 transition ${focusStage === "decide" ? "border-[#A67BFF]/50 bg-[#A67BFF]/[0.08]" : "border-[#F3EFE3]/[0.14] bg-[#1E3527]"}`}
+                  >
+                    <p className="text-[9px] font-black uppercase tracking-[0.08em] text-[#A9B8AB]">Data coverage</p>
+                    <div className="mt-1.5 flex items-end justify-between gap-2">
+                      <span className="text-[17px] font-black tabular-nums text-[#F3EFE3]">{play.coverage}</span>
+                      <span className="shrink-0 rounded-md bg-[#F3EFE3]/[0.08] px-1.5 py-0.5 text-[8px] font-black text-[#A9B8AB]">{play.fallback} fallback</span>
+                    </div>
+                    <p className="mt-0.5 text-[8.5px] font-bold text-[#6F8175]">players with live fixture data</p>
                   </div>
-                  <p className="mt-0.5 text-[8.5px] font-bold text-[#6F8175]">players with live fixture data</p>
-                </div>
 
-                <div
-                  onMouseEnter={() => setFocusStage("diagnose")}
-                  onMouseLeave={() => setFocusStage(null)}
-                  className={`rounded-[12px] border p-3 transition ${focusStage === "diagnose" ? "border-[#A67BFF]/50 bg-[#A67BFF]/[0.08]" : "border-[#F3EFE3]/[0.14] bg-[#1E3527]"}`}
-                >
-                  <p className="text-[9px] font-black uppercase tracking-[0.08em] text-[#A9B8AB]">{gwIndex === 0 ? "Next deadline" : "Planning window"}</p>
-                  {gwIndex === 0 ? (
-                    <p className="mt-1.5 text-[12px] font-black tabular-nums text-[#F3EFE3]">
-                      {countdown.ready ? `${countdown.days}d ${pad2(countdown.hours)}h ${pad2(countdown.minutes)}m ${pad2(countdown.seconds)}s` : "-"}
-                    </p>
-                  ) : (
-                    <p className="mt-1.5 text-[12px] font-black text-[#F3EFE3]">Opens after {heroPlays[gwIndex - 1].gw}</p>
-                  )}
-                  <p className="mt-0.5 text-[8.5px] font-bold text-[#6F8175]">Route re-ranks automatically once locked</p>
+                  <div
+                    onMouseEnter={() => setFocusStage("diagnose")}
+                    onMouseLeave={() => setFocusStage(null)}
+                    className={`rounded-[12px] border p-3 transition ${focusStage === "diagnose" ? "border-[#A67BFF]/50 bg-[#A67BFF]/[0.08]" : "border-[#F3EFE3]/[0.14] bg-[#1E3527]"}`}
+                  >
+                    <p className="text-[9px] font-black uppercase tracking-[0.08em] text-[#A9B8AB]">{gwIndex === 0 ? "Next deadline" : "Planning window"}</p>
+                    {gwIndex === 0 ? (
+                      <p className="mt-1.5 text-[12px] font-black tabular-nums text-[#F3EFE3]">
+                        {countdown.ready ? `${countdown.days}d ${pad2(countdown.hours)}h ${pad2(countdown.minutes)}m ${pad2(countdown.seconds)}s` : "-"}
+                      </p>
+                    ) : (
+                      <p className="mt-1.5 text-[12px] font-black text-[#F3EFE3]">Opens after {heroPlays[gwIndex - 1].gw}</p>
+                    )}
+                    <p className="mt-0.5 text-[8.5px] font-bold text-[#6F8175]">Route re-ranks automatically once locked</p>
+                  </div>
                 </div>
               </>
             )}
@@ -1103,6 +1140,19 @@ function NewHero() {
         }
         @media (prefers-reduced-motion: reduce) {
           .hero-armband-ring { animation: none; }
+        }
+      `}</style>
+      <style jsx global>{`
+        @keyframes heroLineDraw {
+          to { stroke-dashoffset: 0; }
+        }
+        @keyframes heroDotPop {
+          0% { transform: scale(0); opacity: 0; }
+          60% { transform: scale(1.3); opacity: 1; }
+          100% { transform: scale(1); opacity: 1; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          [style*="heroLineDraw"], [style*="heroDotPop"] { animation: none !important; opacity: 1 !important; }
         }
       `}</style>
     </section>
