@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { trackEvent } from "@/lib/umami";
 
 type IconName =
   | "arrow"
@@ -596,6 +597,9 @@ function NewHero() {
       clearInterval(autoTimerRef.current);
       autoTimerRef.current = null;
     }
+    trackEvent("hero_tab_selected", {
+      tab: nextView === "team" ? "My Team" : heroPlays[nextGw ?? 0].gw,
+    });
     goTo(nextView, nextGw);
   }
 
@@ -604,6 +608,7 @@ function NewHero() {
       clearInterval(autoTimerRef.current);
       autoTimerRef.current = null;
     }
+    trackEvent("hero_alt_route_selected", { gw: play.gw, route: play.routes[nextAlt].label });
     setAltIndex(nextAlt);
     if (window.innerWidth < 1024) {
       mockupRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -662,7 +667,11 @@ function NewHero() {
             <a href="#modules" className="text-xs font-bold text-[#A9B8AB] hover:text-[#F3EFE3]">Modules</a>
             <a href="#loop" className="text-xs font-bold text-[#A9B8AB] hover:text-[#F3EFE3]">How it works</a>
           </div>
-          <Link href="/import" className="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full bg-[#7A3FFF] px-3.5 py-2 text-[11.5px] font-black text-white shadow-[0_12px_26px_rgba(122,63,255,0.3)] transition hover:-translate-y-0.5">
+          <Link
+            href="/import"
+            onClick={() => trackEvent("cta_clicked", { location: "nav", label: "Enter Beta" })}
+            className="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full bg-[#7A3FFF] px-3.5 py-2 text-[11.5px] font-black text-white shadow-[0_12px_26px_rgba(122,63,255,0.3)] transition hover:-translate-y-0.5"
+          >
             Enter Beta
           </Link>
         </div>
@@ -705,10 +714,18 @@ function NewHero() {
             </div>
 
             <div className="mt-5 flex flex-wrap gap-2.5">
-              <Link href="/import" className="inline-flex items-center gap-1.5 rounded-[10px] bg-[#7A3FFF] px-4 py-2.5 text-[11.5px] font-black text-white shadow-[0_14px_30px_rgba(122,63,255,0.32)]">
+              <Link
+                href="/import"
+                onClick={() => trackEvent("cta_clicked", { location: "hero", label: "Run my squad now" })}
+                className="inline-flex items-center gap-1.5 rounded-[10px] bg-[#7A3FFF] px-4 py-2.5 text-[11.5px] font-black text-white shadow-[0_14px_30px_rgba(122,63,255,0.32)]"
+              >
                 Run my squad now
               </Link>
-              <a href="#system" className="inline-flex items-center gap-1.5 rounded-[10px] border border-dashed border-[#F3EFE3]/[0.16] px-3.5 py-2.5 text-[11.5px] font-black">
+              <a
+                href="#system"
+                onClick={() => trackEvent("cta_clicked", { location: "hero", label: "See how it works" })}
+                className="inline-flex items-center gap-1.5 rounded-[10px] border border-dashed border-[#F3EFE3]/[0.16] px-3.5 py-2.5 text-[11.5px] font-black"
+              >
                 See how it works
               </a>
             </div>

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { Inter_Tight, Sora } from "next/font/google";
 import "./globals.css";
 
@@ -36,6 +37,27 @@ export default function RootLayout({
       lang="en"
       className={`${interTight.variable} ${sora.variable} h-full antialiased`}
     >
+      <head>
+        {/* Cloudflare Web Analytics: no cookies, no persistent identifier, so no consent
+            gate is needed - runs for every visitor from load. */}
+        <Script
+          id="cf-web-analytics"
+          type="module"
+          src="https://static.cloudflareinsights.com/beacon.min.js"
+          data-cf-beacon='{"token": "bc4d8bfc179c48ef9c4fc7dafee7919f"}'
+          strategy="beforeInteractive"
+        />
+        {/* Self-hosted Umami: same no-cookie, no-consent-needed design, but adds custom event
+            tracking (see src/lib/umami.ts) that the Cloudflare beacon alone can't do. Its script
+            auto-tracks SPA route changes itself, so no separate route-tracker component is needed. */}
+        <Script
+          id="umami-analytics"
+          defer
+          src="https://analytics.matchdayfpl.co.uk/script.js"
+          data-website-id="0d55cf13-b38f-48e7-8710-62c8e61b1237"
+          strategy="afterInteractive"
+        />
+      </head>
       <body className="min-h-full bg-[#F8F5FF] text-[#17002F]">{children}</body>
     </html>
   );
