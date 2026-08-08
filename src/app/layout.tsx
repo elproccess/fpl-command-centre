@@ -23,7 +23,7 @@ const sora = Sora({
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "FPL Command Centre",
+  title: "Matchday OS",
   description: "Premium FPL decision assistant for your best move, captain pick, squad health, and 3-GW plan.",
 };
 
