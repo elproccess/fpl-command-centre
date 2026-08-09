@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { AppShell } from "@/components/app-shell";
 import { ImportTeamForm } from "@/components/import-team-form";
 import { loadPricingData } from "@/lib/use-command-centre";
@@ -70,19 +71,34 @@ export default async function ImportPage({
 
   return (
     <AppShell title="Import team" eyebrow="Start here" state={appState} dataSource={dataSource}>
-      <div className="space-y-5">
-      <ImportErrorNotice error={asString(params.error)} status={asString(params.status)} message={asString(params.message)} />
-      <div className="grid gap-6 lg:grid-cols-[420px_1fr]">
-        <ImportTeamForm />
-        <section className="rounded-2xl border border-[#E8DEF8] bg-white p-6 shadow-[0_18px_45px_rgba(55,0,60,0.08)]">
-          <h2 className="text-2xl font-black text-[#17002F]">What happens next?</h2>
-          <div className="mt-6 grid gap-4 md:grid-cols-3">
-            {["Build your squad view", "Find the best move", "Compare your 3-GW plan"].map((item) => (
-              <div key={item} className="rounded-xl border border-[#E8DEF8] bg-[#F8F5FF] p-4 text-sm font-bold text-[#3C2752]">{item}</div>
-            ))}
+      <div className="mx-auto max-w-[480px] space-y-5">
+        <ImportErrorNotice error={asString(params.error)} status={asString(params.status)} message={asString(params.message)} />
+
+        <div className="relative">
+          <div className="pointer-events-none absolute -top-6 right-0 z-0 hidden h-[320px] w-[220px] translate-x-[65%] lg:block" aria-hidden="true">
+            <Image
+              src="/players/martinelli.png"
+              alt=""
+              fill
+              sizes="220px"
+              className="object-contain object-bottom"
+              style={{ transform: "scaleX(-1)" }}
+            />
           </div>
-        </section>
-      </div>
+          <div className="pointer-events-none absolute -top-6 left-0 z-0 hidden h-[320px] w-[220px] -translate-x-[65%] lg:block" aria-hidden="true">
+            <Image
+              src="/players/reece-james.png"
+              alt=""
+              fill
+              sizes="220px"
+              className="object-contain object-bottom"
+              style={{ transform: "scale(0.9)", transformOrigin: "bottom" }}
+            />
+          </div>
+          <div className="relative z-[1]">
+            <ImportTeamForm />
+          </div>
+        </div>
       </div>
     </AppShell>
   );
