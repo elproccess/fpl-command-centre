@@ -395,7 +395,7 @@ const squadHeroFallbackClass: Record<HeroSlot, string> = {
   right: "absolute bottom-3 left-1/2 -translate-x-1/2 scale-[0.82] sm:bottom-5 sm:scale-100 lg:scale-[1.08]",
 };
 
-function SquadHeroPlayer({ player, slot }: { player: Player; slot: HeroSlot }) {
+function SquadHeroPlayer({ player, slot, onPhotoError }: { player: Player; slot: HeroSlot; onPhotoError: () => void }) {
   // Use the exact same player-photo source as the Planner hero. Do not render a kit
   // behind a valid photo: that was the cause of the random shirts showing through.
   const photo = getPlayerImageUrl(player);
@@ -420,6 +420,7 @@ function SquadHeroPlayer({ player, slot }: { player: Player; slot: HeroSlot }) {
               : "(max-width: 639px) 112px, (max-width: 1023px) 150px, 166px"
           }
           className="object-contain object-bottom drop-shadow-[0_18px_22px_rgba(38,7,78,0.22)] sm:drop-shadow-[0_24px_28px_rgba(38,7,78,0.24)]"
+          onError={onPhotoError}
         />
       ) : (
         <div
@@ -433,7 +434,14 @@ function SquadHeroPlayer({ player, slot }: { player: Player; slot: HeroSlot }) {
 }
 
 function SquadHeroArtwork({ players }: { players: Player[] }) {
-  const selected = players.slice(0, 3);
+  // A photo URL existing (getPlayerImageUrl truthy) doesn't mean it actually loads - found
+  // live: Cherki's official PL photo 404s/403s (a brand-new signing the CDN hasn't provisioned
+  // an image for yet), and with no error handling that rendered as a blank broken-image slot
+  // next to the other two players. Track load failures here and drop that player from the
+  // hero entirely (same "only show what we know renders" rule as the has-a-photo filter this
+  // builds on), rather than leaving an empty gap.
+  const [failedIds, setFailedIds] = useState<Set<number>>(new Set());
+  const selected = players.filter((player) => !failedIds.has(player.id)).slice(0, 3);
   const slots: HeroSlot[] = selected.length === 1 ? ["center"] : selected.length === 2 ? ["left", "center"] : ["left", "center", "right"];
 
   return (
@@ -443,7 +451,12 @@ function SquadHeroArtwork({ players }: { players: Player[] }) {
     >
       <div className="absolute bottom-4 left-1/2 h-24 w-36 -translate-x-1/2 rounded-full bg-[#6C1DFF]/10 blur-2xl sm:h-32 sm:w-56 lg:h-36 lg:w-64" />
       {selected.map((player, index) => (
-        <SquadHeroPlayer key={player.id} player={player} slot={slots[index]} />
+        <SquadHeroPlayer
+          key={player.id}
+          player={player}
+          slot={slots[index]}
+          onPhotoError={() => setFailedIds((prev) => new Set(prev).add(player.id))}
+        />
       ))}
     </div>
   );
