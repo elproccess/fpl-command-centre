@@ -261,6 +261,22 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null;
 }
 
+// A partial snapshot with is_partial=true but zero real progress (the backend now emits this
+// immediately, before the expensive setup work even starts, purely so the frontend knows the
+// gameweek shape early - see multi_gw_planner.py's own comment on why) is not worth switching
+// the UI into the multi-card streaming skeleton for. Found live: doing so replaced a single
+// "still working" spinner with 5 cards that all read "Calculating..." and then visibly sat
+// frozen for the entire ~20s setup window before any of them filled in - reading as MORE broken
+// than the one spinner it replaced, not less. Only treat a snapshot as streamable once it
+// actually contains a completed step or alternative; otherwise keep showing the plain running
+// state even though is_partial is technically true.
+function hasRealPlannerProgress(partial: Record<string, unknown>): boolean {
+  const recommendedPartial = partial.recommended_route_partial;
+  const steps = isRecord(recommendedPartial) && Array.isArray(recommendedPartial.steps) ? recommendedPartial.steps : [];
+  const completedAlternatives = Array.isArray(partial.alternative_routes_completed) ? partial.alternative_routes_completed : [];
+  return steps.length > 0 || completedAlternatives.length > 0;
+}
+
 // Builds a full MultiGwPlanner-shaped object out of the backend's real, growing partial-progress
 // snapshot (see multi_gw_planner.py's plan_multi_gw on_progress / _build_candidate_routes
 // docstring) - not an estimate, the genuine data computed so far, reusing adaptPlannerRoute (the
@@ -460,7 +476,7 @@ function usePlannerAnalysis(payload: Record<string, unknown>): PlannerPollState 
           // background job may already be well underway). Without reading result.partial here,
           // this always regressed to a bare spinner - discarding the real per-gameweek progress
           // the backend already attached to this response - until the whole route finished.
-          if (result.partial && result.partial.is_partial) {
+          if (result.partial && result.partial.is_partial && hasRealPlannerProgress(result.partial)) {
             applyStreamingState(result.partial);
           } else {
             applyRunningState();
@@ -512,7 +528,7 @@ function usePlannerAnalysis(payload: Record<string, unknown>): PlannerPollState 
         }
 
         const partial = plannerStatus?.payload;
-        if (partial && isRecord(partial) && partial.is_partial) {
+        if (partial && isRecord(partial) && partial.is_partial && hasRealPlannerProgress(partial)) {
           applyStreamingState(partial);
         } else {
           applyRunningState();
