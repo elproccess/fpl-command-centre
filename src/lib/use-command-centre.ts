@@ -69,7 +69,9 @@ const fetchImportedTeam = cache(importTeam);
 
 const pricingAppState: UserGameState = {
   manager_name: "Manager",
-  team_name: "Import your team",
+  // Blank, not the CTA phrase itself - the header avatar's initials() would otherwise
+  // abbreviate "Import your team" into the nonsensical "IY", as if it were a real team name.
+  team_name: "",
   team_id_label: "Not imported",
   gameweek: 1,
   gameweek_label: "GW1",

@@ -1630,7 +1630,10 @@ export function ImportedDashboardFlow() {
 
   const shellState = useMemo(() => (imported ? appStateFromImport(imported) : {
     manager_name: "Manager",
-    team_name: "Import your team",
+    // Blank, not the CTA phrase - same fix as app-shell.tsx's fallbackState and
+    // use-command-centre.ts's pricingAppState: initials() would otherwise abbreviate this
+    // placeholder sentence into a nonsensical "IY" on the header avatar pre-import.
+    team_name: "",
     team_id_label: "Not imported",
     gameweek: 1,
     gameweek_label: "GW–",

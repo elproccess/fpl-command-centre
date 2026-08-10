@@ -8,7 +8,11 @@ import type { DataSourceStatus, UserGameState } from "@/lib/types";
 
 const fallbackState: UserGameState = {
   manager_name: "Manager",
-  team_name: "Imported XI",
+  // Deliberately blank, not a placeholder phrase - the avatar badge below runs this through
+  // initials(), which reads any non-empty string as if it were a real team name (found live:
+  // "Imported XI" produced the nonsensical-looking initials "IX" pre-import). Blank falls
+  // through to initials()'s own "FC" default instead.
+  team_name: "",
   team_id_label: "Connect team",
   gameweek: 1,
   gameweek_label: "GW1",

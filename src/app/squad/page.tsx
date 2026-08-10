@@ -367,9 +367,13 @@ function HeroOverviewMetric({
 }
 
 function heroPlayers(starters: Player[]) {
-  if (!starters.length) return [];
-  const captain = starters.find((player) => player.role === "captain") ?? [...starters].sort((a, b) => (projected(b) ?? 0) - (projected(a) ?? 0))[0];
-  const supporting = [...starters]
+  // Only pick from players with a real photo - the hero renders a bare photo with no kit
+  // fallback (see SquadHeroPlayer), so a player without one would otherwise swap in a shirt
+  // render mid-lineup and break the look this artwork is going for.
+  const withPhotos = starters.filter((player) => Boolean(getPlayerImageUrl(player)));
+  if (!withPhotos.length) return [];
+  const captain = withPhotos.find((player) => player.role === "captain") ?? [...withPhotos].sort((a, b) => (projected(b) ?? 0) - (projected(a) ?? 0))[0];
+  const supporting = [...withPhotos]
     .filter((player) => player.id !== captain?.id)
     .sort((a, b) => (projected(b) ?? 0) - (projected(a) ?? 0))
     .slice(0, 2);
