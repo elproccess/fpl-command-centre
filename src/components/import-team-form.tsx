@@ -9,15 +9,6 @@ function HashIcon() {
   );
 }
 
-function CalendarIcon() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <rect x="4" y="5" width="16" height="15" rx="2.5" />
-      <path d="M8 3v4M16 3v4M4 10h16" />
-    </svg>
-  );
-}
-
 function PlayIcon() {
   return (
     <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -40,8 +31,8 @@ export function ImportTeamForm() {
       <div className="relative overflow-hidden border-b border-[#EFE7FB] bg-[linear-gradient(160deg,#F8F4FF_0%,#FFFFFF_65%)] p-5">
         <div className="pointer-events-none absolute -right-8 -top-10 h-32 w-32 rounded-full bg-[#7A3FFF]/10 blur-2xl" aria-hidden="true" />
         <div className="relative flex items-center gap-3">
-          <span className="grid h-10 w-10 shrink-0 place-items-center rounded-[11px] bg-[linear-gradient(145deg,#7A3FFF,#5417C9)] text-white shadow-[0_10px_22px_rgba(122,63,255,0.32)]">
-            <HashIcon />
+          <span className="grid h-10 w-10 shrink-0 place-items-center rounded-[11px] bg-[linear-gradient(145deg,#7A3FFF,#5417C9)] text-[17px] font-black text-white shadow-[0_10px_22px_rgba(122,63,255,0.32)]">
+            M
           </span>
           <div>
             <p className="text-[10px] font-black uppercase tracking-[0.14em] text-[#6C1DFF]">Step 1</p>
@@ -78,23 +69,6 @@ export function ImportTeamForm() {
               inputMode="numeric"
               required
               placeholder="Enter your FPL Team ID"
-              className="w-full rounded-xl border border-[#E8DEF8] bg-white py-3 pl-11 pr-4 font-semibold text-[#17002F] outline-none transition placeholder:text-[#8B7A9B] focus:border-[#6C1DFF] focus:ring-4 focus:ring-[#6C1DFF]/10"
-            />
-          </div>
-
-          <label htmlFor="gameweek" className="mt-4 block text-sm font-black text-[#17002F]">
-            Gameweek <span className="font-semibold text-[#8B7A9B]">(optional — auto-resolved)</span>
-          </label>
-
-          <div className="relative mt-3">
-            <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[#B7A6D9]">
-              <CalendarIcon />
-            </span>
-            <input
-              id="gameweek"
-              name="gameweek"
-              inputMode="numeric"
-              placeholder="Leave blank for latest squad snapshot"
               className="w-full rounded-xl border border-[#E8DEF8] bg-white py-3 pl-11 pr-4 font-semibold text-[#17002F] outline-none transition placeholder:text-[#8B7A9B] focus:border-[#6C1DFF] focus:ring-4 focus:ring-[#6C1DFF]/10"
             />
           </div>
