@@ -347,8 +347,12 @@ function DecisionHero({
         {heroPending || !heroPlayer ? <HeroArtworkLoading /> : <HeroPlayerArtwork key={`${heroPlayer.id}-${heroPlayer.code ?? "no-code"}`} player={heroPlayer} />}
       </div>
 
-      <div className="relative p-5 sm:p-7 lg:p-8 lg:pr-[300px]">
-        <div className="min-h-[145px] pr-24 sm:min-h-[175px] sm:pr-40 lg:min-h-0 lg:pr-0">
+      <div className="relative p-5 sm:p-7 lg:p-8">
+        {/* Only this title/badge block needs to dodge the hero photo (absolutely positioned in
+            the top-right corner) - the metric row and buttons below render well under the
+            photo's bottom edge, so reserving the same ~300px on the *entire* content column
+            (as this used to) squeezed them into a needlessly narrow strip for no visual reason. */}
+        <div className="min-h-[145px] pr-24 sm:min-h-[175px] sm:pr-40 lg:min-h-0 lg:pr-[260px]">
           <div className="flex flex-wrap items-center gap-2">
             <span className="rounded-full bg-[var(--accent)] px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.14em] text-white">Recommended</span>
             <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--success-border)] bg-[var(--success-soft)] px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.14em] text-[var(--success)]">

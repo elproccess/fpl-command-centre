@@ -50,7 +50,7 @@ const nextConfig: NextConfig = {
       {
         protocol: "https",
         hostname: "resources.premierleague.com",
-        pathname: "/premierleague/photos/players/110x140/**",
+        pathname: "/premierleague/photos/players/250x250/**",
       },
       {
         protocol: "https",
