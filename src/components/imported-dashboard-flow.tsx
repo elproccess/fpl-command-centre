@@ -200,9 +200,9 @@ function formatPrice(value: number | null | undefined) {
 }
 
 function riskTone(value: string) {
-  if (value === "High" || value === "Critical") return "border-[#FFD0DF] bg-[#FFF0F5] text-[#C80046]";
-  if (value === "Medium" || value === "Fragile") return "border-[#FFE0A3] bg-[#FFF8E8] text-[#A86B00]";
-  return "border-[#BDEFD2] bg-[#EFFFF5] text-[#008B49]";
+  if (value === "High" || value === "Critical") return "border-[var(--danger-border)] bg-[var(--danger-soft)] text-[var(--danger)]";
+  if (value === "Medium" || value === "Fragile") return "border-[var(--warning-border)] bg-[var(--warning-soft)] text-[var(--warning)]";
+  return "border-[var(--success-border)] bg-[var(--success-soft)] text-[var(--success)]";
 }
 
 function roleFor(player: Player, captainId?: number, viceCaptainId?: number) {
@@ -490,9 +490,9 @@ function DashboardSectionHeading({
   return (
     <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
       <div>
-        <p className="text-[10px] font-black uppercase tracking-[0.18em] text-[#6C1DFF]">{eyebrow}</p>
-        <h2 className="mt-2 text-2xl font-black tracking-[-0.035em] text-[#15052B] sm:text-3xl">{title}</h2>
-        {body ? <p className="mt-2 max-w-2xl text-sm font-semibold leading-6 text-[#776A80]">{body}</p> : null}
+        <p className="text-[10px] font-black uppercase tracking-[0.18em] text-[var(--accent)]">{eyebrow}</p>
+        <h2 className="mt-2 text-2xl font-black tracking-[-0.035em] text-[var(--ink)] sm:text-3xl">{title}</h2>
+        {body ? <p className="mt-2 max-w-2xl text-sm font-semibold leading-6 text-[var(--muted)]">{body}</p> : null}
       </div>
       {action}
     </div>
@@ -512,18 +512,18 @@ function OperatingMetric({
 }) {
   const valueTone =
     tone === "green"
-      ? "text-[#008D57]"
+      ? "text-[var(--success)]"
       : tone === "purple"
-        ? "text-[#6C1DFF]"
+        ? "text-[var(--accent)]"
         : tone === "amber"
-          ? "text-[#AD6900]"
-          : "text-[#15052B]";
+          ? "text-[var(--warning)]"
+          : "text-[var(--ink)]";
 
   return (
-    <div className="min-w-0 border-t border-[#E9E2F0] bg-white px-4 py-4 sm:border-l sm:border-t-0 sm:px-5">
-      <p className="text-[9px] font-black uppercase tracking-[0.13em] text-[#8A7E93]">{label}</p>
+    <div className="min-w-0 border-t border-[var(--border-soft)] bg-[var(--surface)] px-4 py-4 sm:border-l sm:border-t-0 sm:px-5">
+      <p className="text-[9px] font-black uppercase tracking-[0.13em] text-[var(--muted)]">{label}</p>
       <p className={`mt-1.5 truncate text-xl font-black tracking-[-0.025em] sm:text-2xl ${valueTone}`}>{value}</p>
-      {detail ? <p className="mt-1 truncate text-[10px] font-semibold text-[#81758A]">{detail}</p> : null}
+      {detail ? <p className="mt-1 truncate text-[10px] font-semibold text-[var(--muted)]">{detail}</p> : null}
     </div>
   );
 }
@@ -599,7 +599,7 @@ function DashboardHero({
         : "Decision engine running";
 
   return (
-    <section className="relative mb-6 overflow-hidden rounded-[30px] border border-[#D8C9F4] bg-white shadow-[0_30px_80px_rgba(46,14,68,0.10)]">
+    <section className="relative mb-6 overflow-hidden rounded-[30px] border border-[var(--accent-border)] bg-[var(--surface)] shadow-[0_30px_80px_rgba(46,14,68,0.10)]">
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute -right-24 -top-32 h-80 w-80 rounded-full bg-[#6C1DFF]/10 blur-3xl" />
         <div className="absolute bottom-[-120px] left-[28%] h-64 w-64 rounded-full bg-[#00A86B]/8 blur-3xl" />
@@ -609,49 +609,51 @@ function DashboardHero({
       <div className="relative grid lg:grid-cols-[minmax(0,1fr)_410px]">
         <div className="p-5 sm:p-7 lg:p-8">
           <div className="flex flex-wrap items-center gap-2">
-            <span className="rounded-full bg-[#6C1DFF] px-3 py-1.5 text-[9px] font-black uppercase tracking-[0.14em] text-white">
+            <span className="rounded-full bg-[var(--accent)] px-3 py-1.5 text-[9px] font-black uppercase tracking-[0.14em] text-white">
               Matchday OS Beta
             </span>
-            <span className="rounded-full border border-[#BEEAD2] bg-[#EDFFF5] px-3 py-1.5 text-[9px] font-black uppercase tracking-[0.12em] text-[#008D57]">
+            <span className="rounded-full border border-[var(--success-border)] bg-[var(--success-soft)] px-3 py-1.5 text-[9px] font-black uppercase tracking-[0.12em] text-[var(--success)]">
               {state.gameweek_label} operating state
             </span>
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-[#E3DAEC] bg-white/80 px-3 py-1.5 text-[9px] font-black text-[#786B82]">
-              {!analysisReady && commandStatus !== "error" ? <LoadingSpinner className="h-3 w-3 text-[#6C1DFF]" /> : null}
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--border-soft)] bg-[var(--surface)]/80 px-3 py-1.5 text-[9px] font-black text-[var(--muted)]">
+              {!analysisReady && commandStatus !== "error" ? <LoadingSpinner className="h-3 w-3 text-[var(--accent)]" /> : null}
               {statusLabel}
             </span>
           </div>
 
-          <p className="mt-6 text-[10px] font-black uppercase tracking-[0.18em] text-[#6C1DFF]">Gameweek operating brief</p>
-          <h2 className="mt-2 max-w-4xl text-4xl font-black leading-[0.98] tracking-[-0.052em] text-[#15052B] sm:text-5xl">
+          <p className="mt-6 text-[10px] font-black uppercase tracking-[0.18em] text-[var(--accent)]">Gameweek operating brief</p>
+          <h2 className="mt-2 max-w-4xl text-4xl font-black leading-[0.98] tracking-[-0.052em] text-[var(--ink)] sm:text-5xl">
             {state.team_name}
-            <span className="mt-1 flex items-center gap-2.5 text-[#6C1DFF]">
+            <span className="mt-1 flex items-center gap-2.5 text-[var(--accent)]">
               {!move && commandStatus !== "error" ? <LoadingSpinner className="h-7 w-7 shrink-0" /> : null}
               {move?.move || (commandStatus === "error" ? "Decision unavailable" : "Decision state building")}
             </span>
           </h2>
 
-          <p className="mt-5 max-w-3xl text-sm font-semibold leading-7 text-[#695D73] sm:text-base">
+          <p className="mt-5 max-w-3xl text-sm font-semibold leading-7 text-[var(--muted)] sm:text-base">
             Your current XI, this gameweek&apos;s action, captaincy and the route after it are resolved as one connected squad state.
           </p>
 
           <div className="mt-6 flex flex-col gap-3 sm:flex-row">
             <Link
               href="/transfers"
-              className="inline-flex items-center justify-center gap-2 rounded-[14px] bg-[#6C1DFF] px-5 py-3 text-sm font-black text-white shadow-[0_16px_36px_rgba(108,29,255,0.23)] transition hover:-translate-y-0.5 hover:bg-[#7A2EFF]"
+              className="inline-flex items-center justify-center gap-2 rounded-[14px] bg-[var(--accent)] px-5 py-3 text-sm font-black text-white shadow-[0_16px_36px_rgba(108,29,255,0.23)] transition hover:-translate-y-0.5 hover:opacity-90"
             >
               Open this GW decision
               <DashboardGlyph name="transfer" className="h-4 w-4" />
             </Link>
             <Link
               href="/planner"
-              className="inline-flex items-center justify-center gap-2 rounded-[14px] border border-[#D7C9E8] bg-white px-5 py-3 text-sm font-black text-[#281337] transition hover:border-[#BDA6EA] hover:bg-[#FAF7FF]"
+              className="inline-flex items-center justify-center gap-2 rounded-[14px] border border-[var(--border-soft)] bg-[var(--surface)] px-5 py-3 text-sm font-black text-[var(--ink)] transition hover:border-[var(--accent-border)] hover:bg-[var(--accent-soft)]"
             >
               Follow the multi-GW route
-              <DashboardGlyph name="route" className="h-4 w-4 text-[#6C1DFF]" />
+              <DashboardGlyph name="route" className="h-4 w-4 text-[var(--accent)]" />
             </Link>
           </div>
         </div>
 
+        {/* Deliberately fixed-dark "Decision chain" panel, matching the landing page's own
+            permanently-dark accent sections (see page.tsx's #100C18 section) - not theme-driven. */}
         <div className="relative overflow-hidden border-t border-[#E6DDED] bg-[#11091B] p-5 text-white sm:p-6 lg:border-l lg:border-t-0">
           <div className="pointer-events-none absolute -right-12 -top-16 text-[210px] font-black leading-none text-white/[0.035]">
             {state.gameweek}
@@ -694,7 +696,7 @@ function DashboardHero({
         </div>
       </div>
 
-      <div className="relative grid border-t border-[#E9E2F0] sm:grid-cols-4">
+      <div className="relative grid border-t border-[var(--border-soft)] sm:grid-cols-4">
         <OperatingMetric
           label="Projected XI"
           value={projectionsLoading ? "…" : projectedTotal > 0 ? `${projectedTotal.toFixed(1)} pts` : "—"}
@@ -744,29 +746,29 @@ function CommandCentrePanel({
           : "Full operating state is online";
 
   return (
-    <section className="overflow-hidden rounded-[22px] border border-[#E1D8EC] bg-white shadow-[0_18px_45px_rgba(44,14,64,0.065)]">
+    <section className="overflow-hidden rounded-[22px] border border-[var(--border-soft)] bg-[var(--surface)] shadow-[0_18px_45px_var(--shadow-color)]">
       <div className="flex items-start justify-between gap-4 p-5">
         <div className="flex min-w-0 gap-3">
-          <span className="grid h-11 w-11 shrink-0 place-items-center rounded-[14px] bg-[#F0E8FF] text-[#6C1DFF]">
+          <span className="grid h-11 w-11 shrink-0 place-items-center rounded-[14px] bg-[var(--accent-soft)] text-[var(--accent)]">
             <DashboardGlyph name="engine" />
           </span>
           <div className="min-w-0">
-            <p className="text-[9px] font-black uppercase tracking-[0.15em] text-[#6C1DFF]">Analysis engine</p>
-            <h3 className="mt-1 text-lg font-black text-[#15052B]">{statusCopy}</h3>
-            <p className="mt-2 text-xs font-semibold leading-5 text-[#776A80]">
+            <p className="text-[9px] font-black uppercase tracking-[0.15em] text-[var(--accent)]">Analysis engine</p>
+            <h3 className="mt-1 text-lg font-black text-[var(--ink)]">{statusCopy}</h3>
+            <p className="mt-2 text-xs font-semibold leading-5 text-[var(--muted)]">
               The imported squad stays visible while deeper route, market and planner layers finish.
             </p>
           </div>
         </div>
-        <span className={`mt-1 h-3 w-3 shrink-0 rounded-full ${status === "loading" || upgrading ? "animate-pulse bg-[#FFB800]" : status === "error" ? "bg-[#E90052]" : "bg-[#00C853]"}`} />
+        <span className={`mt-1 h-3 w-3 shrink-0 rounded-full ${status === "loading" || upgrading ? "animate-pulse bg-[var(--warning)]" : status === "error" ? "bg-[var(--danger)]" : "bg-[var(--success)]"}`} />
       </div>
 
-      <div className="grid grid-cols-2 border-t border-[#EEE7F3]">
+      <div className="grid grid-cols-2 border-t border-[var(--border-soft)]">
         <button
           type="button"
           onClick={onRetry}
           disabled={status === "loading" || upgrading}
-          className="border-r border-[#EEE7F3] px-4 py-3 text-xs font-black text-[#6C1DFF] transition hover:bg-[#FAF7FF] disabled:cursor-wait disabled:opacity-45"
+          className="border-r border-[var(--border-soft)] px-4 py-3 text-xs font-black text-[var(--accent)] transition hover:bg-[var(--accent-soft)] disabled:cursor-wait disabled:opacity-45"
         >
           {status === "loading" ? "Running…" : "Refresh"}
         </button>
@@ -774,14 +776,14 @@ function CommandCentrePanel({
           type="button"
           onClick={onLoadFull}
           disabled={status === "loading" || upgrading || (ready && !isLightweight)}
-          className="px-4 py-3 text-xs font-black text-[#15052B] transition hover:bg-[#FAF7FF] disabled:cursor-not-allowed disabled:opacity-45"
+          className="px-4 py-3 text-xs font-black text-[var(--ink)] transition hover:bg-[var(--accent-soft)] disabled:cursor-not-allowed disabled:opacity-45"
         >
           {upgrading ? "Loading full state…" : ready && !isLightweight ? "Full state loaded" : "Load full state"}
         </button>
       </div>
 
-      {status === "error" ? <div className="border-t border-[#EEE7F3] p-4"><ErrorState message={error || "Command Centre failed/timed out."} /></div> : null}
-      {upgradeError ? <div className="border-t border-[#EEE7F3] p-4"><ErrorState message={`Full analysis could not load: ${upgradeError}`} /></div> : null}
+      {status === "error" ? <div className="border-t border-[var(--border-soft)] p-4"><ErrorState message={error || "Command Centre failed/timed out."} /></div> : null}
+      {upgradeError ? <div className="border-t border-[var(--border-soft)] p-4"><ErrorState message={`Full analysis could not load: ${upgradeError}`} /></div> : null}
     </section>
   );
 }
@@ -809,11 +811,11 @@ function DecisionBrief({
   const move = isLightweightMove ? undefined : commandCentre?.best_move;
 
   return (
-    <section className="relative overflow-hidden rounded-[24px] border border-[#CDBAF7] bg-[linear-gradient(145deg,#FFFFFF_0%,#F2E9FF_100%)] shadow-[0_22px_55px_rgba(71,23,107,0.11)]">
-      <div className="pointer-events-none absolute -right-12 -top-16 text-[180px] font-black leading-none text-[#6C1DFF]/[0.045]">01</div>
+    <section className="relative overflow-hidden rounded-[24px] border border-[var(--accent-border)] bg-[linear-gradient(145deg,var(--surface)_0%,var(--accent-soft)_100%)] shadow-[0_22px_55px_rgba(71,23,107,0.11)]">
+      <div className="pointer-events-none absolute -right-12 -top-16 text-[180px] font-black leading-none text-[var(--accent)]/[0.045]">01</div>
       <div className="relative p-5">
         <div className="flex items-center justify-between gap-3">
-          <span className="rounded-full bg-[#6C1DFF] px-3 py-1 text-[8px] font-black uppercase tracking-[0.13em] text-white">
+          <span className="rounded-full bg-[var(--accent)] px-3 py-1 text-[8px] font-black uppercase tracking-[0.13em] text-white">
             This GW decision
           </span>
           {move ? (
@@ -821,41 +823,41 @@ function DecisionBrief({
               {move.risk_level} risk
             </span>
           ) : isLightweightMove ? (
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-[#E3DAEC] bg-white/80 px-3 py-1 text-[9px] font-black text-[#786B82]">
-              <LoadingSpinner className="h-3 w-3 text-[#6C1DFF]" />
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--border-soft)] bg-[var(--surface)]/80 px-3 py-1 text-[9px] font-black text-[var(--muted)]">
+              <LoadingSpinner className="h-3 w-3 text-[var(--accent)]" />
               Calculating
             </span>
           ) : null}
         </div>
 
-        <h3 className="mt-5 flex items-center gap-2.5 text-2xl font-black leading-[1.05] tracking-[-0.035em] text-[#15052B]">
+        <h3 className="mt-5 flex items-center gap-2.5 text-2xl font-black leading-[1.05] tracking-[-0.035em] text-[var(--ink)]">
           {!move && status !== "error" ? <LoadingSpinner className="h-6 w-6 shrink-0" /> : null}
           {move?.move || (status === "error" ? "Recommendation unavailable" : "Decision calculating")}
         </h3>
 
         {move ? (
           <>
-            <p className="mt-3 text-sm font-semibold leading-6 text-[#695D73]">
+            <p className="mt-3 text-sm font-semibold leading-6 text-[var(--muted)]">
               {move.why[0] || "The current move is being evaluated against the rest of the squad route."}
             </p>
 
             <div className="mt-5 grid grid-cols-3 gap-2">
-              <div className="rounded-[14px] border border-[#DDEFE7] bg-[#F3FFF8] p-3">
-                <p className="text-[8px] font-black uppercase tracking-[0.1em] text-[#008D57]">Gain</p>
-                <p className="mt-1 text-lg font-black text-[#008D57]">{move.expected_gain > 0 ? "+" : ""}{move.expected_gain}</p>
+              <div className="rounded-[14px] border border-[var(--success-border)] bg-[var(--success-soft)] p-3">
+                <p className="text-[8px] font-black uppercase tracking-[0.1em] text-[var(--success)]">Gain</p>
+                <p className="mt-1 text-lg font-black text-[var(--success)]">{move.expected_gain > 0 ? "+" : ""}{move.expected_gain}</p>
               </div>
-              <div className="rounded-[14px] border border-[#E4DAEF] bg-white/72 p-3">
-                <p className="text-[8px] font-black uppercase tracking-[0.1em] text-[#83768D]">Confidence</p>
-                <p className="mt-1 truncate text-sm font-black text-[#15052B]">{move.confidence_band}</p>
+              <div className="rounded-[14px] border border-[var(--border-soft)] bg-[var(--surface)]/72 p-3">
+                <p className="text-[8px] font-black uppercase tracking-[0.1em] text-[var(--muted)]">Confidence</p>
+                <p className="mt-1 truncate text-sm font-black text-[var(--ink)]">{move.confidence_band}</p>
               </div>
-              <div className="rounded-[14px] border border-[#F0DDAF] bg-[#FFF9E9] p-3">
-                <p className="text-[8px] font-black uppercase tracking-[0.1em] text-[#A46800]">Action</p>
-                <p className="mt-1 truncate text-sm font-black text-[#8C5700]">{move.recommended_action}</p>
+              <div className="rounded-[14px] border border-[var(--warning-border)] bg-[var(--warning-soft)] p-3">
+                <p className="text-[8px] font-black uppercase tracking-[0.1em] text-[var(--warning)]">Action</p>
+                <p className="mt-1 truncate text-sm font-black text-[var(--warning)]">{move.recommended_action}</p>
               </div>
             </div>
           </>
         ) : (
-          <p className="mt-3 text-sm font-semibold leading-6 text-[#695D73]">
+          <p className="mt-3 text-sm font-semibold leading-6 text-[var(--muted)]">
             {isLightweightMove
               ? "The full planner is computing the real recommendation in the background - this updates automatically."
               : "The current XI remains available while the decision engine resolves the recommendation."}
@@ -863,12 +865,12 @@ function DecisionBrief({
         )}
       </div>
 
-      <div className="grid grid-cols-2 border-t border-[#DED1EC] bg-white/65">
+      <div className="grid grid-cols-2 border-t border-[var(--border-soft)] bg-[var(--surface)]/65">
         {[
-          { label: "Current captain", player: captain, tone: "text-[#A46600]", badge: "C" },
-          { label: "Current vice", player: vice, tone: "text-[#245EC7]", badge: "V" },
+          { label: "Current captain", player: captain, tone: "text-[var(--warning)]", badge: "C" },
+          { label: "Current vice", player: vice, tone: "text-[var(--info)]", badge: "V" },
         ].map(({ label, player, tone, badge }, index) => (
-          <div key={label} className={`flex min-w-0 items-center gap-3 p-4 ${index ? "border-l border-[#DED1EC]" : ""}`}>
+          <div key={label} className={`flex min-w-0 items-center gap-3 p-4 ${index ? "border-l border-[var(--border-soft)]" : ""}`}>
             <div className="relative shrink-0">
               <PlayerVisual player={player} size="sm" />
               <span className={`absolute -right-1 -top-1 grid h-5 w-5 place-items-center rounded-full border-2 border-white text-[7px] font-black text-white ${badge === "C" ? "bg-[#FFB800]" : "bg-[#3C80FF]"}`}>
@@ -877,8 +879,8 @@ function DecisionBrief({
             </div>
             <div className="min-w-0">
               <p className={`text-[8px] font-black uppercase tracking-[0.11em] ${tone}`}>{label}</p>
-              <p className="mt-1 truncate text-xs font-black text-[#15052B]">{player.name}</p>
-              <p className="mt-0.5 text-[9px] font-bold text-[#81758A]">{formatProjected(projected(player))}</p>
+              <p className="mt-1 truncate text-xs font-black text-[var(--ink)]">{player.name}</p>
+              <p className="mt-0.5 text-[9px] font-bold text-[var(--muted)]">{formatProjected(projected(player))}</p>
             </div>
           </div>
         ))}
@@ -889,36 +891,36 @@ function DecisionBrief({
 
 function RiskSummary({ risks }: { risks: string[] }) {
   return (
-    <section className="rounded-[22px] border border-[#E4DBED] bg-white p-5 shadow-[0_18px_45px_rgba(44,14,64,0.055)]">
+    <section className="rounded-[22px] border border-[var(--border-soft)] bg-[var(--surface)] p-5 shadow-[0_18px_45px_var(--shadow-color)]">
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-3">
-          <span className="grid h-10 w-10 place-items-center rounded-[13px] bg-[#FFF4DA] text-[#A46600]">
+          <span className="grid h-10 w-10 place-items-center rounded-[13px] bg-[var(--warning-soft)] text-[var(--warning)]">
             <DashboardGlyph name="warning" className="h-4 w-4" />
           </span>
           <div>
-            <p className="text-[9px] font-black uppercase tracking-[0.14em] text-[#A46600]">Deadline watch</p>
-            <h3 className="mt-1 text-lg font-black text-[#15052B]">Pressure before lock</h3>
+            <p className="text-[9px] font-black uppercase tracking-[0.14em] text-[var(--warning)]">Deadline watch</p>
+            <h3 className="mt-1 text-lg font-black text-[var(--ink)]">Pressure before lock</h3>
           </div>
         </div>
-        <Link href="/squad/health" className="text-[10px] font-black text-[#6C1DFF]">Open health →</Link>
+        <Link href="/squad/health" className="text-[10px] font-black text-[var(--accent)]">Open health →</Link>
       </div>
 
       <div className="mt-4 space-y-2">
         {risks.length ? (
           risks.slice(0, 3).map((risk, index) => (
-            <div key={`${risk}-${index}`} className="flex items-start gap-3 rounded-[13px] border border-[#F0DDAF] bg-[#FFF9E9] p-3">
-              <span className="mt-1 grid h-5 w-5 shrink-0 place-items-center rounded-full bg-[#FFE9B7] text-[8px] font-black text-[#A46600]">
+            <div key={`${risk}-${index}`} className="flex items-start gap-3 rounded-[13px] border border-[var(--warning-border)] bg-[var(--warning-soft)] p-3">
+              <span className="mt-1 grid h-5 w-5 shrink-0 place-items-center rounded-full bg-[var(--warning-border)] text-[8px] font-black text-[var(--warning)]">
                 {index + 1}
               </span>
-              <p className="text-xs font-semibold leading-5 text-[#725521]">{risk}</p>
+              <p className="text-xs font-semibold leading-5 text-[var(--warning)]">{risk}</p>
             </div>
           ))
         ) : (
-          <div className="flex items-center gap-3 rounded-[13px] border border-[#C5EBD7] bg-[#F3FFF8] p-4">
-            <span className="grid h-7 w-7 place-items-center rounded-full bg-[#DFFFF0] text-[#008D57]">
+          <div className="flex items-center gap-3 rounded-[13px] border border-[var(--success-border)] bg-[var(--success-soft)] p-4">
+            <span className="grid h-7 w-7 place-items-center rounded-full bg-[var(--success-border)] text-[var(--success)]">
               <DashboardGlyph name="check" className="h-3.5 w-3.5" />
             </span>
-            <p className="text-xs font-black text-[#008D57]">No material deadline risks detected.</p>
+            <p className="text-xs font-black text-[var(--success)]">No material deadline risks detected.</p>
           </div>
         )}
       </div>
@@ -929,13 +931,13 @@ function RiskSummary({ risks }: { risks: string[] }) {
 function BenchRail({ players, loading }: { players: Player[]; loading?: boolean }) {
   const { open } = usePlayerDetail();
   return (
-    <section className="mt-4 overflow-hidden rounded-[22px] border border-[#E4DDEC] bg-white shadow-[0_18px_45px_rgba(44,14,64,0.055)]">
-      <div className="flex items-center justify-between gap-4 border-b border-[#EEE8F3] px-4 py-4 sm:px-5">
+    <section className="mt-4 overflow-hidden rounded-[22px] border border-[var(--border-soft)] bg-[var(--surface)] shadow-[0_18px_45px_var(--shadow-color)]">
+      <div className="flex items-center justify-between gap-4 border-b border-[var(--border-soft)] px-4 py-4 sm:px-5">
         <div>
-          <p className="text-[9px] font-black uppercase tracking-[0.15em] text-[#6C1DFF]">Squad layer 02</p>
-          <h3 className="mt-1 text-lg font-black text-[#15052B]">Bench state</h3>
+          <p className="text-[9px] font-black uppercase tracking-[0.15em] text-[var(--accent)]">Squad layer 02</p>
+          <h3 className="mt-1 text-lg font-black text-[var(--ink)]">Bench state</h3>
         </div>
-        <span className="rounded-full bg-[#F0E8FF] px-3 py-1 text-[9px] font-black text-[#6C1DFF]">{players.length} substitutes</span>
+        <span className="rounded-full bg-[var(--accent-soft)] px-3 py-1 text-[9px] font-black text-[var(--accent)]">{players.length} substitutes</span>
       </div>
 
       <div className="flex snap-x gap-3 overflow-x-auto p-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden md:grid md:grid-cols-2 md:overflow-visible 2xl:grid-cols-4">
@@ -944,24 +946,24 @@ function BenchRail({ players, loading }: { players: Player[]; loading?: boolean 
             type="button"
             onClick={() => open(player)}
             key={player.id}
-            className="w-[210px] shrink-0 snap-start rounded-[17px] border border-[#E9E3EF] bg-[#FBFAFD] p-3 text-left transition hover:bg-[#F4EFFF] md:w-auto md:min-w-0"
+            className="w-[210px] shrink-0 snap-start rounded-[17px] border border-[var(--border-soft)] bg-[var(--surface-3)] p-3 text-left transition hover:bg-[var(--accent-soft)] md:w-auto md:min-w-0"
           >
             <div className="flex min-w-0 items-center gap-3">
-              <span className="grid h-7 w-7 shrink-0 place-items-center rounded-[9px] bg-[#17052D] text-[9px] font-black text-white">{index + 1}</span>
+              <span className="grid h-7 w-7 shrink-0 place-items-center rounded-[9px] bg-[var(--ink)] text-[9px] font-black text-[var(--surface)]">{index + 1}</span>
               <PlayerVisual player={player} size="sm" />
               <div className="min-w-0">
-                <p className="truncate text-xs font-black text-[#15052B]">{player.name}</p>
-                <p className="mt-0.5 text-[9px] font-bold text-[#81758A]">{player.position} · {player.team}</p>
+                <p className="truncate text-xs font-black text-[var(--ink)]">{player.name}</p>
+                <p className="mt-0.5 text-[9px] font-bold text-[var(--muted)]">{player.position} · {player.team}</p>
               </div>
             </div>
             <div className="mt-3 grid grid-cols-2 gap-2">
-              <div className="rounded-[10px] bg-white p-2">
-                <p className="text-[7px] font-black uppercase text-[#8A7E93]">Projection</p>
-                <p className="mt-1 text-[10px] font-black text-[#008D57]">{formatProjected(projected(player), loading)}</p>
+              <div className="rounded-[10px] bg-[var(--surface)] p-2">
+                <p className="text-[7px] font-black uppercase text-[var(--muted)]">Projection</p>
+                <p className="mt-1 text-[10px] font-black text-[var(--success)]">{formatProjected(projected(player), loading)}</p>
               </div>
-              <div className="rounded-[10px] bg-white p-2">
-                <p className="text-[7px] font-black uppercase text-[#8A7E93]">Price</p>
-                <p className="mt-1 text-[10px] font-black text-[#15052B]">{formatPrice(player.price)}</p>
+              <div className="rounded-[10px] bg-[var(--surface)] p-2">
+                <p className="text-[7px] font-black uppercase text-[var(--muted)]">Price</p>
+                <p className="mt-1 text-[10px] font-black text-[var(--ink)]">{formatPrice(player.price)}</p>
               </div>
             </div>
           </button>
@@ -980,7 +982,7 @@ function SquadSnapshot({ players, loading }: { players: Player[]; loading?: bool
         title="All 15 players"
         body="The complete imported squad remains available beneath the operating view."
         action={
-          <Link href="/squad" className="rounded-[12px] border border-[#D6C8E8] bg-white px-4 py-2.5 text-xs font-black text-[#6C1DFF] shadow-sm">
+          <Link href="/squad" className="rounded-[12px] border border-[var(--accent-border)] bg-[var(--surface)] px-4 py-2.5 text-xs font-black text-[var(--accent)] shadow-sm">
             Open My Team
           </Link>
         }
@@ -992,23 +994,23 @@ function SquadSnapshot({ players, loading }: { players: Player[]; loading?: bool
             type="button"
             onClick={() => open(player)}
             key={`${player.id}-${player.role}`}
-            className="w-[220px] shrink-0 snap-start rounded-[18px] border border-[#E4DDEC] bg-white p-4 text-left shadow-[0_14px_34px_rgba(44,14,64,0.05)] transition hover:-translate-y-0.5 hover:shadow-[0_18px_42px_rgba(44,14,64,0.09)]"
+            className="w-[220px] shrink-0 snap-start rounded-[18px] border border-[var(--border-soft)] bg-[var(--surface)] p-4 text-left shadow-[0_14px_34px_rgba(44,14,64,0.05)] transition hover:-translate-y-0.5 hover:shadow-[0_18px_42px_rgba(44,14,64,0.09)]"
           >
             <div className="flex min-w-0 items-center gap-3">
               <PlayerVisual player={player} size="sm" />
               <div className="min-w-0">
-                <p className="truncate text-sm font-black text-[#15052B]">{player.name}</p>
-                <p className="mt-0.5 text-[10px] font-bold text-[#81758A]">{player.team} · {player.position}</p>
+                <p className="truncate text-sm font-black text-[var(--ink)]">{player.name}</p>
+                <p className="mt-0.5 text-[10px] font-bold text-[var(--muted)]">{player.team} · {player.position}</p>
               </div>
             </div>
             <div className="mt-3 grid grid-cols-2 gap-2">
-              <div className="rounded-[10px] bg-[#F7F3FB] p-2">
-                <p className="text-[7px] font-black uppercase text-[#8A7E93]">Next GW</p>
-                <p className="mt-1 text-[10px] font-black text-[#008D57]">{formatProjected(projected(player), loading)}</p>
+              <div className="rounded-[10px] bg-[var(--surface-3)] p-2">
+                <p className="text-[7px] font-black uppercase text-[var(--muted)]">Next GW</p>
+                <p className="mt-1 text-[10px] font-black text-[var(--success)]">{formatProjected(projected(player), loading)}</p>
               </div>
-              <div className="rounded-[10px] bg-[#F7F3FB] p-2">
-                <p className="text-[7px] font-black uppercase text-[#8A7E93]">Owned</p>
-                <p className="mt-1 text-[10px] font-black text-[#15052B]">{loading ? "…" : `${player.ownership ?? 0}%`}</p>
+              <div className="rounded-[10px] bg-[var(--surface-3)] p-2">
+                <p className="text-[7px] font-black uppercase text-[var(--muted)]">Owned</p>
+                <p className="mt-1 text-[10px] font-black text-[var(--ink)]">{loading ? "…" : `${player.ownership ?? 0}%`}</p>
               </div>
             </div>
           </button>
@@ -1028,23 +1030,23 @@ function RoutePreviewCard({
   index: number;
 }) {
   return (
-    <article className={`relative w-[286px] shrink-0 snap-start overflow-hidden rounded-[22px] border p-5 transition md:w-auto ${highlighted ? "border-[#BCA4F5] bg-[linear-gradient(145deg,#FFFFFF,#F2E9FF)] shadow-[0_20px_46px_rgba(108,29,255,0.11)]" : "border-[#E3DCEB] bg-white shadow-[0_14px_32px_rgba(44,14,64,0.05)]"}`}>
-      <span className={`absolute right-4 top-4 grid h-8 w-8 place-items-center rounded-full text-[10px] font-black ${highlighted ? "bg-[#6C1DFF] text-white" : "bg-[#F0E8FF] text-[#6C1DFF]"}`}>
+    <article className={`relative w-[286px] shrink-0 snap-start overflow-hidden rounded-[22px] border p-5 transition md:w-auto ${highlighted ? "border-[var(--accent-border)] bg-[linear-gradient(145deg,var(--surface),var(--accent-soft))] shadow-[0_20px_46px_rgba(108,29,255,0.11)]" : "border-[var(--border-soft)] bg-[var(--surface)] shadow-[0_14px_32px_rgba(44,14,64,0.05)]"}`}>
+      <span className={`absolute right-4 top-4 grid h-8 w-8 place-items-center rounded-full text-[10px] font-black ${highlighted ? "bg-[var(--accent)] text-white" : "bg-[var(--accent-soft)] text-[var(--accent)]"}`}>
         {index + 1}
       </span>
-      <p className="pr-10 text-[9px] font-black uppercase tracking-[0.14em] text-[#6C1DFF]">{route.title}</p>
-      <h3 className="mt-3 pr-8 text-xl font-black leading-tight text-[#15052B]">{route.move}</h3>
+      <p className="pr-10 text-[9px] font-black uppercase tracking-[0.14em] text-[var(--accent)]">{route.title}</p>
+      <h3 className="mt-3 pr-8 text-xl font-black leading-tight text-[var(--ink)]">{route.move}</h3>
       <div className="mt-5 flex items-end justify-between gap-3">
         <div>
-          <p className="text-[8px] font-black uppercase tracking-[0.1em] text-[#8A7E93]">Expected gain</p>
-          <p className="mt-1 text-3xl font-black text-[#008D57]">{route.expected_gain > 0 ? "+" : ""}{route.expected_gain}</p>
+          <p className="text-[8px] font-black uppercase tracking-[0.1em] text-[var(--muted)]">Expected gain</p>
+          <p className="mt-1 text-3xl font-black text-[var(--success)]">{route.expected_gain > 0 ? "+" : ""}{route.expected_gain}</p>
         </div>
         <div className="text-right">
           <span className={`rounded-full border px-2.5 py-1 text-[8px] font-black ${riskTone(route.risk)}`}>{route.risk}</span>
-          <p className="mt-2 text-[9px] font-black text-[#6C1DFF]">{route.confidence}</p>
+          <p className="mt-2 text-[9px] font-black text-[var(--accent)]">{route.confidence}</p>
         </div>
       </div>
-      {route.why[0] ? <p className="mt-4 line-clamp-3 text-xs font-semibold leading-5 text-[#695D73]">{route.why[0]}</p> : null}
+      {route.why[0] ? <p className="mt-4 line-clamp-3 text-xs font-semibold leading-5 text-[var(--muted)]">{route.why[0]}</p> : null}
     </article>
   );
 }
@@ -1065,19 +1067,19 @@ function AnalysisPlayerCard({
     <button
       type="button"
       onClick={() => open(player)}
-      className="relative w-full overflow-hidden rounded-[22px] border border-[#E2DAEA] bg-white p-5 text-left shadow-[0_18px_42px_rgba(44,14,64,0.055)] transition hover:-translate-y-0.5 hover:shadow-[0_22px_50px_rgba(44,14,64,0.09)]"
+      className="relative w-full overflow-hidden rounded-[22px] border border-[var(--border-soft)] bg-[var(--surface)] p-5 text-left shadow-[0_18px_42px_rgba(44,14,64,0.055)] transition hover:-translate-y-0.5 hover:shadow-[0_22px_50px_rgba(44,14,64,0.09)]"
     >
-      <div className={`absolute inset-x-0 top-0 h-1 ${tone === "green" ? "bg-[#00A86B]" : "bg-[#6C1DFF]"}`} />
-      <p className={`text-[9px] font-black uppercase tracking-[0.15em] ${tone === "green" ? "text-[#008D57]" : "text-[#6C1DFF]"}`}>{label}</p>
+      <div className={`absolute inset-x-0 top-0 h-1 ${tone === "green" ? "bg-[var(--success)]" : "bg-[var(--accent)]"}`} />
+      <p className={`text-[9px] font-black uppercase tracking-[0.15em] ${tone === "green" ? "text-[var(--success)]" : "text-[var(--accent)]"}`}>{label}</p>
       <div className="mt-4 flex min-w-0 items-center gap-3">
         <PlayerVisual player={player} size="md" />
         <div className="min-w-0">
-          <p className="truncate text-lg font-black text-[#15052B]">{player.name}</p>
-          <p className="mt-0.5 text-[10px] font-bold text-[#81758A]">{player.team} · {player.position}</p>
+          <p className="truncate text-lg font-black text-[var(--ink)]">{player.name}</p>
+          <p className="mt-0.5 text-[10px] font-bold text-[var(--muted)]">{player.team} · {player.position}</p>
         </div>
       </div>
-      <p className={`mt-5 text-3xl font-black ${tone === "green" ? "text-[#008D57]" : "text-[#6C1DFF]"}`}>{value}</p>
-      <p className="mt-1 text-[9px] font-semibold text-[#81758A]">Model recommendation · separate from current C/V</p>
+      <p className={`mt-5 text-3xl font-black ${tone === "green" ? "text-[var(--success)]" : "text-[var(--accent)]"}`}>{value}</p>
+      <p className="mt-1 text-[9px] font-semibold text-[var(--muted)]">Model recommendation · separate from current C/V</p>
     </button>
   );
 }
@@ -1092,17 +1094,17 @@ function MobileDisclosure({
   children: ReactNode;
 }) {
   return (
-    <details className="rounded-[22px] border border-[#E2DAEA] bg-white shadow-[0_18px_42px_rgba(44,14,64,0.055)] md:hidden">
+    <details className="rounded-[22px] border border-[var(--border-soft)] bg-[var(--surface)] shadow-[0_18px_42px_rgba(44,14,64,0.055)] md:hidden">
       <summary className="cursor-pointer list-none p-5">
         <div className="flex items-center justify-between gap-4">
           <div>
-            <p className="text-lg font-black text-[#15052B]">{title}</p>
-            <p className="mt-1 text-xs font-semibold text-[#81758A]">{summary}</p>
+            <p className="text-lg font-black text-[var(--ink)]">{title}</p>
+            <p className="mt-1 text-xs font-semibold text-[var(--muted)]">{summary}</p>
           </div>
-          <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[#F0E8FF] text-lg font-black text-[#6C1DFF]">+</span>
+          <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[var(--accent-soft)] text-lg font-black text-[var(--accent)]">+</span>
         </div>
       </summary>
-      <div className="border-t border-[#E9E2F0] p-4">{children}</div>
+      <div className="border-t border-[var(--border-soft)] p-4">{children}</div>
     </details>
   );
 }
@@ -1167,8 +1169,8 @@ function ImportedSquadLoaded({
     <>
       <DeadlineStrip state={state} />
       {imported.entry_id === DEMO_ENTRY_ID ? (
-        <div className="rounded-2xl border-2 border-dashed border-[#6C1DFF] bg-[#F5EFFF] px-5 py-3 text-sm font-bold text-[#3C2752]">
-          <span className="mr-2 rounded-md bg-[#6C1DFF] px-2 py-0.5 text-[10px] font-black uppercase tracking-widest text-white">Demo</span>
+        <div className="rounded-2xl border-2 border-dashed border-[var(--accent)] bg-[var(--accent-soft)] px-5 py-3 text-sm font-bold text-[var(--ink)]">
+          <span className="mr-2 rounded-md bg-[var(--accent)] px-2 py-0.5 text-[10px] font-black uppercase tracking-widest text-white">Demo</span>
           Sample squad on real 2026/27 fixtures and projections. Import your own team once the
           Gameweek 1 deadline passes — FPL keeps everyone&apos;s picks private until then.
         </div>
@@ -1185,20 +1187,20 @@ function ImportedSquadLoaded({
 
       <section className="grid items-start gap-5 xl:grid-cols-[minmax(0,1fr)_400px]">
         <div className="min-w-0">
-          <section className="overflow-hidden rounded-[26px] border border-[#DCD2E8] bg-white shadow-[0_24px_60px_rgba(44,14,64,0.075)]">
-            <div className="flex flex-col gap-3 border-b border-[#EEE8F3] px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-5">
+          <section className="overflow-hidden rounded-[26px] border border-[var(--border-soft)] bg-[var(--surface)] shadow-[0_24px_60px_rgba(44,14,64,0.075)]">
+            <div className="flex flex-col gap-3 border-b border-[var(--border-soft)] px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-5">
               <div className="flex items-center gap-3">
-                <span className="grid h-10 w-10 place-items-center rounded-[13px] bg-[#F0E8FF] text-[#6C1DFF]">
+                <span className="grid h-10 w-10 place-items-center rounded-[13px] bg-[var(--accent-soft)] text-[var(--accent)]">
                   <DashboardGlyph name="squad" className="h-4 w-4" />
                 </span>
                 <div>
-                  <p className="text-[9px] font-black uppercase tracking-[0.15em] text-[#6C1DFF]">Squad layer 01 · current state</p>
-                  <h2 className="mt-1 text-xl font-black text-[#15052B]">{state.formation} starting XI</h2>
+                  <p className="text-[9px] font-black uppercase tracking-[0.15em] text-[var(--accent)]">Squad layer 01 · current state</p>
+                  <h2 className="mt-1 text-xl font-black text-[var(--ink)]">{state.formation} starting XI</h2>
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <span className="rounded-full border border-[#F0DDAF] bg-[#FFF9E9] px-3 py-1 text-[9px] font-black text-[#A46600]">C · {currentCaptain?.name ?? "TBC"}</span>
-                <span className="rounded-full border border-[#D7E4FF] bg-[#F1F6FF] px-3 py-1 text-[9px] font-black text-[#245EC7]">V · {currentVice?.name ?? "TBC"}</span>
+                <span className="rounded-full border border-[var(--warning-border)] bg-[var(--warning-soft)] px-3 py-1 text-[9px] font-black text-[var(--warning)]">C · {currentCaptain?.name ?? "TBC"}</span>
+                <span className="rounded-full border border-[var(--info-border)] bg-[var(--info-soft)] px-3 py-1 text-[9px] font-black text-[var(--info)]">V · {currentVice?.name ?? "TBC"}</span>
               </div>
             </div>
 
@@ -1237,12 +1239,12 @@ function ImportedSquadLoaded({
       </section>
 
       {commandCentre && isLightweight ? (
-        <section className="mt-8 overflow-hidden rounded-[24px] border border-[#CDBAF7] bg-[linear-gradient(145deg,#FFFFFF,#F1E8FF)] shadow-[0_20px_50px_rgba(108,29,255,0.09)]">
+        <section className="mt-8 overflow-hidden rounded-[24px] border border-[var(--accent-border)] bg-[linear-gradient(145deg,var(--surface),var(--accent-soft))] shadow-[0_20px_50px_rgba(108,29,255,0.09)]">
           <div className="grid lg:grid-cols-[1fr_auto] lg:items-center">
             <div className="p-5 sm:p-6">
-              <p className="text-[9px] font-black uppercase tracking-[0.15em] text-[#6C1DFF]">Quick operating state online</p>
-              <h2 className="mt-2 text-2xl font-black text-[#15052B]">{commandCentre.best_move.move || "No strong move yet"}</h2>
-              <p className="mt-2 max-w-3xl text-sm font-semibold leading-6 text-[#695D73]">
+              <p className="text-[9px] font-black uppercase tracking-[0.15em] text-[var(--accent)]">Quick operating state online</p>
+              <h2 className="mt-2 text-2xl font-black text-[var(--ink)]">{commandCentre.best_move.move || "No strong move yet"}</h2>
+              <p className="mt-2 max-w-3xl text-sm font-semibold leading-6 text-[var(--muted)]">
                 The squad and immediate decision are usable now. Route, planner and market layers continue loading separately.
               </p>
             </div>
@@ -1250,7 +1252,7 @@ function ImportedSquadLoaded({
               type="button"
               onClick={onLoadFullCommandCentre}
               disabled={commandUpgrading}
-              className="m-5 rounded-[14px] bg-[#6C1DFF] px-5 py-3 text-sm font-black text-white shadow-[0_14px_30px_rgba(108,29,255,0.22)] disabled:cursor-wait disabled:opacity-55 lg:m-6"
+              className="m-5 rounded-[14px] bg-[var(--accent)] px-5 py-3 text-sm font-black text-white shadow-[0_14px_30px_rgba(108,29,255,0.22)] disabled:cursor-wait disabled:opacity-55 lg:m-6"
             >
               {commandUpgrading ? "Loading full state…" : "Load complete dashboard state"}
             </button>
@@ -1290,7 +1292,7 @@ function ImportedSquadLoaded({
                 title="Compare viable transfer paths"
                 body="Three routes from the same current squad state, ranked by expected gain, risk and confidence."
                 action={
-                  <Link href="/transfers" className="rounded-[12px] border border-[#D6C8E8] bg-white px-4 py-2.5 text-xs font-black text-[#6C1DFF] shadow-sm">
+                  <Link href="/transfers" className="rounded-[12px] border border-[var(--accent-border)] bg-[var(--surface)] px-4 py-2.5 text-xs font-black text-[var(--accent)] shadow-sm">
                     Open Decision Centre
                   </Link>
                 }
@@ -1310,7 +1312,7 @@ function ImportedSquadLoaded({
                 title="The decision connected to future GWs"
                 body="Follow the current move through the planner without leaving the Dashboard operating state."
                 action={
-                  <Link href="/planner" className="hidden rounded-[12px] border border-[#D6C8E8] bg-white px-4 py-2.5 text-xs font-black text-[#6C1DFF] shadow-sm md:inline-flex">
+                  <Link href="/planner" className="hidden rounded-[12px] border border-[var(--accent-border)] bg-[var(--surface)] px-4 py-2.5 text-xs font-black text-[var(--accent)] shadow-sm md:inline-flex">
                     Open full planner
                   </Link>
                 }
@@ -1325,7 +1327,7 @@ function ImportedSquadLoaded({
                 </MobileDisclosure>
               </div>
 
-              <div className="mt-4 hidden overflow-hidden rounded-[24px] border border-[#DDD3E8] bg-white p-5 shadow-[0_20px_48px_rgba(44,14,64,0.06)] md:block">
+              <div className="mt-4 hidden overflow-hidden rounded-[24px] border border-[var(--border-soft)] bg-[var(--surface)] p-5 shadow-[0_20px_48px_rgba(44,14,64,0.06)] md:block">
                 <PlannerTimeline steps={commandCentre.planner} />
               </div>
             </section>
@@ -1338,7 +1340,7 @@ function ImportedSquadLoaded({
                 title="Players moving around your decision"
                 body="Market alerts remain connected to the same gameweek and imported squad context."
                 action={
-                  <Link href="/market" className="rounded-[12px] border border-[#D6C8E8] bg-white px-4 py-2.5 text-xs font-black text-[#6C1DFF] shadow-sm">
+                  <Link href="/market" className="rounded-[12px] border border-[var(--accent-border)] bg-[var(--surface)] px-4 py-2.5 text-xs font-black text-[var(--accent)] shadow-sm">
                     Open market
                   </Link>
                 }
@@ -1651,19 +1653,19 @@ export function ImportedDashboardFlow() {
       {status === "missing" ? (
         <div className="space-y-4">
           <EmptyState title="No imported team found. Import your FPL team first." body="The dashboard needs a stored FPL import or an entry_id/event URL to build the command-centre request." />
-          <Link href="/import" className="inline-flex rounded-xl bg-[#6C1DFF] px-4 py-3 text-sm font-black text-white">
+          <Link href="/import" className="inline-flex rounded-xl bg-[var(--accent)] px-4 py-3 text-sm font-black text-white">
             Import team
           </Link>
         </div>
       ) : null}
 
       {status === "error" ? (
-        <section className="rounded-2xl border border-[#E8DEF8] bg-white p-6 shadow-[0_18px_45px_rgba(55,0,60,0.08)]">
-          <h2 className="text-2xl font-black text-[#17002F]">Could not import team</h2>
+        <section className="rounded-2xl border border-[var(--border-soft)] bg-[var(--surface)] p-6 shadow-[0_18px_45px_rgba(55,0,60,0.08)]">
+          <h2 className="text-2xl font-black text-[var(--ink)]">Could not import team</h2>
           <div className="mt-4">
             <ErrorState message={debug.import_error || "Import failed."} />
           </div>
-          <Link href="/import" className="mt-5 inline-flex rounded-xl bg-[#6C1DFF] px-4 py-3 text-sm font-black text-white">
+          <Link href="/import" className="mt-5 inline-flex rounded-xl bg-[var(--accent)] px-4 py-3 text-sm font-black text-white">
             Import again
           </Link>
         </section>

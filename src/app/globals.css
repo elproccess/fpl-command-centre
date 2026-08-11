@@ -1,9 +1,99 @@
 @import "tailwindcss";
 
+/* App-wide theme tokens. Light values are the app's existing palette (unchanged, still the
+   default everywhere - see the note on data-theme below); dark values are pulled directly from
+   the landing page's own dark-purple section (page.tsx's "Why it feels different" section:
+   bg-[#100C18], the #6C1DFF/#00A86B glow accents, #BFAAFF/#CBB9FF label text) rather than
+   invented fresh, so dark mode actually looks like the rest of the product instead of a
+   generic inverted palette.
+   Selection precedence: :root[data-theme="dark"] (explicit user choice, written by the
+   Settings toggle) always wins over the OS-level @media query below, in both directions - a
+   user who explicitly picked light must see light even on a dark-OS device, and vice versa. The
+   @media block only applies when data-theme hasn't been set yet (e.g. first paint before the
+   layout script runs, or a user who never touched the toggle). Defaults to light regardless of
+   OS preference until the user opts in via Settings - see the inline script in layout.tsx. */
 :root {
   --background: #F4F0FA;
   --foreground: #17002F;
+
+  --surface: #ffffff;
+  --surface-2: #F8F5FF;
+  --surface-3: #FAF9FC;
+  --surface-dim: #F2ECFF;
+  --border: #E1E5ED;
+  --border-soft: #E8DEF8;
+
+  --ink: #17002F;
+  --ink-soft: #4D5680;
+  --muted: #6C7195;
+  --muted-2: #8A93AC;
+
+  --accent: #6C1DFF;
+  --accent-2: #7A3FFF;
+  --accent-soft: #F1E8FF;
+  --accent-border: #DCCEFF;
+  --accent-ink: #ffffff;
+
+  --success: #00A568;
+  --success-soft: #E8FBF2;
+  --success-border: #BDEFD2;
+  --warning: #B57700;
+  --warning-soft: #FFF8E8;
+  --warning-border: #FFE0A3;
+  --danger: #E90052;
+  --danger-soft: #FFF0F5;
+  --danger-border: #FFD0DF;
+  --info: #007EA8;
+  --info-soft: #ECF9FF;
+  --info-border: #B9E9FF;
+
+  --shadow-color: rgba(15, 23, 60, 0.08);
+  --surface-translucent: rgba(255, 255, 255, 0.95);
 }
+
+:root[data-theme="dark"] {
+  --background: #100C18;
+  --foreground: #F5F1FF;
+
+  --surface: #1A1428;
+  --surface-2: #100C18;
+  --surface-3: #1F1830;
+  --surface-dim: rgba(255, 255, 255, 0.05);
+  --border: rgba(255, 255, 255, 0.12);
+  --border-soft: rgba(255, 255, 255, 0.1);
+
+  --ink: #ffffff;
+  --ink-soft: rgba(255, 255, 255, 0.72);
+  --muted: rgba(255, 255, 255, 0.55);
+  --muted-2: rgba(255, 255, 255, 0.42);
+
+  --accent: #8B5CFF;
+  --accent-2: #9A6BFF;
+  --accent-soft: rgba(108, 29, 255, 0.18);
+  --accent-border: rgba(139, 92, 255, 0.4);
+  --accent-ink: #ffffff;
+
+  --success: #6FE3B4;
+  --success-soft: rgba(111, 227, 180, 0.14);
+  --success-border: rgba(111, 227, 180, 0.32);
+  --warning: #FFC876;
+  --warning-soft: rgba(255, 200, 118, 0.14);
+  --warning-border: rgba(255, 200, 118, 0.32);
+  --danger: #FF7FA8;
+  --danger-soft: rgba(255, 127, 168, 0.14);
+  --danger-border: rgba(255, 127, 168, 0.32);
+  --info: #7EC8FF;
+  --info-soft: rgba(126, 200, 255, 0.14);
+  --info-border: rgba(126, 200, 255, 0.32);
+
+  --shadow-color: rgba(0, 0, 0, 0.5);
+  --surface-translucent: rgba(26, 20, 40, 0.9);
+}
+
+/* Deliberately no @media (prefers-color-scheme: dark) fallback here - the platform defaults to
+   light for every visitor regardless of OS/browser preference. Dark is strictly opt-in via the
+   Settings toggle (see ThemeToggle + the inline script in layout.tsx), which is the only thing
+   that ever writes data-theme="dark". */
 
 @theme inline {
   --color-background: var(--background);
@@ -16,6 +106,7 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-body), Arial, Helvetica, sans-serif;
+  transition: background 0.15s ease, color 0.15s ease;
 }
 
 h1,

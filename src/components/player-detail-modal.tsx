@@ -45,42 +45,42 @@ type LoadState =
 
 function DetailMetric({ label, value, tone = "default" }: { label: string; value: string; tone?: "default" | "green" | "purple" | "red" }) {
   const valueClass =
-    tone === "green" ? "text-[#00A568]" : tone === "purple" ? "text-[#6C1DFF]" : tone === "red" ? "text-[#C80046]" : "text-[#0A1031]";
+    tone === "green" ? "text-[var(--success)]" : tone === "purple" ? "text-[var(--accent)]" : tone === "red" ? "text-[var(--danger)]" : "text-[var(--ink)]";
   return (
-    <div className="rounded-xl border border-[#E1E7F2] bg-white p-3">
-      <p className="text-[10px] font-black uppercase tracking-[0.1em] text-[#6C7195]">{label}</p>
+    <div className="rounded-xl border border-[var(--border)] bg-[var(--surface)] p-3">
+      <p className="text-[10px] font-black uppercase tracking-[0.1em] text-[var(--muted)]">{label}</p>
       <p className={`mt-1 truncate text-lg font-black ${valueClass}`}>{value}</p>
     </div>
   );
 }
 
 function difficultyTone(difficulty: number | null) {
-  if (difficulty == null) return "border-[#E1E7F2] bg-[#F6F8FC] text-[#6C7195]";
-  if (difficulty <= 2) return "border-[#00C853]/30 bg-[#00C853]/12 text-[#008B3A]";
-  if (difficulty === 3) return "border-[#FFB800]/35 bg-[#FFB800]/14 text-[#9A6900]";
-  return "border-[#E90052]/25 bg-[#E90052]/10 text-[#C80046]";
+  if (difficulty == null) return "border-[var(--border)] bg-[var(--surface-3)] text-[var(--muted)]";
+  if (difficulty <= 2) return "border-[var(--success)]/30 bg-[var(--success)]/12 text-[var(--success)]";
+  if (difficulty === 3) return "border-[var(--warning)]/35 bg-[var(--warning)]/14 text-[var(--warning)]";
+  return "border-[var(--danger)]/25 bg-[var(--danger)]/10 text-[var(--danger)]";
 }
 
 function GameweekStrip({ gameweeks }: { gameweeks: PlayerGameweekProjection[] }) {
   if (!gameweeks.length) return null;
   const maxPoints = Math.max(1, ...gameweeks.map((gw) => gw.points));
   return (
-    <div className="mt-4 rounded-2xl border border-[#E1E7F2] bg-white p-4">
-      <p className="text-[10px] font-black uppercase tracking-[0.12em] text-[#6C7195]">Projection by gameweek</p>
+    <div className="mt-4 rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-4">
+      <p className="text-[10px] font-black uppercase tracking-[0.12em] text-[var(--muted)]">Projection by gameweek</p>
       <div className="mt-3 space-y-2">
         {gameweeks.map((gw) => (
           <div key={gw.gameweek} className="flex items-center gap-3">
-            <span className="w-9 shrink-0 text-xs font-black text-[#6C7195]">GW{gw.gameweek}</span>
+            <span className="w-9 shrink-0 text-xs font-black text-[var(--muted)]">GW{gw.gameweek}</span>
             {gw.opponent ? (
               <span className={`shrink-0 rounded-full border px-2 py-0.5 text-[10px] font-black ${difficultyTone(gw.difficulty)}`}>
                 {gw.opponent}
                 {gw.home_away ? ` (${gw.home_away})` : ""}
               </span>
             ) : null}
-            <div className="h-2 min-w-0 flex-1 overflow-hidden rounded-full bg-[#EEF1F8]">
-              <div className="h-full rounded-full bg-[#00A568]" style={{ width: `${Math.max(6, Math.min(100, (gw.points / maxPoints) * 100))}%` }} />
+            <div className="h-2 min-w-0 flex-1 overflow-hidden rounded-full bg-[var(--surface-3)]">
+              <div className="h-full rounded-full bg-[var(--success)]" style={{ width: `${Math.max(6, Math.min(100, (gw.points / maxPoints) * 100))}%` }} />
             </div>
-            <span className="w-10 shrink-0 text-right text-xs font-black text-[#0A1031]">{gw.points.toFixed(1)}</span>
+            <span className="w-10 shrink-0 text-right text-xs font-black text-[var(--ink)]">{gw.points.toFixed(1)}</span>
           </div>
         ))}
       </div>
@@ -127,15 +127,15 @@ function PlayerDetailModal({ player, onClose }: { player: Player; onClose: () =>
       role="presentation"
     >
       <div
-        className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-t-[26px] border border-[#E1E7F2] bg-white p-5 shadow-[0_24px_70px_rgba(15,23,60,0.2)] sm:rounded-[26px] sm:p-6"
+        className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-t-[26px] border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[0_24px_70px_rgba(15,23,60,0.2)] sm:rounded-[26px] sm:p-6"
         onClick={(event) => event.stopPropagation()}
         role="dialog"
         aria-modal="true"
         aria-label={`${displayPlayer.name} player details`}
       >
         <div className="mb-4 flex items-center justify-between sm:hidden">
-          <span className="h-1.5 w-12 rounded-full bg-[#DCE3F0]" />
-          <button type="button" onClick={onClose} className="grid h-9 w-9 place-items-center rounded-full bg-[#F2F4FA] text-lg font-black text-[#4D5680]" aria-label="Close player details">
+          <span className="h-1.5 w-12 rounded-full bg-[var(--border)]" />
+          <button type="button" onClick={onClose} className="grid h-9 w-9 place-items-center rounded-full bg-[var(--surface-3)] text-lg font-black text-[var(--ink-soft)]" aria-label="Close player details">
             ×
           </button>
         </div>
@@ -144,8 +144,8 @@ function PlayerDetailModal({ player, onClose }: { player: Player; onClose: () =>
           <div className="flex min-w-0 items-center gap-3">
             <PlayerVisual player={displayPlayer} size="lg" />
             <div className="min-w-0">
-              <p className="truncate text-2xl font-black text-[#0A1031]">{displayPlayer.name}</p>
-              <p className="mt-1 text-sm font-bold text-[#6C7195]">
+              <p className="truncate text-2xl font-black text-[var(--ink)]">{displayPlayer.name}</p>
+              <p className="mt-1 text-sm font-bold text-[var(--muted)]">
                 {displayPlayer.team} · {displayPlayer.position} · {formatPrice(displayPlayer.price)}
               </p>
             </div>
@@ -155,7 +155,7 @@ function PlayerDetailModal({ player, onClose }: { player: Player; onClose: () =>
             <button
               type="button"
               onClick={onClose}
-              className="hidden h-9 w-9 place-items-center rounded-full bg-[#F2F4FA] text-lg font-black text-[#4D5680] sm:grid"
+              className="hidden h-9 w-9 place-items-center rounded-full bg-[var(--surface-3)] text-lg font-black text-[var(--ink-soft)] sm:grid"
               aria-label="Close player details"
             >
               ×
@@ -165,36 +165,36 @@ function PlayerDetailModal({ player, onClose }: { player: Player; onClose: () =>
 
         {state.phase === "loading" ? (
           <div className="mt-5 space-y-3">
-            <div className="h-24 animate-pulse rounded-2xl bg-[#F1F3F8]" />
+            <div className="h-24 animate-pulse rounded-2xl bg-[var(--surface-3)]" />
             <div className="grid grid-cols-2 gap-3">
-              <div className="h-16 animate-pulse rounded-xl bg-[#F1F3F8]" />
-              <div className="h-16 animate-pulse rounded-xl bg-[#F1F3F8]" />
-              <div className="h-16 animate-pulse rounded-xl bg-[#F1F3F8]" />
-              <div className="h-16 animate-pulse rounded-xl bg-[#F1F3F8]" />
+              <div className="h-16 animate-pulse rounded-xl bg-[var(--surface-3)]" />
+              <div className="h-16 animate-pulse rounded-xl bg-[var(--surface-3)]" />
+              <div className="h-16 animate-pulse rounded-xl bg-[var(--surface-3)]" />
+              <div className="h-16 animate-pulse rounded-xl bg-[var(--surface-3)]" />
             </div>
           </div>
         ) : state.phase === "error" ? (
-          <p className="mt-5 rounded-xl border border-dashed border-[#E1E7F2] bg-[#FBFCFF] p-4 text-sm font-semibold text-[#6C7195]">
+          <p className="mt-5 rounded-xl border border-dashed border-[var(--border)] bg-[var(--surface-3)] p-4 text-sm font-semibold text-[var(--muted)]">
             Couldn&apos;t load this player&apos;s full stats right now — try again in a moment.
           </p>
         ) : (
           <>
             {card?.market_score != null ? (
-              <div className="mt-5 rounded-2xl border border-[#E1E7F2] bg-[#FBFCFF] p-4">
+              <div className="mt-5 rounded-2xl border border-[var(--border)] bg-[var(--surface-3)] p-4">
                 <div className="flex items-center justify-between gap-3">
                   <div>
-                    <p className="text-[10px] font-black uppercase tracking-[0.14em] text-[#6C7195]">Market score</p>
-                    <p className="mt-1 text-3xl font-black text-[#0A1031]">{card.market_score.toFixed(0)}</p>
+                    <p className="text-[10px] font-black uppercase tracking-[0.14em] text-[var(--muted)]">Market score</p>
+                    <p className="mt-1 text-3xl font-black text-[var(--ink)]">{card.market_score.toFixed(0)}</p>
                   </div>
                   {displayPlayer.fixture ? (
                     <div className="text-right">
-                      <p className="text-[10px] font-black uppercase tracking-[0.12em] text-[#6C7195]">Next fixture</p>
+                      <p className="text-[10px] font-black uppercase tracking-[0.12em] text-[var(--muted)]">Next fixture</p>
                       <div className="mt-1"><FixturePill fixture={displayPlayer.fixture} difficulty={displayPlayer.fixture_difficulty ?? 3} /></div>
                     </div>
                   ) : null}
                 </div>
-                <div className="mt-4 h-2 overflow-hidden rounded-full bg-[#E7EBF3]">
-                  <div className="h-full rounded-full bg-[#6C1DFF] transition-all" style={{ width: `${Math.max(0, Math.min(100, card.market_score))}%` }} />
+                <div className="mt-4 h-2 overflow-hidden rounded-full bg-[var(--border-soft)]">
+                  <div className="h-full rounded-full bg-[var(--accent)] transition-all" style={{ width: `${Math.max(0, Math.min(100, card.market_score))}%` }} />
                 </div>
               </div>
             ) : null}
@@ -216,18 +216,18 @@ function PlayerDetailModal({ player, onClose }: { player: Player; onClose: () =>
             <GameweekStrip gameweeks={gameweeks} />
 
             {card?.reasons.length ? (
-              <div className="mt-4 rounded-2xl border border-[#E1E7F2] bg-[#F7F4FF] p-4">
-                <p className="text-xs font-black uppercase tracking-[0.14em] text-[#6C1DFF]">Market thesis</p>
+              <div className="mt-4 rounded-2xl border border-[var(--border)] bg-[var(--accent-soft)] p-4">
+                <p className="text-xs font-black uppercase tracking-[0.14em] text-[var(--accent)]">Market thesis</p>
                 <ul className="mt-2 space-y-1.5">
                   {card.reasons.map((reason, index) => (
-                    <li key={index} className="text-sm font-semibold leading-6 text-[#4D5680]">{reason}</li>
+                    <li key={index} className="text-sm font-semibold leading-6 text-[var(--ink-soft)]">{reason}</li>
                   ))}
                 </ul>
               </div>
             ) : null}
 
             {displayPlayer.status !== "Available" ? (
-              <div className="mt-4 rounded-xl border border-[#FFD7E3] bg-[#FFF4F7] p-3 text-sm font-bold text-[#C80046]">
+              <div className="mt-4 rounded-xl border border-[var(--danger-border)] bg-[var(--danger-soft)] p-3 text-sm font-bold text-[var(--danger)]">
                 Availability: {displayPlayer.status}. Treat the projection with additional caution.
               </div>
             ) : null}
@@ -236,14 +236,14 @@ function PlayerDetailModal({ player, onClose }: { player: Player; onClose: () =>
               <Link
                 href={`/compare?player_a=${displayPlayer.id}`}
                 onClick={onClose}
-                className="rounded-xl border border-[#6C1DFF] bg-white px-4 py-3 text-center text-sm font-black text-[#6C1DFF] transition hover:bg-[#F4EFFF]"
+                className="rounded-xl border border-[var(--accent)] bg-[var(--surface)] px-4 py-3 text-center text-sm font-black text-[var(--accent)] transition hover:bg-[var(--accent-soft)]"
               >
                 Compare
               </Link>
               <Link
                 href={`/watchlist?player_id=${displayPlayer.id}`}
                 onClick={onClose}
-                className="rounded-xl bg-[#6C1DFF] px-4 py-3 text-center text-sm font-black text-white shadow-[0_14px_30px_rgba(108,29,255,0.24)]"
+                className="rounded-xl bg-[var(--accent)] px-4 py-3 text-center text-sm font-black text-white shadow-[0_14px_30px_rgba(108,29,255,0.24)]"
               >
                 Watch player
               </Link>

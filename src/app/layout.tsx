@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Script from "next/script";
 import { Inter_Tight, Sora } from "next/font/google";
+import { THEME_INIT_SCRIPT } from "@/lib/theme";
 import "./globals.css";
 
 const interTight = Inter_Tight({
@@ -38,6 +39,13 @@ export default function RootLayout({
       className={`${interTight.variable} ${sora.variable} h-full antialiased`}
     >
       <head>
+        {/* Must run as a raw synchronous script (not next/script, which always defers past first
+            paint) so data-theme is set on <html> BEFORE the browser paints anything - otherwise a
+            returning dark-mode user sees a flash of the light theme on every navigation. Reads
+            the same localStorage key applyTheme() writes (see src/lib/theme.ts); this literal
+            script text is a copy of THEME_INIT_SCRIPT, not an import, because inline scripts run
+            before any module graph is available. */}
+        <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
         {/* Cloudflare Web Analytics: no cookies, no persistent identifier, so no consent
             gate is needed - runs for every visitor from load. */}
         <Script
@@ -58,7 +66,7 @@ export default function RootLayout({
           strategy="afterInteractive"
         />
       </head>
-      <body className="min-h-full bg-[#F8F5FF] text-[#17002F]">{children}</body>
+      <body className="min-h-full bg-[var(--surface-2)] text-[var(--ink)]">{children}</body>
     </html>
   );
 }

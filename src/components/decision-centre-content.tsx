@@ -12,7 +12,7 @@ import { adaptDecisionCentrePartial, getDecisionCentre } from "@/lib/api";
 import { getPlayerImageUrl } from "@/lib/player-images";
 import type { DecisionCentre, Player, TransferRoute, UserGameState } from "@/lib/types";
 
-const shell = "rounded-[24px] border border-[#E8E2F0] bg-white shadow-[0_18px_50px_rgba(30,8,51,0.07)]";
+const shell = "rounded-[24px] border border-[var(--border-soft)] bg-[var(--surface)] shadow-[0_18px_50px_rgba(30,8,51,0.07)]";
 
 // Match the Planner's low-load behavior: one real dashboard request on a cold visit, then only
 // lightweight status checks with increasing delays. Once any genuine dashboard panel is visible,
@@ -108,11 +108,11 @@ function LoadingLines({ rows = 3 }: { rows?: number }) {
   return (
     <div className="space-y-3">
       {Array.from({ length: rows }, (_, index) => (
-        <div key={index} className="flex items-center gap-3 rounded-2xl border border-[#EEE9F4] bg-[#FBFAFD] p-4">
-          <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-[#F2ECFF] text-[#6C1DFF]"><Spinner /></span>
+        <div key={index} className="flex items-center gap-3 rounded-2xl border border-[var(--border-soft)] bg-[var(--surface-3)] p-4">
+          <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-[var(--accent-soft)] text-[var(--accent)]"><Spinner /></span>
           <div className="min-w-0 flex-1">
-            <div className="h-2.5 w-[82%] animate-pulse rounded-full bg-[#E6DDF7]" />
-            <div className="mt-2 h-2.5 w-[58%] animate-pulse rounded-full bg-[#EFEAF5]" />
+            <div className="h-2.5 w-[82%] animate-pulse rounded-full bg-[var(--accent-soft)]" />
+            <div className="mt-2 h-2.5 w-[58%] animate-pulse rounded-full bg-[var(--surface-3)]" />
           </div>
         </div>
       ))}
@@ -126,10 +126,10 @@ function formatGain(value: number) {
 }
 
 function routeTone(type: TransferRoute["route_type"]) {
-  if (type === "safe") return { accent: "#00A86B", soft: "#EAF9F3", label: "Most secure" };
-  if (type === "upside") return { accent: "#6C1DFF", soft: "#F2ECFF", label: "Highest ceiling" };
-  if (type === "roll") return { accent: "#087EA4", soft: "#EAF8FC", label: "Preserve flexibility" };
-  return { accent: "#D97706", soft: "#FFF6E8", label: "Higher variance" };
+  if (type === "safe") return { accent: "var(--success)", soft: "var(--success-soft)", label: "Most secure" };
+  if (type === "upside") return { accent: "var(--accent)", soft: "var(--accent-soft)", label: "Highest ceiling" };
+  if (type === "roll") return { accent: "var(--info)", soft: "var(--info-soft)", label: "Preserve flexibility" };
+  return { accent: "var(--warning)", soft: "var(--warning-soft)", label: "Higher variance" };
 }
 
 function CheckIcon() {
@@ -234,7 +234,7 @@ function HeroPlayerArtwork({ player }: { player: Player }) {
 
   return (
     <div className="relative h-full w-full" aria-hidden>
-      <div className="absolute bottom-4 right-1/2 h-24 w-24 translate-x-1/2 rounded-full bg-[#6C1DFF]/10 blur-2xl sm:h-32 sm:w-32" />
+      <div className="absolute bottom-4 right-1/2 h-24 w-24 translate-x-1/2 rounded-full bg-[var(--accent)]/10 blur-2xl sm:h-32 sm:w-32" />
       {mode === "photo" && photo ? (
         <Image
           src={photo}
@@ -246,7 +246,7 @@ function HeroPlayerArtwork({ player }: { player: Player }) {
           onError={() => setMode("kit")}
         />
       ) : mode === "kit" ? (
-        <div className="absolute bottom-5 right-1/2 grid h-[118px] w-[118px] translate-x-1/2 place-items-center rounded-[30px] border border-[#D9CBFF] bg-white/90 p-3 shadow-[0_20px_36px_rgba(55,0,60,0.15)] backdrop-blur sm:h-[154px] sm:w-[154px] sm:p-4 lg:h-[176px] lg:w-[176px]">
+        <div className="absolute bottom-5 right-1/2 grid h-[118px] w-[118px] translate-x-1/2 place-items-center rounded-[30px] border border-[var(--accent-border)] bg-[var(--surface)]/90 p-3 shadow-[0_20px_36px_rgba(55,0,60,0.15)] backdrop-blur sm:h-[154px] sm:w-[154px] sm:p-4 lg:h-[176px] lg:w-[176px]">
           <TeamShirtImage
             team={player.team}
             position={player.position}
@@ -267,10 +267,10 @@ function HeroPlayerArtwork({ player }: { player: Player }) {
 function HeroArtworkLoading() {
   return (
     <div className="grid h-full w-full place-items-end pb-5 pr-3" aria-label="Finding recommended player">
-      <div className="grid h-24 w-24 place-items-center rounded-[26px] border border-[#D9CCFF] bg-white/90 text-[#6C1DFF] shadow-[0_18px_44px_rgba(108,29,255,0.18)] backdrop-blur sm:h-32 sm:w-32 lg:h-40 lg:w-40">
+      <div className="grid h-24 w-24 place-items-center rounded-[26px] border border-[var(--accent-border)] bg-[var(--surface)]/90 text-[var(--accent)] shadow-[0_18px_44px_rgba(108,29,255,0.18)] backdrop-blur sm:h-32 sm:w-32 lg:h-40 lg:w-40">
         <div className="text-center">
           <Spinner className="h-7 w-7 sm:h-9 sm:w-9" />
-          <p className="mt-2 text-[9px] font-black uppercase tracking-[0.12em] text-[#81748E]">Player</p>
+          <p className="mt-2 text-[9px] font-black uppercase tracking-[0.12em] text-[var(--muted)]">Player</p>
         </div>
       </div>
     </div>
@@ -335,12 +335,12 @@ function DecisionHero({
         : `Use the free transfer this gameweek. The model projects ${formatGain(expectedGain)} points of value.`;
 
   return (
-    <section className="relative mt-10 overflow-visible rounded-[28px] border border-[#D9CCFF] bg-white shadow-[0_28px_72px_rgba(47,18,77,0.12)] sm:mt-14">
+    <section className="relative mt-10 overflow-visible rounded-[28px] border border-[var(--accent-border)] bg-[var(--surface)] shadow-[0_28px_72px_rgba(47,18,77,0.12)] sm:mt-14">
       <div className="pointer-events-none absolute inset-0 overflow-hidden rounded-[28px]">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_88%_14%,rgba(108,29,255,0.18),transparent_34%),radial-gradient(circle_at_8%_92%,rgba(0,230,168,0.10),transparent_28%)]" />
         <div className="absolute inset-y-0 right-0 w-[46%] bg-[linear-gradient(135deg,transparent,rgba(108,29,255,0.06))]" />
-        <div className="absolute -right-12 -top-16 h-48 w-48 rounded-full border border-[#6C1DFF]/10 sm:h-64 sm:w-64" />
-        <div className="absolute -right-5 top-16 h-28 w-28 rounded-full border border-[#00A86B]/10 sm:h-36 sm:w-36" />
+        <div className="absolute -right-12 -top-16 h-48 w-48 rounded-full border border-[var(--accent)]/10 sm:h-64 sm:w-64" />
+        <div className="absolute -right-5 top-16 h-28 w-28 rounded-full border border-[var(--success)]/10 sm:h-36 sm:w-36" />
       </div>
 
       <div className="absolute -top-12 right-1 z-20 h-44 w-32 sm:-top-16 sm:right-7 sm:h-56 sm:w-44 lg:-top-20 lg:right-10 lg:h-72 lg:w-60">
@@ -350,14 +350,14 @@ function DecisionHero({
       <div className="relative p-5 sm:p-7 lg:p-8 lg:pr-[300px]">
         <div className="min-h-[145px] pr-24 sm:min-h-[175px] sm:pr-40 lg:min-h-0 lg:pr-0">
           <div className="flex flex-wrap items-center gap-2">
-            <span className="rounded-full bg-[#6C1DFF] px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.14em] text-white">Recommended</span>
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-[#BCEBD2] bg-[#EDFFF5] px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.14em] text-[#008F5A]">
+            <span className="rounded-full bg-[var(--accent)] px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.14em] text-white">Recommended</span>
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--success-border)] bg-[var(--success-soft)] px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.14em] text-[var(--success)]">
               {pending ? <><Spinner className="h-3 w-3" /> Cost</> : hitCost ? `-${hitCost} hit` : "No hit"}
             </span>
             {pending ? (
               <>
-                <span className="inline-flex items-center gap-1.5 rounded-full border border-[#E5D9FF] bg-[#F7F3FF] px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.14em] text-[#6C1DFF]"><Spinner className="h-3 w-3" /> Confidence</span>
-                <span className="inline-flex items-center gap-1.5 rounded-full border border-[#F5D9E4] bg-[#FFF5F8] px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.14em] text-[#C52759]"><Spinner className="h-3 w-3" /> Risk</span>
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--accent-border)] bg-[var(--accent-soft)] px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.14em] text-[var(--accent)]"><Spinner className="h-3 w-3" /> Confidence</span>
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--danger-border)] bg-[var(--danger-soft)] px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.14em] text-[var(--danger)]"><Spinner className="h-3 w-3" /> Risk</span>
               </>
             ) : (
               <>
@@ -367,12 +367,12 @@ function DecisionHero({
             )}
           </div>
 
-          <p className="mt-5 text-[10px] font-black uppercase tracking-[0.16em] text-[#81748E]">{action}</p>
-          <h2 className="mt-2 max-w-3xl text-[28px] font-black leading-[1.02] tracking-[-0.045em] text-[#19052D] sm:text-4xl lg:text-[46px]">
+          <p className="mt-5 text-[10px] font-black uppercase tracking-[0.16em] text-[var(--muted)]">{action}</p>
+          <h2 className="mt-2 max-w-3xl text-[28px] font-black leading-[1.02] tracking-[-0.045em] text-[var(--ink)] sm:text-4xl lg:text-[46px]">
             <span className="block">{primaryTitle}</span>
-            <span className="mt-1 block text-[#6C1DFF]">{accentTitle}</span>
+            <span className="mt-1 block text-[var(--accent)]">{accentTitle}</span>
           </h2>
-          <p className="mt-3 max-w-2xl text-sm font-semibold leading-6 text-[#6F6280]">{supportCopy}</p>
+          <p className="mt-3 max-w-2xl text-sm font-semibold leading-6 text-[var(--muted)]">{supportCopy}</p>
         </div>
 
         <div className="mt-6 grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-5">
@@ -380,22 +380,22 @@ function DecisionHero({
           <Metric label="Transfer cost" value={hitCost ? `-${hitCost} pts` : "0 pts"} loading={pending} />
           <Metric label="Bank" value={`£${appState.bank.toFixed(1)}m`} />
           <Metric label="Free transfers" value={String(appState.free_transfers)} />
-          <div className="col-span-2 min-w-0 rounded-2xl border border-[#EEE9F4] bg-[#FBFAFD] px-4 py-3.5 sm:col-span-1">
-            <p className="text-[10px] font-extrabold uppercase tracking-[0.14em] text-[#81748E]">Captain</p>
+          <div className="col-span-2 min-w-0 rounded-2xl border border-[var(--border-soft)] bg-[var(--surface-3)] px-4 py-3.5 sm:col-span-1">
+            <p className="text-[10px] font-extrabold uppercase tracking-[0.14em] text-[var(--muted)]">Captain</p>
             {captain ? (
               <button type="button" onClick={() => open(captain)} className="mt-2 flex w-full min-w-0 items-center gap-2.5 text-left">
                 <PlayerVisual player={captain} size="sm" />
                 <div className="min-w-0">
-                  <p className="truncate text-sm font-black text-[#19052D]">{captain.name}</p>
-                  <p className="truncate text-[11px] font-semibold text-[#81748E]">{captain.team} · {captain.position}</p>
+                  <p className="truncate text-sm font-black text-[var(--ink)]">{captain.name}</p>
+                  <p className="truncate text-[11px] font-semibold text-[var(--muted)]">{captain.team} · {captain.position}</p>
                 </div>
               </button>
             ) : (
               <div className="mt-2 flex min-w-0 items-center gap-2.5">
-                <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-[#F2ECFF] text-[#6C1DFF]"><Spinner /></span>
+                <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-[var(--accent-soft)] text-[var(--accent)]"><Spinner /></span>
                 <div className="min-w-0">
-                  <p className="truncate text-sm font-black text-[#19052D]">Finding captain...</p>
-                  <p className="truncate text-[11px] font-semibold text-[#81748E]">Captaincy analysis running</p>
+                  <p className="truncate text-sm font-black text-[var(--ink)]">Finding captain...</p>
+                  <p className="truncate text-[11px] font-semibold text-[var(--muted)]">Captaincy analysis running</p>
                 </div>
               </div>
             )}
@@ -403,10 +403,10 @@ function DecisionHero({
         </div>
 
         <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">
-          <Link href="/scenarios" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-[#6C1DFF] px-5 py-3 text-sm font-black text-white shadow-[0_14px_30px_rgba(108,29,255,0.24)] transition hover:bg-[#5916D4] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#6C1DFF]">
+          <Link href="/scenarios" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-[var(--accent)] px-5 py-3 text-sm font-black text-white shadow-[0_14px_30px_rgba(108,29,255,0.24)] transition hover:bg-[var(--accent-2)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)]">
             Test this decision <ArrowIcon />
           </Link>
-          <Link href="/planner" className="inline-flex min-h-12 items-center justify-center rounded-xl border border-[#D9CCFF] bg-white px-5 py-3 text-sm font-black text-[#6C1DFF] transition hover:bg-[#F7F3FF] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#6C1DFF]">
+          <Link href="/planner" className="inline-flex min-h-12 items-center justify-center rounded-xl border border-[var(--accent-border)] bg-[var(--surface)] px-5 py-3 text-sm font-black text-[var(--accent)] transition hover:bg-[var(--accent-soft)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)]">
             View multi-GW impact
           </Link>
         </div>
@@ -416,16 +416,16 @@ function DecisionHero({
 }
 
 function Metric({ label, value, detail, tone = "default", loading = false }: { label: string; value: string; detail?: string; tone?: "default" | "positive" | "warning"; loading?: boolean }) {
-  const valueTone = tone === "positive" ? "text-[#008F5A]" : tone === "warning" ? "text-[#B86500]" : "text-[#19052D]";
+  const valueTone = tone === "positive" ? "text-[var(--success)]" : tone === "warning" ? "text-[var(--warning)]" : "text-[var(--ink)]";
   return (
-    <div className="min-w-0 rounded-2xl border border-[#EEE9F4] bg-[#FBFAFD] px-4 py-3.5">
-      <p className="text-[10px] font-extrabold uppercase tracking-[0.14em] text-[#81748E]">{label}</p>
+    <div className="min-w-0 rounded-2xl border border-[var(--border-soft)] bg-[var(--surface-3)] px-4 py-3.5">
+      <p className="text-[10px] font-extrabold uppercase tracking-[0.14em] text-[var(--muted)]">{label}</p>
       {loading ? (
-        <p className="mt-2 flex items-center gap-2 text-sm font-black text-[#6C1DFF]"><Spinner /> Calculating</p>
+        <p className="mt-2 flex items-center gap-2 text-sm font-black text-[var(--accent)]"><Spinner /> Calculating</p>
       ) : (
         <p className={`mt-1.5 truncate text-xl font-black tracking-[-0.02em] ${valueTone}`}>{value}</p>
       )}
-      {detail ? <p className="mt-1 text-xs font-semibold text-[#756781]">{detail}</p> : null}
+      {detail ? <p className="mt-1 text-xs font-semibold text-[var(--muted)]">{detail}</p> : null}
     </div>
   );
 }
@@ -437,17 +437,17 @@ function PlayerRow({ player, mode }: { player: Player; mode: "sell" | "buy" }) {
     <button
       type="button"
       onClick={() => open(player)}
-      className="flex w-full items-center gap-3 rounded-2xl border border-[#EEE9F4] bg-white p-3 text-left transition hover:border-[#D9CDEC] hover:shadow-[0_10px_28px_rgba(44,13,69,0.08)]"
+      className="flex w-full items-center gap-3 rounded-2xl border border-[var(--border-soft)] bg-[var(--surface)] p-3 text-left transition hover:border-[var(--accent-border)] hover:shadow-[0_10px_28px_rgba(44,13,69,0.08)]"
     >
       <PlayerVisual player={player} size="sm" />
       <div className="min-w-0 flex-1">
         <div className="flex items-center justify-between gap-2">
-          <p className="truncate text-sm font-black text-[#19052D]">{player.name}</p>
-          <span className={`shrink-0 rounded-full px-2 py-1 text-[10px] font-black ${isSell ? "bg-[#FFF0F4] text-[#C52759]" : "bg-[#EAF9F3] text-[#008F5A]"}`}>
+          <p className="truncate text-sm font-black text-[var(--ink)]">{player.name}</p>
+          <span className={`shrink-0 rounded-full px-2 py-1 text-[10px] font-black ${isSell ? "bg-[var(--danger-soft)] text-[var(--danger)]" : "bg-[var(--success-soft)] text-[var(--success)]"}`}>
             {isSell ? player.risk : `${player.projected.toFixed(1)} pts`}
           </span>
         </div>
-        <p className="mt-0.5 text-xs font-semibold text-[#81748E]">{player.team} · {player.position}</p>
+        <p className="mt-0.5 text-xs font-semibold text-[var(--muted)]">{player.team} · {player.position}</p>
       </div>
     </button>
   );
@@ -459,7 +459,7 @@ function RouteCard({ route, recommended }: { route: TransferRoute; recommended: 
   // its expected_gain is a meaningless 0 placeholder until then, must not render as a real gain.
   const pending = route.id.startsWith("pending-");
   return (
-    <article className={`relative overflow-hidden rounded-[22px] border bg-white p-4 transition hover:-translate-y-0.5 hover:shadow-[0_16px_36px_rgba(31,7,49,0.09)] ${recommended ? "border-[#6C1DFF]/35 ring-2 ring-[#6C1DFF]/8" : "border-[#E8E2F0]"}`}>
+    <article className={`relative overflow-hidden rounded-[22px] border bg-[var(--surface)] p-4 transition hover:-translate-y-0.5 hover:shadow-[0_16px_36px_rgba(31,7,49,0.09)] ${recommended ? "border-[var(--accent)]/35 ring-2 ring-[var(--accent)]/8" : "border-[var(--border-soft)]"}`}>
       <div className="absolute inset-x-0 top-0 h-1" style={{ backgroundColor: tone.accent }} />
       <div className="flex items-start justify-between gap-3 pt-1">
         <div className="min-w-0">
@@ -467,20 +467,20 @@ function RouteCard({ route, recommended }: { route: TransferRoute; recommended: 
             <span className="rounded-full px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.09em]" style={{ color: tone.accent, backgroundColor: tone.soft }}>
               {tone.label}
             </span>
-            {recommended ? <span className="rounded-full bg-[#19052D] px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.09em] text-white">Recommended</span> : null}
+            {recommended ? <span className="rounded-full bg-[var(--ink)] px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.09em] text-white">Recommended</span> : null}
           </div>
-          <h3 className="mt-3 text-base font-black leading-snug text-[#19052D]">{route.title}</h3>
+          <h3 className="mt-3 text-base font-black leading-snug text-[var(--ink)]">{route.title}</h3>
         </div>
         <p className="shrink-0 text-2xl font-black tracking-[-0.04em]" style={{ color: tone.accent }}>
           {pending ? <span className="inline-block h-5 w-5 animate-spin rounded-full border-2 border-current border-t-transparent align-middle" aria-label="Calculating" /> : formatGain(route.expected_gain)}
         </p>
       </div>
-      <p className="mt-2 line-clamp-2 text-sm font-bold leading-5 text-[#4E3D5B]">{route.move}</p>
+      <p className="mt-2 line-clamp-2 text-sm font-bold leading-5 text-[var(--ink-soft)]">{route.move}</p>
       <div className="mt-4 flex flex-wrap gap-2">
         {pending ? (
           <>
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-[#E5D9FF] bg-[#F7F3FF] px-2.5 py-1 text-[10px] font-black text-[#6C1DFF]"><Spinner className="h-3 w-3" /> Confidence</span>
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-[#F0E7F3] bg-[#FBFAFD] px-2.5 py-1 text-[10px] font-black text-[#81748E]"><Spinner className="h-3 w-3" /> Risk</span>
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--accent-border)] bg-[var(--accent-soft)] px-2.5 py-1 text-[10px] font-black text-[var(--accent)]"><Spinner className="h-3 w-3" /> Confidence</span>
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-[var(--surface-3)] bg-[var(--surface-3)] px-2.5 py-1 text-[10px] font-black text-[var(--muted)]"><Spinner className="h-3 w-3" /> Risk</span>
           </>
         ) : (
           <>
@@ -489,8 +489,8 @@ function RouteCard({ route, recommended }: { route: TransferRoute; recommended: 
           </>
         )}
       </div>
-      <p className="mt-4 border-t border-[#F0ECF4] pt-3 text-xs font-semibold leading-5 text-[#756781]">
-        {pending ? <span className="inline-flex items-center gap-2 text-[#6C1DFF]"><Spinner className="h-3.5 w-3.5" /> Route reasoning is loading</span> : route.why[0] ?? "Route assessed against the current squad and fixture horizon."}
+      <p className="mt-4 border-t border-[var(--surface-3)] pt-3 text-xs font-semibold leading-5 text-[var(--muted)]">
+        {pending ? <span className="inline-flex items-center gap-2 text-[var(--accent)]"><Spinner className="h-3.5 w-3.5" /> Route reasoning is loading</span> : route.why[0] ?? "Route assessed against the current squad and fixture horizon."}
       </p>
     </article>
   );
@@ -597,11 +597,11 @@ export function DecisionCentreContent({
         <div className={`${shell} p-5 sm:p-6`}>
           <div className="flex items-start justify-between gap-4">
             <div>
-              <p className="text-[10px] font-black uppercase tracking-[0.14em] text-[#6C1DFF]">Why the model prefers this</p>
-              <h2 className="mt-2 text-xl font-black tracking-[-0.025em] text-[#19052D]">The decision case</h2>
+              <p className="text-[10px] font-black uppercase tracking-[0.14em] text-[var(--accent)]">Why the model prefers this</p>
+              <h2 className="mt-2 text-xl font-black tracking-[-0.025em] text-[var(--ink)]">The decision case</h2>
             </div>
-            <span className="hidden items-center gap-2 rounded-full bg-[#F7F4FA] px-3 py-1.5 text-xs font-black text-[#5E4D69] sm:inline-flex">
-              {bestMovePending ? <><Spinner className="h-3.5 w-3.5 text-[#6C1DFF]" /> Loading signals</> : `${decision.why_this_move.length} supporting signals`}
+            <span className="hidden items-center gap-2 rounded-full bg-[var(--surface-3)] px-3 py-1.5 text-xs font-black text-[var(--ink-soft)] sm:inline-flex">
+              {bestMovePending ? <><Spinner className="h-3.5 w-3.5 text-[var(--accent)]" /> Loading signals</> : `${decision.why_this_move.length} supporting signals`}
             </span>
           </div>
 
@@ -611,38 +611,38 @@ export function DecisionCentreContent({
             ) : decision.why_this_move.length ? (
               <div className="grid gap-3 md:grid-cols-2">
                 {decision.why_this_move.map((item, index) => (
-                  <div key={`${item}-${index}`} className="flex gap-3 rounded-2xl border border-[#E5F3ED] bg-[#F7FCFA] p-4">
-                    <span className="mt-0.5 grid h-7 w-7 shrink-0 place-items-center rounded-full bg-[#DDF6EB] text-[#008F5A]"><CheckIcon /></span>
-                    <p className="text-sm font-semibold leading-6 text-[#3F3348]">{item}</p>
+                  <div key={`${item}-${index}`} className="flex gap-3 rounded-2xl border border-[var(--success-soft)] bg-[var(--success-soft)] p-4">
+                    <span className="mt-0.5 grid h-7 w-7 shrink-0 place-items-center rounded-full bg-[var(--success-soft)] text-[var(--success)]"><CheckIcon /></span>
+                    <p className="text-sm font-semibold leading-6 text-[var(--ink-soft)]">{item}</p>
                   </div>
                 ))}
               </div>
             ) : (
-              <p className="rounded-2xl bg-[#F7F4FA] p-4 text-sm font-semibold text-[#756781]">No additional supporting signals were returned for this decision.</p>
+              <p className="rounded-2xl bg-[var(--surface-3)] p-4 text-sm font-semibold text-[var(--muted)]">No additional supporting signals were returned for this decision.</p>
             )}
           </div>
 
-          <details className="group mt-4 rounded-2xl border border-[#F3E1C8] bg-[#FFF9F0] open:pb-1">
-            <summary className="flex cursor-pointer list-none items-center justify-between gap-3 p-4 text-sm font-black text-[#7A4B08] [&::-webkit-details-marker]:hidden">
+          <details className="group mt-4 rounded-2xl border border-[var(--warning-border)] bg-[var(--warning-soft)] open:pb-1">
+            <summary className="flex cursor-pointer list-none items-center justify-between gap-3 p-4 text-sm font-black text-[var(--warning)] [&::-webkit-details-marker]:hidden">
               <span className="flex items-center gap-2"><WarningIcon /> Risks and failure cases</span>
               <span className="text-lg transition group-open:rotate-45">+</span>
             </summary>
             <div className="space-y-2 px-4 pb-4">
               {bestMovePending ? (
-                <p className="inline-flex items-center gap-2 text-sm font-semibold text-[#7A4B08]"><Spinner /> Loading downside checks</p>
+                <p className="inline-flex items-center gap-2 text-sm font-semibold text-[var(--warning)]"><Spinner /> Loading downside checks</p>
               ) : decision.what_could_go_wrong.length ? (
-                decision.what_could_go_wrong.map((item, index) => <p key={`${item}-${index}`} className="text-sm font-semibold leading-6 text-[#6B5637]">{item}</p>)
+                decision.what_could_go_wrong.map((item, index) => <p key={`${item}-${index}`} className="text-sm font-semibold leading-6 text-[var(--warning)]">{item}</p>)
               ) : (
-                <p className="text-sm font-semibold leading-6 text-[#6B5637]">No specific downside case was returned.</p>
+                <p className="text-sm font-semibold leading-6 text-[var(--warning)]">No specific downside case was returned.</p>
               )}
             </div>
           </details>
         </div>
 
         <aside className={`${shell} p-5 sm:p-6`}>
-          <p className="text-[10px] font-black uppercase tracking-[0.14em] text-[#6C1DFF]">Transfer economics</p>
-          <h2 className="mt-2 flex items-center gap-2 text-xl font-black tracking-[-0.025em] text-[#19052D]">{bestMovePending ? <><Spinner className="h-5 w-5 text-[#6C1DFF]" /> Calculating...</> : verdict}</h2>
-          <p className="mt-2 text-sm font-semibold leading-6 text-[#756781]">
+          <p className="text-[10px] font-black uppercase tracking-[0.14em] text-[var(--accent)]">Transfer economics</p>
+          <h2 className="mt-2 flex items-center gap-2 text-xl font-black tracking-[-0.025em] text-[var(--ink)]">{bestMovePending ? <><Spinner className="h-5 w-5 text-[var(--accent)]" /> Calculating...</> : verdict}</h2>
+          <p className="mt-2 text-sm font-semibold leading-6 text-[var(--muted)]">
             {bestMovePending
               ? "Still working out the full transfer economics for this squad."
               : hitCost
@@ -663,10 +663,10 @@ export function DecisionCentreContent({
       <section className={`${shell} p-5 sm:p-6`}>
         <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <p className="text-[10px] font-black uppercase tracking-[0.14em] text-[#6C1DFF]">Alternative strategies</p>
-            <h2 className="mt-2 text-xl font-black tracking-[-0.025em] text-[#19052D]">Compare the three viable routes</h2>
+            <p className="text-[10px] font-black uppercase tracking-[0.14em] text-[var(--accent)]">Alternative strategies</p>
+            <h2 className="mt-2 text-xl font-black tracking-[-0.025em] text-[var(--ink)]">Compare the three viable routes</h2>
           </div>
-          <p className="text-xs font-semibold text-[#81748E]">Gain shown versus the current squad baseline</p>
+          <p className="text-xs font-semibold text-[var(--muted)]">Gain shown versus the current squad baseline</p>
         </div>
         <div className="mt-5 grid gap-4 lg:grid-cols-3">
           {routes.map((route) => <RouteCard key={route.id} route={route} recommended={!decision.no_strong_move && route.id === recommendedRouteId} />)}
@@ -677,23 +677,23 @@ export function DecisionCentreContent({
         <div className={`${shell} p-5 sm:p-6`}>
           <div className="flex items-center justify-between gap-3">
             <div>
-              <p className="text-[10px] font-black uppercase tracking-[0.14em] text-[#C52759]">Squad pressure</p>
-              <h2 className="mt-2 text-xl font-black tracking-[-0.025em] text-[#19052D]">Players to consider selling</h2>
+              <p className="text-[10px] font-black uppercase tracking-[0.14em] text-[var(--danger)]">Squad pressure</p>
+              <h2 className="mt-2 text-xl font-black tracking-[-0.025em] text-[var(--ink)]">Players to consider selling</h2>
             </div>
-            <Link href="/squad" className="text-xs font-black text-[#6C1DFF] hover:underline">View squad</Link>
+            <Link href="/squad" className="text-xs font-black text-[var(--accent)] hover:underline">View squad</Link>
           </div>
           <div className="mt-5 grid gap-3 sm:grid-cols-2">
-            {sellCandidates.length ? sellCandidates.map((player) => <PlayerRow key={player.id} player={player} mode="sell" />) : <p className="sm:col-span-2 rounded-2xl bg-[#F7F4FA] p-4 text-sm font-semibold text-[#756781]">No urgent sell candidates in the current squad.</p>}
+            {sellCandidates.length ? sellCandidates.map((player) => <PlayerRow key={player.id} player={player} mode="sell" />) : <p className="sm:col-span-2 rounded-2xl bg-[var(--surface-3)] p-4 text-sm font-semibold text-[var(--muted)]">No urgent sell candidates in the current squad.</p>}
           </div>
         </div>
 
         <div className={`${shell} p-5 sm:p-6`}>
           <div className="flex items-center justify-between gap-3">
             <div>
-              <p className="text-[10px] font-black uppercase tracking-[0.14em] text-[#008F5A]">Market opportunity</p>
-              <h2 className="mt-2 text-xl font-black tracking-[-0.025em] text-[#19052D]">Players worth considering</h2>
+              <p className="text-[10px] font-black uppercase tracking-[0.14em] text-[var(--success)]">Market opportunity</p>
+              <h2 className="mt-2 text-xl font-black tracking-[-0.025em] text-[var(--ink)]">Players worth considering</h2>
             </div>
-            <Link href="/market" className="text-xs font-black text-[#6C1DFF] hover:underline">Open market</Link>
+            <Link href="/market" className="text-xs font-black text-[var(--accent)] hover:underline">Open market</Link>
           </div>
           <div className="mt-5 grid gap-3 sm:grid-cols-2">
             {buyCandidates.length ? (
@@ -701,17 +701,17 @@ export function DecisionCentreContent({
             ) : buyCandidatesPending ? (
               <>
                 {[0, 1].map((index) => (
-                  <div key={index} className="flex items-center gap-3 rounded-2xl border border-[#EEE9F4] bg-[#FBFAFD] p-3">
-                    <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-[#EAF9F3] text-[#008F5A]"><Spinner /></span>
+                  <div key={index} className="flex items-center gap-3 rounded-2xl border border-[var(--border-soft)] bg-[var(--surface-3)] p-3">
+                    <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-[var(--success-soft)] text-[var(--success)]"><Spinner /></span>
                     <div className="min-w-0 flex-1">
-                      <div className="h-2.5 w-2/3 animate-pulse rounded-full bg-[#DDEFE7]" />
-                      <div className="mt-2 h-2.5 w-1/2 animate-pulse rounded-full bg-[#EEE9F4]" />
+                      <div className="h-2.5 w-2/3 animate-pulse rounded-full bg-[var(--success-soft)]" />
+                      <div className="mt-2 h-2.5 w-1/2 animate-pulse rounded-full bg-[var(--border-soft)]" />
                     </div>
                   </div>
                 ))}
               </>
             ) : (
-              <p className="sm:col-span-2 rounded-2xl bg-[#F7F4FA] p-4 text-sm font-semibold text-[#756781]">No market option currently clears the model&apos;s buy threshold.</p>
+              <p className="sm:col-span-2 rounded-2xl bg-[var(--surface-3)] p-4 text-sm font-semibold text-[var(--muted)]">No market option currently clears the model&apos;s buy threshold.</p>
             )}
           </div>
         </div>
@@ -720,32 +720,32 @@ export function DecisionCentreContent({
       <details className={`${shell} group overflow-hidden`}>
         <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-5 sm:p-6 [&::-webkit-details-marker]:hidden">
           <div>
-            <p className="text-[10px] font-black uppercase tracking-[0.14em] text-[#81748E]">Advanced analysis</p>
-            <h2 className="mt-1 text-lg font-black text-[#19052D]">Full route reasoning and downside cases</h2>
+            <p className="text-[10px] font-black uppercase tracking-[0.14em] text-[var(--muted)]">Advanced analysis</p>
+            <h2 className="mt-1 text-lg font-black text-[var(--ink)]">Full route reasoning and downside cases</h2>
           </div>
-          <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[#F2ECFF] text-xl font-black text-[#6C1DFF] transition group-open:rotate-45">+</span>
+          <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[var(--accent-soft)] text-xl font-black text-[var(--accent)] transition group-open:rotate-45">+</span>
         </summary>
-        <div className="border-t border-[#EEE9F4] p-5 sm:p-6">
+        <div className="border-t border-[var(--border-soft)] p-5 sm:p-6">
           <div className="grid gap-4 lg:grid-cols-3">
             {routes.map((route) => {
               const routePending = route.id.startsWith("pending-");
               return (
-                <article key={`detail-${route.id}`} className="rounded-2xl border border-[#EEE9F4] bg-[#FBFAFD] p-4">
-                  <h3 className="flex items-center gap-2 text-sm font-black text-[#19052D]">{routePending ? <Spinner className="h-4 w-4 text-[#6C1DFF]" /> : null}{route.title}</h3>
+                <article key={`detail-${route.id}`} className="rounded-2xl border border-[var(--border-soft)] bg-[var(--surface-3)] p-4">
+                  <h3 className="flex items-center gap-2 text-sm font-black text-[var(--ink)]">{routePending ? <Spinner className="h-4 w-4 text-[var(--accent)]" /> : null}{route.title}</h3>
                   {routePending ? (
                     <div className="mt-4"><LoadingLines rows={2} /></div>
                   ) : (
                     <>
                       <div className="mt-4">
-                        <p className="text-[10px] font-black uppercase tracking-[0.12em] text-[#008F5A]">Why it works</p>
+                        <p className="text-[10px] font-black uppercase tracking-[0.12em] text-[var(--success)]">Why it works</p>
                         <ul className="mt-2 space-y-2">
-                          {route.why.length ? route.why.map((item, index) => <li key={`${route.id}-why-${index}`} className="text-xs font-semibold leading-5 text-[#5E4D69]">{item}</li>) : <li className="text-xs font-semibold leading-5 text-[#5E4D69]">No additional route reasoning was returned.</li>}
+                          {route.why.length ? route.why.map((item, index) => <li key={`${route.id}-why-${index}`} className="text-xs font-semibold leading-5 text-[var(--ink-soft)]">{item}</li>) : <li className="text-xs font-semibold leading-5 text-[var(--ink-soft)]">No additional route reasoning was returned.</li>}
                         </ul>
                       </div>
-                      <div className="mt-4 border-t border-[#EEE9F4] pt-4">
-                        <p className="text-[10px] font-black uppercase tracking-[0.12em] text-[#B86500]">Downside</p>
+                      <div className="mt-4 border-t border-[var(--border-soft)] pt-4">
+                        <p className="text-[10px] font-black uppercase tracking-[0.12em] text-[var(--warning)]">Downside</p>
                         <ul className="mt-2 space-y-2">
-                          {route.why_this_could_be_wrong.length ? route.why_this_could_be_wrong.map((item, index) => <li key={`${route.id}-risk-${index}`} className="text-xs font-semibold leading-5 text-[#6F5A42]">{item}</li>) : <li className="text-xs font-semibold leading-5 text-[#6F5A42]">No specific downside was returned.</li>}
+                          {route.why_this_could_be_wrong.length ? route.why_this_could_be_wrong.map((item, index) => <li key={`${route.id}-risk-${index}`} className="text-xs font-semibold leading-5 text-[var(--warning)]">{item}</li>) : <li className="text-xs font-semibold leading-5 text-[var(--warning)]">No specific downside was returned.</li>}
                         </ul>
                       </div>
                     </>

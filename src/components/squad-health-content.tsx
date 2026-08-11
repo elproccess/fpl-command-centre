@@ -10,21 +10,21 @@ import type { SquadIssue } from "@/lib/types";
 
 function IssueCard({ issue }: { issue: SquadIssue }) {
   return (
-    <article className="rounded-2xl border border-[#E8DEF8] bg-white p-4 shadow-[0_18px_45px_rgba(55,0,60,0.08)]">
+    <article className="rounded-2xl border border-[var(--border-soft)] bg-[var(--surface)] p-4 shadow-[0_18px_45px_rgba(55,0,60,0.08)]">
       <div className="flex items-start justify-between gap-3">
         <div className="flex min-w-0 items-center gap-3">
           <PlayerVisual player={issue.affected_player} size="sm" />
           <div className="min-w-0">
-            <p className="truncate text-lg font-black text-[#17002F]">{issue.affected_player.name}</p>
-            <p className="text-xs font-black uppercase tracking-[0.12em] text-[#6C1DFF]">{issue.category}</p>
+            <p className="truncate text-lg font-black text-[var(--ink)]">{issue.affected_player.name}</p>
+            <p className="text-xs font-black uppercase tracking-[0.12em] text-[var(--accent)]">{issue.category}</p>
           </div>
         </div>
         <RiskBadge value={issue.severity} />
       </div>
-      <p className="mt-4 text-sm font-semibold leading-6 text-[#5D4A70]">{issue.reason}</p>
-      <div className="mt-4 rounded-xl bg-[#F8F5FF] p-3">
-        <p className="text-xs font-black uppercase tracking-[0.12em] text-[#7B688E]">Suggested action</p>
-        <p className="mt-1 text-sm font-black text-[#17002F]">{issue.suggested_action}</p>
+      <p className="mt-4 text-sm font-semibold leading-6 text-[var(--muted)]">{issue.reason}</p>
+      <div className="mt-4 rounded-xl bg-[var(--surface-2)] p-3">
+        <p className="text-xs font-black uppercase tracking-[0.12em] text-[var(--muted)]">Suggested action</p>
+        <p className="mt-1 text-sm font-black text-[var(--ink)]">{issue.suggested_action}</p>
       </div>
     </article>
   );
@@ -33,7 +33,7 @@ function IssueCard({ issue }: { issue: SquadIssue }) {
 function IssueSection({ title, issues }: { title: string; issues: SquadIssue[] }) {
   return (
     <section>
-      <h2 className="mb-4 text-2xl font-black text-[#17002F]">{title}</h2>
+      <h2 className="mb-4 text-2xl font-black text-[var(--ink)]">{title}</h2>
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
         {issues.map((issue) => <IssueCard key={issue.id} issue={issue} />)}
       </div>

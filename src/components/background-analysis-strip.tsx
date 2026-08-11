@@ -70,19 +70,19 @@ export function BackgroundAnalysisStrip({ entryId, gameweek }: { entryId: string
   if (!anyComputing && !anyFailed) return null;
 
   return (
-    <section className="mb-5 rounded-2xl border border-[#D8C9FF] bg-[linear-gradient(145deg,#F8F4FF,#F2ECFF)] p-4 shadow-[0_14px_34px_rgba(108,29,255,0.08)]">
+    <section className="mb-5 rounded-2xl border border-[var(--accent-border)] bg-[linear-gradient(145deg,var(--accent-soft),var(--accent-soft))] p-4 shadow-[0_14px_34px_rgba(108,29,255,0.08)]">
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-2">
-          <span className={`h-2.5 w-2.5 rounded-full ${anyComputing ? "animate-pulse bg-[#6C1DFF]" : "bg-[#E90052]"}`} />
-          <p className="text-xs font-black uppercase tracking-[0.14em] text-[#6C1DFF]">
+          <span className={`h-2.5 w-2.5 rounded-full ${anyComputing ? "animate-pulse bg-[var(--accent)]" : "bg-[var(--danger)]"}`} />
+          <p className="text-xs font-black uppercase tracking-[0.14em] text-[var(--accent)]">
             {anyComputing ? "Background analysis running" : "Background analysis needs attention"}
           </p>
         </div>
-        <button type="button" onClick={() => setDismissed(true)} className="text-xs font-black text-[#6C7195] hover:text-[#6C1DFF]">
+        <button type="button" onClick={() => setDismissed(true)} className="text-xs font-black text-[var(--muted)] hover:text-[var(--accent)]">
           Hide
         </button>
       </div>
-      <p className="mt-1 text-xs font-semibold text-[#4D5680]">
+      <p className="mt-1 text-xs font-semibold text-[var(--ink-soft)]">
         {anyComputing
           ? "Your other tabs are still computing in the background - they'll show real results as soon as each one finishes."
           : "One or more background analyses failed - open the tab to retry."}
@@ -94,23 +94,23 @@ export function BackgroundAnalysisStrip({ entryId, gameweek }: { entryId: string
             href={job.href}
             className={`flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-black transition ${
               job.state === "ready"
-                ? "border-[#BDEFD2] bg-[#EFFFF5] text-[#008B49]"
+                ? "border-[var(--success-border)] bg-[var(--success-soft)] text-[var(--success)]"
                 : job.state === "failed"
-                  ? "border-[#FFC5D8] bg-[#FFF1F6] text-[#C80043]"
+                  ? "border-[var(--danger-border)] bg-[var(--danger-soft)] text-[var(--danger)]"
                   : job.state === "computing"
-                    ? "border-[#D8C9FF] bg-white text-[#6C1DFF]"
-                    : "border-[#E1E7F2] bg-white text-[#6C7195]"
+                    ? "border-[var(--accent-border)] bg-[var(--surface)] text-[var(--accent)]"
+                    : "border-[var(--border)] bg-[var(--surface)] text-[var(--muted)]"
             }`}
           >
             <span
               className={`h-1.5 w-1.5 rounded-full ${
                 job.state === "ready"
-                  ? "bg-[#00C853]"
+                  ? "bg-[var(--success)]"
                   : job.state === "failed"
-                    ? "bg-[#E90052]"
+                    ? "bg-[var(--danger)]"
                     : job.state === "computing"
-                      ? "animate-pulse bg-[#6C1DFF]"
-                      : "bg-[#B7BEDA]"
+                      ? "animate-pulse bg-[var(--accent)]"
+                      : "bg-[var(--muted)]"
               }`}
             />
             {job.label}

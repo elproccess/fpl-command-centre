@@ -8,9 +8,9 @@ export const dynamic = "force-dynamic";
 
 function ReviewCard({ label, value }: { label: string; value: string }) {
   return (
-    <section className="rounded-2xl border border-[#E8DEF8] bg-white p-5 shadow-[0_18px_45px_rgba(55,0,60,0.08)]">
-      <p className="text-xs font-black uppercase tracking-[0.16em] text-[#6C1DFF]">{label}</p>
-      <p className="mt-3 text-lg font-black leading-7 text-[#17002F]">{value}</p>
+    <section className="rounded-2xl border border-[var(--border-soft)] bg-[var(--surface)] p-5 shadow-[0_18px_45px_rgba(55,0,60,0.08)]">
+      <p className="text-xs font-black uppercase tracking-[0.16em] text-[var(--accent)]">{label}</p>
+      <p className="mt-3 text-lg font-black leading-7 text-[var(--ink)]">{value}</p>
     </section>
   );
 }
@@ -51,19 +51,19 @@ export default async function ReviewPage() {
         <ReviewCard label="Transfer result" value={audit.transfer_result} />
       </div>
 
-      <section className="mt-6 rounded-2xl border border-[#E8DEF8] bg-white p-5 shadow-[0_18px_45px_rgba(55,0,60,0.08)]">
-        <h2 className="text-2xl font-black text-[#17002F]">Recommendation history</h2>
+      <section className="mt-6 rounded-2xl border border-[var(--border-soft)] bg-[var(--surface)] p-5 shadow-[0_18px_45px_rgba(55,0,60,0.08)]">
+        <h2 className="text-2xl font-black text-[var(--ink)]">Recommendation history</h2>
         <div className="mt-4 grid gap-4 md:grid-cols-3">
           {history.map((item) => (
-            <article key={item.gw} className="rounded-xl bg-[#F8F5FF] p-4">
+            <article key={item.gw} className="rounded-xl bg-[var(--surface-2)] p-4">
               <div className="flex items-center justify-between gap-3">
-                <p className="text-sm font-black text-[#6C1DFF]">{item.gw}</p>
-                <span className={`rounded-full px-3 py-1 text-xs font-black ${item.label === "Good call" ? "bg-[#00C853]/12 text-[#008B3A]" : item.label === "Bad call" ? "bg-[#E90052]/10 text-[#C80046]" : "bg-[#FFB800]/12 text-[#8A6200]"}`}>{item.label}</span>
+                <p className="text-sm font-black text-[var(--accent)]">{item.gw}</p>
+                <span className={`rounded-full px-3 py-1 text-xs font-black ${item.label === "Good call" ? "bg-[var(--success)]/12 text-[var(--success)]" : item.label === "Bad call" ? "bg-[var(--danger)]/10 text-[var(--danger)]" : "bg-[var(--warning)]/12 text-[var(--warning)]"}`}>{item.label}</span>
               </div>
-              <p className="mt-3 text-sm font-black text-[#17002F]">{item.note}</p>
+              <p className="mt-3 text-sm font-black text-[var(--ink)]">{item.note}</p>
               <div className="mt-4 grid grid-cols-2 gap-2">
-                <div className="rounded-lg bg-white p-3"><p className="text-xs font-black uppercase text-[#7B688E]">Expected</p><p className="mt-1 text-xl font-black text-[#6C1DFF]">{item.expected}</p></div>
-                <div className="rounded-lg bg-white p-3"><p className="text-xs font-black uppercase text-[#7B688E]">Actual</p><p className="mt-1 text-xl font-black text-[#00A844]">{item.actual}</p></div>
+                <div className="rounded-lg bg-[var(--surface)] p-3"><p className="text-xs font-black uppercase text-[var(--muted)]">Expected</p><p className="mt-1 text-xl font-black text-[var(--accent)]">{item.expected}</p></div>
+                <div className="rounded-lg bg-[var(--surface)] p-3"><p className="text-xs font-black uppercase text-[var(--muted)]">Actual</p><p className="mt-1 text-xl font-black text-[var(--success)]">{item.actual}</p></div>
               </div>
             </article>
           ))}
@@ -71,23 +71,23 @@ export default async function ReviewPage() {
       </section>
 
       <section className="mt-6 grid gap-4 lg:grid-cols-[1fr_0.8fr]">
-        <div className="rounded-2xl border border-[#E8DEF8] bg-white p-5 shadow-[0_18px_45px_rgba(55,0,60,0.08)]">
-          <p className="text-xs font-black uppercase tracking-[0.16em] text-[#6C1DFF]">Model note</p>
-          <p className="mt-3 text-lg font-semibold leading-8 text-[#3C2752]">{audit.model_note}</p>
+        <div className="rounded-2xl border border-[var(--border-soft)] bg-[var(--surface)] p-5 shadow-[0_18px_45px_rgba(55,0,60,0.08)]">
+          <p className="text-xs font-black uppercase tracking-[0.16em] text-[var(--accent)]">Model note</p>
+          <p className="mt-3 text-lg font-semibold leading-8 text-[var(--ink-soft)]">{audit.model_note}</p>
         </div>
-        <div className="rounded-2xl border border-[#FFB800]/35 bg-[#FFB800]/10 p-5">
-          <p className="text-xs font-black uppercase tracking-[0.16em] text-[#7A5200]">What could go wrong?</p>
-          <ul className="mt-3 space-y-2 text-sm font-semibold text-[#6D4B00]">
+        <div className="rounded-2xl border border-[var(--warning-border)] bg-[var(--warning-soft)] p-5">
+          <p className="text-xs font-black uppercase tracking-[0.16em] text-[var(--warning)]">What could go wrong?</p>
+          <ul className="mt-3 space-y-2 text-sm font-semibold text-[var(--warning)]">
             {audit.what_could_go_wrong.map((item) => <li key={item}>- {item}</li>)}
           </ul>
         </div>
       </section>
 
-      <section className="mt-6 rounded-2xl border border-[#E8DEF8] bg-white p-5 shadow-[0_18px_45px_rgba(55,0,60,0.08)]">
-        <h2 className="text-2xl font-black text-[#17002F]">What we learned</h2>
+      <section className="mt-6 rounded-2xl border border-[var(--border-soft)] bg-[var(--surface)] p-5 shadow-[0_18px_45px_rgba(55,0,60,0.08)]">
+        <h2 className="text-2xl font-black text-[var(--ink)]">What we learned</h2>
         <div className="mt-4 grid gap-3 md:grid-cols-3">
           {audit.lessons_for_next_gw.map((lesson) => (
-            <div key={lesson} className="rounded-xl bg-[#F8F5FF] p-4 text-sm font-black leading-6 text-[#3C2752]">- {lesson}</div>
+            <div key={lesson} className="rounded-xl bg-[var(--surface-2)] p-4 text-sm font-black leading-6 text-[var(--ink-soft)]">- {lesson}</div>
           ))}
         </div>
       </section>

@@ -1,15 +1,15 @@
 import type { ConfidenceBand, RiskLevel } from "@/lib/types";
 
 const confidenceClass: Record<ConfidenceBand, string> = {
-  High: "bg-[#00C853]/12 text-[#008B3A] ring-[#00C853]/25",
-  Medium: "bg-[#FFB800]/14 text-[#A66F00] ring-[#FFB800]/30",
-  Low: "bg-[#E90052]/10 text-[#C80046] ring-[#E90052]/25",
+  High: "bg-[var(--success)]/12 text-[var(--success)] ring-[var(--success)]/25",
+  Medium: "bg-[var(--warning)]/14 text-[var(--warning)] ring-[var(--warning)]/30",
+  Low: "bg-[var(--danger)]/10 text-[var(--danger)] ring-[var(--danger)]/25",
 };
 
 const riskClass: Record<RiskLevel, string> = {
-  Low: "bg-[#00C853]/12 text-[#008B3A] ring-[#00C853]/25",
-  Medium: "bg-[#FFB800]/14 text-[#A66F00] ring-[#FFB800]/30",
-  High: "bg-[#E90052]/10 text-[#C80046] ring-[#E90052]/25",
+  Low: "bg-[var(--success)]/12 text-[var(--success)] ring-[var(--success)]/25",
+  Medium: "bg-[var(--warning)]/14 text-[var(--warning)] ring-[var(--warning)]/30",
+  High: "bg-[var(--danger)]/10 text-[var(--danger)] ring-[var(--danger)]/25",
 };
 
 export function ConfidenceBadge({ value }: { value: ConfidenceBand }) {
@@ -23,16 +23,16 @@ export function RiskBadge({ value }: { value: RiskLevel }) {
 export function SignalBadge({ value }: { value: string }) {
   const tone =
     value === "Buy"
-      ? "bg-[#00C853]/12 text-[#008B3A] ring-[#00C853]/25"
+      ? "bg-[var(--success)]/12 text-[var(--success)] ring-[var(--success)]/25"
       : value === "Sell" || value === "Avoid"
-        ? "bg-[#E90052]/10 text-[#C80046] ring-[#E90052]/25"
+        ? "bg-[var(--danger)]/10 text-[var(--danger)] ring-[var(--danger)]/25"
         : value === "Watch"
-          ? "bg-[#6C1DFF]/10 text-[#6C1DFF] ring-[#6C1DFF]/20"
+          ? "bg-[var(--accent)]/10 text-[var(--accent)] ring-[var(--accent)]/20"
           : value === "Bench"
             // Deliberately flatter/greyer than every other badge - "no real claim on minutes"
             // reads as a lower tier than Watch's genuine "no strong call on a real player",
             // not just a different color for its own sake.
-            ? "bg-[#8B93A8]/12 text-[#5B6478] ring-[#8B93A8]/25"
-            : "bg-[#00B8FF]/10 text-[#007AA8] ring-[#00B8FF]/25";
+            ? "bg-[var(--muted)]/12 text-[var(--muted)] ring-[var(--muted)]/25"
+            : "bg-[var(--info)]/10 text-[var(--info)] ring-[var(--info)]/25";
   return <span className={`rounded-lg px-3 py-1 text-xs font-black ring-1 ${tone}`}>{value}</span>;
 }

@@ -177,9 +177,9 @@ function uniqueIssues(diagnostics: SquadHealthDiagnostics) {
 }
 
 function riskTone(value: string) {
-  if (value === "High" || value === "Critical") return "border-[#FFD0DF] bg-[#FFF0F5] text-[#C80046]";
-  if (value === "Medium" || value === "Fragile") return "border-[#FFE0A3] bg-[#FFF8E8] text-[#A86B00]";
-  return "border-[#BDEFD2] bg-[#EFFFF5] text-[#008B49]";
+  if (value === "High" || value === "Critical") return "border-[var(--danger-border)] bg-[var(--danger-soft)] text-[var(--danger)]";
+  if (value === "Medium" || value === "Fragile") return "border-[var(--warning-border)] bg-[var(--warning-soft)] text-[var(--warning)]";
+  return "border-[var(--success-border)] bg-[var(--success-soft)] text-[var(--success)]";
 }
 
 function roleFor(player: Player, captainId?: number, viceCaptainId?: number) {
@@ -355,13 +355,13 @@ function HeroOverviewMetric({
   detail?: string;
   tone?: "default" | "positive" | "warning";
 }) {
-  const valueClass = tone === "positive" ? "text-[#008D4F]" : tone === "warning" ? "text-[#B77900]" : "text-[#12002D]";
+  const valueClass = tone === "positive" ? "text-[var(--success)]" : tone === "warning" ? "text-[var(--warning)]" : "text-[var(--ink)]";
 
   return (
-    <div className="min-w-0 border-r border-[#E7EAF1] px-2 py-2.5 last:border-r-0 sm:px-4 sm:py-3">
-      <p className="truncate text-[7px] font-black uppercase tracking-[0.06em] text-[#858CA3] sm:text-[9px] sm:tracking-[0.11em]">{label}</p>
+    <div className="min-w-0 border-r border-[var(--border)] px-2 py-2.5 last:border-r-0 sm:px-4 sm:py-3">
+      <p className="truncate text-[7px] font-black uppercase tracking-[0.06em] text-[var(--muted)] sm:text-[9px] sm:tracking-[0.11em]">{label}</p>
       <p className={`mt-1 truncate text-[12px] font-black tracking-[-0.025em] sm:text-lg ${valueClass}`}>{value}</p>
-      {detail ? <p className="mt-0.5 hidden truncate text-[9px] font-semibold text-[#777F99] sm:block">{detail}</p> : null}
+      {detail ? <p className="mt-0.5 hidden truncate text-[9px] font-semibold text-[var(--muted)] sm:block">{detail}</p> : null}
     </div>
   );
 }
@@ -471,18 +471,18 @@ function TeamOverviewHero({ state, diagnostics, starters }: { state: UserGameSta
 
   return (
     <section className="mb-6 mt-12 sm:mt-16">
-      <div className="relative overflow-visible rounded-[22px] border border-[#CDBBFF] bg-[linear-gradient(135deg,#FFFFFF_0%,#FCFAFF_58%,#F3ECFF_100%)] shadow-[0_24px_70px_rgba(55,0,60,0.10)] sm:rounded-[28px]">
+      <div className="relative overflow-visible rounded-[22px] border border-[var(--accent-border)] bg-[linear-gradient(135deg,var(--surface)_0%,var(--surface-2)_58%,var(--accent-soft)_100%)] shadow-[0_24px_70px_rgba(55,0,60,0.10)] sm:rounded-[28px]">
         <div className="pointer-events-none absolute inset-0 overflow-hidden rounded-[inherit]">
-          <div className="absolute -right-20 -top-28 h-72 w-72 rounded-full bg-[#6C1DFF]/[0.08] blur-3xl" />
-          <div className="absolute left-[43%] top-12 h-24 w-24 rotate-12 border-r-[18px] border-t-[18px] border-[#6C1DFF]/[0.045]" />
-          <div className="absolute right-5 top-6 text-[58px] font-black leading-none text-[#37003C]/[0.07] sm:right-9 sm:text-[76px]">XI</div>
+          <div className="absolute -right-20 -top-28 h-72 w-72 rounded-full bg-[var(--accent)]/[0.08] blur-3xl" />
+          <div className="absolute left-[43%] top-12 h-24 w-24 rotate-12 border-r-[18px] border-t-[18px] border-[var(--accent)]/[0.045]" />
+          <div className="absolute right-5 top-6 text-[58px] font-black leading-none text-[var(--ink)]/[0.07] sm:right-9 sm:text-[76px]">XI</div>
         </div>
 
         <SquadHeroArtwork players={artworkPlayers} />
 
         <div className="relative z-10 min-h-[212px] px-4 pb-[104px] pt-5 pr-[154px] sm:min-h-[250px] sm:px-7 sm:pb-[112px] sm:pt-7 sm:pr-[300px] lg:px-9 lg:pr-[370px]">
           <div className="flex flex-wrap items-center gap-2">
-            <span className="rounded-full bg-[#6C1DFF] px-3 py-1 text-[9px] font-black uppercase tracking-[0.13em] text-white shadow-[0_8px_18px_rgba(108,29,255,0.20)] sm:text-[10px]">
+            <span className="rounded-full bg-[var(--accent)] px-3 py-1 text-[9px] font-black uppercase tracking-[0.13em] text-white shadow-[0_8px_18px_rgba(108,29,255,0.20)] sm:text-[10px]">
               {state.gameweek_label}
             </span>
             <span className={`rounded-full border px-3 py-1 text-[9px] font-black uppercase tracking-[0.11em] sm:text-[10px] ${riskTone(diagnostics.health.grade)}`}>
@@ -490,16 +490,16 @@ function TeamOverviewHero({ state, diagnostics, starters }: { state: UserGameSta
             </span>
           </div>
 
-          <p className="mt-4 text-[9px] font-black uppercase tracking-[0.15em] text-[#63577A] sm:text-[11px] sm:tracking-[0.18em]">Team overview</p>
-          <h2 className="mt-2 max-w-[13rem] break-words text-[1.55rem] font-black leading-[1.05] tracking-[-0.045em] text-[#12002D] sm:max-w-xl sm:text-4xl lg:text-[2.55rem]">
+          <p className="mt-4 text-[9px] font-black uppercase tracking-[0.15em] text-[var(--muted)] sm:text-[11px] sm:tracking-[0.18em]">Team overview</p>
+          <h2 className="mt-2 max-w-[13rem] break-words text-[1.55rem] font-black leading-[1.05] tracking-[-0.045em] text-[var(--ink)] sm:max-w-xl sm:text-4xl lg:text-[2.55rem]">
             {state.team_name}
           </h2>
-          <p className="mt-2 max-w-[13rem] text-[11px] font-semibold leading-5 text-[#5F5878] sm:max-w-xl sm:text-sm sm:leading-6">
+          <p className="mt-2 max-w-[13rem] text-[11px] font-semibold leading-5 text-[var(--ink-soft)] sm:max-w-xl sm:text-sm sm:leading-6">
             {state.formation} formation · {issues.length} active {issues.length === 1 ? "flag" : "flags"}
           </p>
         </div>
 
-        <div className="absolute inset-x-3 bottom-3 z-30 grid grid-cols-4 overflow-hidden rounded-xl border border-[#E0E5EF] bg-white/95 shadow-[0_12px_32px_rgba(15,23,60,0.08)] backdrop-blur sm:inset-x-6 sm:bottom-5 lg:inset-x-8">
+        <div className="absolute inset-x-3 bottom-3 z-30 grid grid-cols-4 overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--surface)]/95 shadow-[0_12px_32px_rgba(15,23,60,0.08)] backdrop-blur sm:inset-x-6 sm:bottom-5 lg:inset-x-8">
           <HeroOverviewMetric label="Projected XI" value={projectedTotal > 0 ? projectedTotal.toFixed(1) : "—"} detail="Next gameweek" />
           <HeroOverviewMetric label="Squad health" value={score == null ? "—" : `${Math.round(score)}%`} detail={diagnostics.health.grade} tone={healthTone} />
           <HeroOverviewMetric label="Free transfers" value={String(state.free_transfers)} detail="Available" />
@@ -514,11 +514,11 @@ function HealthGauge({ score }: { score: number | null }) {
   const safeScore = score == null ? 0 : Math.max(0, Math.min(100, score));
   const angle = safeScore * 3.6;
   return (
-    <div className="relative grid h-32 w-32 shrink-0 place-items-center rounded-full" style={{ background: `conic-gradient(#00C853 ${angle}deg, #EDF1F7 ${angle}deg)` }}>
-      <div className="grid h-[88px] w-[88px] place-items-center rounded-full bg-white shadow-[inset_0_0_0_1px_#E1E7F2]">
+    <div className="relative grid h-32 w-32 shrink-0 place-items-center rounded-full" style={{ background: `conic-gradient(var(--success) ${angle}deg, var(--border) ${angle}deg)` }}>
+      <div className="grid h-[88px] w-[88px] place-items-center rounded-full bg-[var(--surface)] shadow-[inset_0_0_0_1px_var(--border)]">
         <div className="text-center">
-          <p className="text-2xl font-black text-[#070B28]">{score == null ? "—" : Math.round(score)}</p>
-          <p className="text-[9px] font-black uppercase tracking-[0.12em] text-[#6C7195]">Health</p>
+          <p className="text-2xl font-black text-[var(--ink)]">{score == null ? "—" : Math.round(score)}</p>
+          <p className="text-[9px] font-black uppercase tracking-[0.12em] text-[var(--muted)]">Health</p>
         </div>
       </div>
     </div>
@@ -527,15 +527,15 @@ function HealthGauge({ score }: { score: number | null }) {
 
 function RiskBar({ label, value, tone }: { label: string; value: number | null; tone: "amber" | "pink" }) {
   const safeValue = value == null ? 0 : Math.max(0, Math.min(100, value));
-  const fill = tone === "amber" ? "bg-[#E79A00]" : "bg-[#E90052]";
-  const text = tone === "amber" ? "text-[#B57700]" : "text-[#C80046]";
+  const fill = tone === "amber" ? "bg-[var(--warning)]" : "bg-[var(--danger)]";
+  const text = tone === "amber" ? "text-[var(--warning)]" : "text-[var(--danger)]";
   return (
     <div>
       <div className="flex items-center justify-between gap-3 text-xs font-black">
-        <span className="text-[#4D5680]">{label}</span>
+        <span className="text-[var(--ink-soft)]">{label}</span>
         <span className={text}>{value == null ? "—" : `${Math.round(value)}%`}</span>
       </div>
-      <div className="mt-2 h-2 overflow-hidden rounded-full bg-[#EDF1F7]">
+      <div className="mt-2 h-2 overflow-hidden rounded-full bg-[var(--border)]">
         <div className={`h-full rounded-full ${fill}`} style={{ width: `${safeValue}%` }} />
       </div>
     </div>
@@ -547,11 +547,11 @@ function SquadHealthSummary({ diagnostics }: { diagnostics: SquadHealthDiagnosti
   const suspensionCount = diagnostics.injury_suspension_risk_list.length;
   const rotationCount = diagnostics.minutes_risk_list.length;
   return (
-    <section className="rounded-[24px] border border-[#E3DDEA] bg-white p-5 shadow-[0_18px_48px_rgba(35,18,62,0.07)]">
+    <section className="rounded-[24px] border border-[var(--border-soft)] bg-[var(--surface)] p-5 shadow-[0_18px_48px_rgba(35,18,62,0.07)]">
       <div className="flex items-center justify-between gap-3">
         <div>
-          <p className="text-[10px] font-black uppercase tracking-[0.16em] text-[#6C1DFF]">Team health</p>
-          <h3 className="mt-2 text-xl font-black tracking-[-0.025em] text-[#101533]">Squad availability</h3>
+          <p className="text-[10px] font-black uppercase tracking-[0.16em] text-[var(--accent)]">Team health</p>
+          <h3 className="mt-2 text-xl font-black tracking-[-0.025em] text-[var(--ink)]">Squad availability</h3>
         </div>
         <span className={`rounded-full border px-3 py-1 text-[10px] font-black ${riskTone(diagnostics.health.grade)}`}>{diagnostics.health.grade}</span>
       </div>
@@ -560,13 +560,13 @@ function SquadHealthSummary({ diagnostics }: { diagnostics: SquadHealthDiagnosti
         <HealthGauge score={diagnostics.health.score} />
         <div className="space-y-3">
           {[
-            { label: "Players flagged", value: issues.length, tone: "bg-[#E8FBF2] text-[#00A568]" },
-            { label: "Status risks", value: suspensionCount, tone: "bg-[#FFF0F4] text-[#D13362]" },
-            { label: "Rotation risks", value: rotationCount, tone: "bg-[#FFF6E6] text-[#CF7A00]" },
+            { label: "Players flagged", value: issues.length, tone: "bg-[var(--success-soft)] text-[var(--success)]" },
+            { label: "Status risks", value: suspensionCount, tone: "bg-[var(--danger-soft)] text-[var(--danger)]" },
+            { label: "Rotation risks", value: rotationCount, tone: "bg-[var(--warning-soft)] text-[var(--warning)]" },
           ].map((item) => (
             <div key={item.label} className="flex items-center gap-3">
               <span className={`grid h-8 w-8 shrink-0 place-items-center rounded-full text-xs font-black ${item.tone}`}>{item.value}</span>
-              <p className="text-xs font-bold text-[#655B75]">{item.label}</p>
+              <p className="text-xs font-bold text-[var(--ink-soft)]">{item.label}</p>
             </div>
           ))}
         </div>
@@ -577,7 +577,7 @@ function SquadHealthSummary({ diagnostics }: { diagnostics: SquadHealthDiagnosti
         <RiskBar label="Status risk" value={diagnostics.health.injury_risk} tone="pink" />
       </div>
 
-      <Link href="/squad/health" className="mt-5 flex min-h-11 items-center justify-center rounded-xl border border-[#DCCEFF] bg-[#F8F4FF] px-4 text-sm font-black text-[#6C1DFF] transition hover:bg-[#F1E8FF]">
+      <Link href="/squad/health" className="mt-5 flex min-h-11 items-center justify-center rounded-xl border border-[var(--accent-border)] bg-[var(--accent-soft)] px-4 text-sm font-black text-[var(--accent)] transition hover:bg-[var(--accent-soft)]">
         View full squad health <span className="ml-2">›</span>
       </Link>
     </section>
@@ -594,17 +594,17 @@ function TeamFacts({ state, starters }: { state: UserGameState; starters: Player
   ];
 
   return (
-    <section className="rounded-[22px] border border-[#E1E7F2] bg-white p-5 shadow-[0_18px_45px_rgba(15,23,60,0.07)]">
+    <section className="rounded-[22px] border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[0_18px_45px_rgba(15,23,60,0.07)]">
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-black text-[#070B28]">Team facts</h3>
-        <span className="rounded-full bg-[#F1E8FF] px-3 py-1 text-xs font-black text-[#6C1DFF]">{state.gameweek_label}</span>
+        <h3 className="text-lg font-black text-[var(--ink)]">Team facts</h3>
+        <span className="rounded-full bg-[var(--accent-soft)] px-3 py-1 text-xs font-black text-[var(--accent)]">{state.gameweek_label}</span>
       </div>
       <div className="mt-4 grid grid-cols-2 gap-3">
         {items.map((item) => (
-          <div key={item.label} className="rounded-2xl border border-[#E8EDF6] bg-[#FBFCFF] p-4">
-            <p className="text-[10px] font-black uppercase tracking-[0.12em] text-[#6C7195]">{item.label}</p>
-            <p className="mt-2 text-xl font-black text-[#101947]">{item.value}</p>
-            <p className="mt-1 truncate text-[11px] font-semibold text-[#6C7195]">{item.detail}</p>
+          <div key={item.label} className="rounded-2xl border border-[var(--border-soft)] bg-[var(--surface-3)] p-4">
+            <p className="text-[10px] font-black uppercase tracking-[0.12em] text-[var(--muted)]">{item.label}</p>
+            <p className="mt-2 text-xl font-black text-[var(--ink)]">{item.value}</p>
+            <p className="mt-1 truncate text-[11px] font-semibold text-[var(--muted)]">{item.detail}</p>
           </div>
         ))}
       </div>
@@ -631,17 +631,17 @@ function QuickActions() {
     { href: "/squad/health", title: "Squad health", copy: "Check your team status", type: "health" as const },
   ];
   return (
-    <section className="rounded-[24px] border border-[#E3DDEA] bg-white p-5 shadow-[0_18px_48px_rgba(35,18,62,0.07)]">
-      <p className="text-[10px] font-black uppercase tracking-[0.16em] text-[#6C1DFF]">Quick actions</p>
-      <div className="mt-3 divide-y divide-[#EEE9F3]">
+    <section className="rounded-[24px] border border-[var(--border-soft)] bg-[var(--surface)] p-5 shadow-[0_18px_48px_rgba(35,18,62,0.07)]">
+      <p className="text-[10px] font-black uppercase tracking-[0.16em] text-[var(--accent)]">Quick actions</p>
+      <div className="mt-3 divide-y divide-[var(--border-soft)]">
         {actions.map((action) => (
           <Link key={action.href} href={action.href} className="group flex items-center gap-3 py-3 first:pt-1 last:pb-0">
-            <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-[#F2ECFF] text-[#6C1DFF] transition group-hover:bg-[#6C1DFF] group-hover:text-white"><ActionIcon type={action.type} /></span>
+            <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-[var(--accent-soft)] text-[var(--accent)] transition group-hover:bg-[var(--accent)] group-hover:text-white"><ActionIcon type={action.type} /></span>
             <span className="min-w-0 flex-1">
-              <span className="block truncate text-sm font-black text-[#101533]">{action.title}</span>
-              <span className="mt-0.5 block truncate text-xs font-semibold text-[#81798F]">{action.copy}</span>
+              <span className="block truncate text-sm font-black text-[var(--ink)]">{action.title}</span>
+              <span className="mt-0.5 block truncate text-xs font-semibold text-[var(--muted)]">{action.copy}</span>
             </span>
-            <span className="text-xl font-black text-[#7D7191] transition group-hover:translate-x-1 group-hover:text-[#6C1DFF]">›</span>
+            <span className="text-xl font-black text-[var(--muted)] transition group-hover:translate-x-1 group-hover:text-[var(--accent)]">›</span>
           </Link>
         ))}
       </div>
@@ -652,21 +652,21 @@ function QuickActions() {
 function NextFixtureCard({ player, deadline }: { player?: Player; deadline: string }) {
   const fixture = player?.fixture && player.fixture !== "TBC" ? player.fixture : "Fixture pending";
   return (
-    <section className="rounded-[24px] border border-[#E3DDEA] bg-white p-5 shadow-[0_18px_48px_rgba(35,18,62,0.07)]">
-      <p className="text-[10px] font-black uppercase tracking-[0.16em] text-[#6C1DFF]">Next fixture</p>
+    <section className="rounded-[24px] border border-[var(--border-soft)] bg-[var(--surface)] p-5 shadow-[0_18px_48px_rgba(35,18,62,0.07)]">
+      <p className="text-[10px] font-black uppercase tracking-[0.16em] text-[var(--accent)]">Next fixture</p>
       <div className="mt-5 flex items-center justify-between gap-4">
         <div className="min-w-0">
-          <p className="truncate text-2xl font-black tracking-[-0.035em] text-[#101533]">{fixture}</p>
-          <p className="mt-1 truncate text-xs font-semibold text-[#81798F]">{deadline}</p>
+          <p className="truncate text-2xl font-black tracking-[-0.035em] text-[var(--ink)]">{fixture}</p>
+          <p className="mt-1 truncate text-xs font-semibold text-[var(--muted)]">{deadline}</p>
         </div>
-        {player ? <PlayerVisual player={player} size="lg" /> : <span className="grid h-20 w-20 place-items-center rounded-2xl bg-[#F2ECFF] text-lg font-black text-[#6C1DFF]">GW</span>}
+        {player ? <PlayerVisual player={player} size="lg" /> : <span className="grid h-20 w-20 place-items-center rounded-2xl bg-[var(--accent-soft)] text-lg font-black text-[var(--accent)]">GW</span>}
       </div>
-      <div className="mt-5 rounded-2xl bg-[#F8F6FB] p-4">
+      <div className="mt-5 rounded-2xl bg-[var(--surface-3)] p-4">
         <div className="flex items-center justify-between gap-3">
-          <span className="text-xs font-black text-[#655B75]">Captain projection</span>
-          <span className="text-sm font-black text-[#00A568]">{formatProjected(projected(player))}</span>
+          <span className="text-xs font-black text-[var(--ink-soft)]">Captain projection</span>
+          <span className="text-sm font-black text-[var(--success)]">{formatProjected(projected(player))}</span>
         </div>
-        <div className="mt-3 h-2 overflow-hidden rounded-full bg-[#E6E0EC]">
+        <div className="mt-3 h-2 overflow-hidden rounded-full bg-[var(--border-soft)]">
           <div className="h-full w-3/5 rounded-full bg-[linear-gradient(90deg,#16B979,#FFB800,#F47A2B)]" />
         </div>
       </div>
@@ -678,20 +678,20 @@ function InsightsAtGlance({ state, diagnostics, starters }: { state: UserGameSta
   const total = starters.reduce((sum, player) => sum + (projected(player) ?? 0), 0);
   const issues = uniqueIssues(diagnostics).length;
   const items = [
-    { label: "Projected XI", value: total > 0 ? formatProjected(total) : "—", detail: "Next gameweek", tone: "text-[#00A568]" },
-    { label: "Squad health", value: diagnostics.health.score == null ? "—" : `${Math.round(diagnostics.health.score)}%`, detail: diagnostics.health.grade, tone: "text-[#6C1DFF]" },
-    { label: "Active flags", value: String(issues), detail: issues ? "Review before deadline" : "Squad clear", tone: issues ? "text-[#D97706]" : "text-[#00A568]" },
-    { label: "Transfer position", value: `${state.free_transfers} FT · £${state.bank.toFixed(1)}m`, detail: "Available now", tone: "text-[#1987E8]" },
+    { label: "Projected XI", value: total > 0 ? formatProjected(total) : "—", detail: "Next gameweek", tone: "text-[var(--success)]" },
+    { label: "Squad health", value: diagnostics.health.score == null ? "—" : `${Math.round(diagnostics.health.score)}%`, detail: diagnostics.health.grade, tone: "text-[var(--accent)]" },
+    { label: "Active flags", value: String(issues), detail: issues ? "Review before deadline" : "Squad clear", tone: issues ? "text-[var(--warning)]" : "text-[var(--success)]" },
+    { label: "Transfer position", value: `${state.free_transfers} FT · £${state.bank.toFixed(1)}m`, detail: "Available now", tone: "text-[var(--info)]" },
   ];
   return (
-    <section className="mt-5 rounded-[24px] border border-[#E3DDEA] bg-white p-5 shadow-[0_18px_48px_rgba(35,18,62,0.07)] sm:p-6">
-      <p className="text-[10px] font-black uppercase tracking-[0.16em] text-[#6C1DFF]">Insights at a glance</p>
-      <div className="mt-4 grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-[#E8E2EE] bg-[#E8E2EE] lg:grid-cols-4">
+    <section className="mt-5 rounded-[24px] border border-[var(--border-soft)] bg-[var(--surface)] p-5 shadow-[0_18px_48px_rgba(35,18,62,0.07)] sm:p-6">
+      <p className="text-[10px] font-black uppercase tracking-[0.16em] text-[var(--accent)]">Insights at a glance</p>
+      <div className="mt-4 grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-[var(--border-soft)] bg-[var(--border-soft)] lg:grid-cols-4">
         {items.map((item) => (
-          <div key={item.label} className="min-w-0 bg-white p-4">
-            <p className="text-[9px] font-black uppercase tracking-[0.12em] text-[#81798F]">{item.label}</p>
+          <div key={item.label} className="min-w-0 bg-[var(--surface)] p-4">
+            <p className="text-[9px] font-black uppercase tracking-[0.12em] text-[var(--muted)]">{item.label}</p>
             <p className={`mt-2 truncate text-lg font-black tracking-[-0.025em] ${item.tone}`}>{item.value}</p>
-            <p className="mt-1 truncate text-[11px] font-semibold text-[#81798F]">{item.detail}</p>
+            <p className="mt-1 truncate text-[11px] font-semibold text-[var(--muted)]">{item.detail}</p>
           </div>
         ))}
       </div>
@@ -702,24 +702,24 @@ function InsightsAtGlance({ state, diagnostics, starters }: { state: UserGameSta
 function RecommendedFix({ diagnostics }: { diagnostics: SquadHealthDiagnostics }) {
   const fix = diagnostics.recommended_fix;
   return (
-    <section className="overflow-hidden rounded-[22px] border border-[#D8C9FF] bg-[linear-gradient(145deg,#F8F4FF,#F2ECFF)] shadow-[0_18px_45px_rgba(108,29,255,0.09)]">
+    <section className="overflow-hidden rounded-[22px] border border-[var(--accent-border)] bg-[linear-gradient(145deg,var(--surface-2),var(--accent-soft))] shadow-[0_18px_45px_rgba(108,29,255,0.09)]">
       <div className="p-5">
         <div className="flex items-center justify-between gap-3">
-          <p className="text-xs font-black uppercase tracking-[0.16em] text-[#6C1DFF]">Recommended focus</p>
+          <p className="text-xs font-black uppercase tracking-[0.16em] text-[var(--accent)]">Recommended focus</p>
           <span className={`rounded-full border px-3 py-1 text-[10px] font-black ${riskTone(fix.risk)}`}>{fix.confidence} confidence</span>
         </div>
-        <h3 className="mt-3 text-2xl font-black leading-tight text-[#17002F]">{fix.action}</h3>
-        <p className="mt-3 text-sm font-semibold leading-6 text-[#4D5680]">{fix.why}</p>
+        <h3 className="mt-3 text-2xl font-black leading-tight text-[var(--ink)]">{fix.action}</h3>
+        <p className="mt-3 text-sm font-semibold leading-6 text-[var(--ink-soft)]">{fix.why}</p>
         {fix.why_this_could_be_wrong ? (
-          <details className="mt-4 rounded-xl border border-[#D8C9FF] bg-white/65 p-3">
-            <summary className="cursor-pointer text-xs font-black text-[#6C1DFF]">What could change this?</summary>
-            <p className="mt-2 text-xs font-semibold leading-5 text-[#5D4A70]">{fix.why_this_could_be_wrong}</p>
+          <details className="mt-4 rounded-xl border border-[var(--accent-border)] bg-[var(--surface)]/65 p-3">
+            <summary className="cursor-pointer text-xs font-black text-[var(--accent)]">What could change this?</summary>
+            <p className="mt-2 text-xs font-semibold leading-5 text-[var(--ink-soft)]">{fix.why_this_could_be_wrong}</p>
           </details>
         ) : null}
       </div>
-      <div className="grid grid-cols-2 border-t border-[#D8C9FF] bg-white/55">
-        <Link href="/transfers" className="px-4 py-3 text-center text-sm font-black text-[#6C1DFF]">Review transfers</Link>
-        <Link href="/planner" className="border-l border-[#D8C9FF] px-4 py-3 text-center text-sm font-black text-[#17002F]">Open planner</Link>
+      <div className="grid grid-cols-2 border-t border-[var(--accent-border)] bg-[var(--surface)]/55">
+        <Link href="/transfers" className="px-4 py-3 text-center text-sm font-black text-[var(--accent)]">Review transfers</Link>
+        <Link href="/planner" className="border-l border-[var(--accent-border)] px-4 py-3 text-center text-sm font-black text-[var(--ink)]">Open planner</Link>
       </div>
     </section>
   );
@@ -727,18 +727,18 @@ function RecommendedFix({ diagnostics }: { diagnostics: SquadHealthDiagnostics }
 
 function FlagSummary({ diagnostics }: { diagnostics: SquadHealthDiagnostics }) {
   const items = [
-    { label: "Urgent", count: diagnostics.urgent_issues.length, tone: "text-[#C80046] bg-[#FFF0F5]" },
-    { label: "Minutes", count: diagnostics.minutes_risk_list.length, tone: "text-[#B57700] bg-[#FFF8E8]" },
-    { label: "Status", count: diagnostics.injury_suspension_risk_list.length, tone: "text-[#C80046] bg-[#FFF0F5]" },
-    { label: "Bench", count: diagnostics.weak_bench_alerts.length, tone: "text-[#6C1DFF] bg-[#F1E8FF]" },
+    { label: "Urgent", count: diagnostics.urgent_issues.length, tone: "text-[var(--danger)] bg-[var(--danger-soft)]" },
+    { label: "Minutes", count: diagnostics.minutes_risk_list.length, tone: "text-[var(--warning)] bg-[var(--warning-soft)]" },
+    { label: "Status", count: diagnostics.injury_suspension_risk_list.length, tone: "text-[var(--danger)] bg-[var(--danger-soft)]" },
+    { label: "Bench", count: diagnostics.weak_bench_alerts.length, tone: "text-[var(--accent)] bg-[var(--accent-soft)]" },
   ];
   const topIssues = uniqueIssues(diagnostics).slice(0, 3);
 
   return (
-    <section className="rounded-[22px] border border-[#E1E7F2] bg-white p-5 shadow-[0_18px_45px_rgba(15,23,60,0.07)]">
+    <section className="rounded-[22px] border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[0_18px_45px_rgba(15,23,60,0.07)]">
       <div className="flex items-center justify-between gap-3">
-        <h3 className="text-lg font-black text-[#070B28]">Flags and pressure</h3>
-        <Link href="/squad/health" className="text-xs font-black text-[#6C1DFF]">View all →</Link>
+        <h3 className="text-lg font-black text-[var(--ink)]">Flags and pressure</h3>
+        <Link href="/squad/health" className="text-xs font-black text-[var(--accent)]">View all →</Link>
       </div>
       <div className="mt-4 grid grid-cols-4 gap-2">
         {items.map((item) => (
@@ -751,19 +751,19 @@ function FlagSummary({ diagnostics }: { diagnostics: SquadHealthDiagnostics }) {
       <div className="mt-4 space-y-2">
         {topIssues.length ? (
           topIssues.map((issue) => (
-            <div key={issue.id} className="flex items-start gap-3 rounded-xl border border-[#E8EDF6] bg-[#FBFCFF] p-3">
+            <div key={issue.id} className="flex items-start gap-3 rounded-xl border border-[var(--border-soft)] bg-[var(--surface-3)] p-3">
               <PlayerVisual player={issue.affected_player} size="sm" />
               <div className="min-w-0 flex-1">
                 <div className="flex items-center justify-between gap-2">
-                  <p className="truncate text-sm font-black text-[#101947]">{issue.affected_player.name}</p>
+                  <p className="truncate text-sm font-black text-[var(--ink)]">{issue.affected_player.name}</p>
                   <span className={`shrink-0 rounded-full border px-2 py-0.5 text-[9px] font-black ${riskTone(issue.severity)}`}>{issue.severity}</span>
                 </div>
-                <p className="mt-1 line-clamp-2 text-xs font-semibold leading-5 text-[#6C7195]">{issue.reason}</p>
+                <p className="mt-1 line-clamp-2 text-xs font-semibold leading-5 text-[var(--muted)]">{issue.reason}</p>
               </div>
             </div>
           ))
         ) : (
-          <div className="rounded-xl border border-[#BDEFD2] bg-[#EFFFF5] p-4 text-sm font-bold text-[#008B49]">No material squad flags detected.</div>
+          <div className="rounded-xl border border-[var(--success-border)] bg-[var(--success-soft)] p-4 text-sm font-bold text-[var(--success)]">No material squad flags detected.</div>
         )}
       </div>
     </section>
@@ -773,13 +773,13 @@ function FlagSummary({ diagnostics }: { diagnostics: SquadHealthDiagnostics }) {
 function BenchRail({ players }: { players: Player[] }) {
   const { open } = usePlayerDetail();
   return (
-    <section className="border-t border-[#E5DFEA] bg-white px-3 py-4 sm:px-5">
+    <section className="border-t border-[var(--border-soft)] bg-[var(--surface)] px-3 py-4 sm:px-5">
       <div className="mb-3 flex items-center justify-between gap-3">
         <div>
-          <p className="text-[10px] font-black uppercase tracking-[0.14em] text-[#6C1DFF]">Bench</p>
-          <h3 className="mt-1 text-lg font-black text-[#101533]">Substitutes</h3>
+          <p className="text-[10px] font-black uppercase tracking-[0.14em] text-[var(--accent)]">Bench</p>
+          <h3 className="mt-1 text-lg font-black text-[var(--ink)]">Substitutes</h3>
         </div>
-        <span className="rounded-full bg-[#F2ECFF] px-3 py-1 text-[10px] font-black text-[#6C1DFF]">{players.length} players</span>
+        <span className="rounded-full bg-[var(--accent-soft)] px-3 py-1 text-[10px] font-black text-[var(--accent)]">{players.length} players</span>
       </div>
       <div className="flex snap-x gap-2.5 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden md:grid md:grid-cols-2 md:overflow-visible 2xl:grid-cols-4">
         {players.map((player, index) => (
@@ -787,19 +787,19 @@ function BenchRail({ players }: { players: Player[] }) {
             type="button"
             onClick={() => open(player)}
             key={player.id}
-            className="w-[205px] shrink-0 snap-start rounded-2xl border border-[#E8E2EE] bg-[#FAF9FC] p-3 text-left transition hover:bg-[#F2ECFF] md:w-auto md:min-w-0"
+            className="w-[205px] shrink-0 snap-start rounded-2xl border border-[var(--border-soft)] bg-[var(--surface-3)] p-3 text-left transition hover:bg-[var(--accent-soft)] md:w-auto md:min-w-0"
           >
             <div className="flex items-center gap-2.5">
-              <span className="grid h-7 w-7 shrink-0 place-items-center rounded-lg bg-[#F2ECFF] text-[10px] font-black text-[#6C1DFF]">{index + 1}</span>
+              <span className="grid h-7 w-7 shrink-0 place-items-center rounded-lg bg-[var(--accent-soft)] text-[10px] font-black text-[var(--accent)]">{index + 1}</span>
               <PlayerVisual player={player} size="sm" />
               <div className="min-w-0 flex-1">
-                <p className="truncate text-xs font-black text-[#101533]">{player.name}</p>
-                <p className="truncate text-[10px] font-bold text-[#81798F]">{player.position} · {player.team}</p>
+                <p className="truncate text-xs font-black text-[var(--ink)]">{player.name}</p>
+                <p className="truncate text-[10px] font-bold text-[var(--muted)]">{player.position} · {player.team}</p>
               </div>
             </div>
-            <div className="mt-3 flex items-center justify-between rounded-xl bg-white px-3 py-2">
-              <span className="text-[9px] font-black uppercase tracking-[0.08em] text-[#81798F]">Projection</span>
-              <span className="text-[11px] font-black text-[#00A568]">{formatProjected(projected(player))}</span>
+            <div className="mt-3 flex items-center justify-between rounded-xl bg-[var(--surface)] px-3 py-2">
+              <span className="text-[9px] font-black uppercase tracking-[0.08em] text-[var(--muted)]">Projection</span>
+              <span className="text-[11px] font-black text-[var(--success)]">{formatProjected(projected(player))}</span>
             </div>
           </button>
         ))}
@@ -810,17 +810,17 @@ function BenchRail({ players }: { players: Player[] }) {
 
 function MobileDisclosure({ title, summary, children }: { title: string; summary: string; children: React.ReactNode }) {
   return (
-    <details className="rounded-[22px] border border-[#E1E7F2] bg-white shadow-[0_18px_45px_rgba(15,23,60,0.07)] md:hidden">
+    <details className="rounded-[22px] border border-[var(--border)] bg-[var(--surface)] shadow-[0_18px_45px_rgba(15,23,60,0.07)] md:hidden">
       <summary className="cursor-pointer list-none p-5">
         <div className="flex items-center justify-between gap-4">
           <div>
-            <p className="text-lg font-black text-[#070B28]">{title}</p>
-            <p className="mt-1 text-xs font-semibold text-[#6C7195]">{summary}</p>
+            <p className="text-lg font-black text-[var(--ink)]">{title}</p>
+            <p className="mt-1 text-xs font-semibold text-[var(--muted)]">{summary}</p>
           </div>
-          <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[#F1E8FF] text-lg font-black text-[#6C1DFF]">+</span>
+          <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[var(--accent-soft)] text-lg font-black text-[var(--accent)]">+</span>
         </div>
       </summary>
-      <div className="border-t border-[#E1E7F2] p-4">{children}</div>
+      <div className="border-t border-[var(--border)] p-4">{children}</div>
     </details>
   );
 }
@@ -904,15 +904,15 @@ export default function SquadPage() {
       <TeamOverviewHero state={appState} diagnostics={diagnostics} starters={starters} />
 
       <div className="grid items-start gap-5 xl:grid-cols-[minmax(0,1.55fr)_360px] 2xl:grid-cols-[minmax(0,1.65fr)_390px]">
-        <div className="min-w-0 overflow-hidden rounded-[26px] border border-[#E3DDEA] bg-white shadow-[0_22px_58px_rgba(35,18,62,0.08)]">
+        <div className="min-w-0 overflow-hidden rounded-[26px] border border-[var(--border-soft)] bg-[var(--surface)] shadow-[0_22px_58px_rgba(35,18,62,0.08)]">
           <div className="flex flex-col gap-3 px-4 pb-4 pt-5 sm:flex-row sm:items-center sm:justify-between sm:px-5">
             <div>
-              <p className="text-[10px] font-black uppercase tracking-[0.16em] text-[#6C1DFF]">Starting XI</p>
-              <h2 className="mt-1 text-2xl font-black tracking-[-0.03em] text-[#101533]">{appState.formation} setup</h2>
+              <p className="text-[10px] font-black uppercase tracking-[0.16em] text-[var(--accent)]">Starting XI</p>
+              <h2 className="mt-1 text-2xl font-black tracking-[-0.03em] text-[var(--ink)]">{appState.formation} setup</h2>
             </div>
             <div className="flex flex-wrap items-center gap-2">
-              <span className="rounded-full bg-[#FFF6E6] px-3 py-1.5 text-[10px] font-black text-[#B86B00]">C · {captain?.name ?? "TBC"}</span>
-              <span className="rounded-full bg-[#EEF4FF] px-3 py-1.5 text-[10px] font-black text-[#245EC7]">V · {viceCaptain?.name ?? "TBC"}</span>
+              <span className="rounded-full bg-[var(--warning-soft)] px-3 py-1.5 text-[10px] font-black text-[var(--warning)]">C · {captain?.name ?? "TBC"}</span>
+              <span className="rounded-full bg-[var(--info-soft)] px-3 py-1.5 text-[10px] font-black text-[var(--info)]">V · {viceCaptain?.name ?? "TBC"}</span>
             </div>
           </div>
           <div className="px-3 sm:px-5">
@@ -942,11 +942,11 @@ export default function SquadPage() {
         </MobileDisclosure>
         <MobileDisclosure title="All player cards" summary="Full metrics for the starting XI and bench">
           <div>
-            <h3 className="text-lg font-black text-[#070B28]">Starting XI</h3>
+            <h3 className="text-lg font-black text-[var(--ink)]">Starting XI</h3>
             <div className="mt-3 grid gap-3">
               {starters.map((player) => <PlayerCard key={player.id} player={player} />)}
             </div>
-            <h3 className="mt-6 text-lg font-black text-[#070B28]">Bench</h3>
+            <h3 className="mt-6 text-lg font-black text-[var(--ink)]">Bench</h3>
             <div className="mt-3 grid gap-3">
               {bench.map((player) => <PlayerCard key={player.id} player={player} compact />)}
             </div>
@@ -955,13 +955,13 @@ export default function SquadPage() {
       </div>
 
       <div className="mt-8 hidden space-y-8 md:block">
-        <section className="rounded-[24px] border border-[#E1E7F2] bg-white p-6 shadow-[0_22px_60px_rgba(15,23,60,0.08)] lg:p-8">
+        <section className="rounded-[24px] border border-[var(--border)] bg-[var(--surface)] p-6 shadow-[0_22px_60px_rgba(15,23,60,0.08)] lg:p-8">
           <div className="mb-5 flex items-end justify-between gap-4">
             <div>
-              <p className="text-xs font-black uppercase tracking-[0.16em] text-[#6C1DFF]">Deep analysis</p>
-              <h2 className="mt-2 text-3xl font-black text-[#070B28]">Full squad health diagnostics</h2>
+              <p className="text-xs font-black uppercase tracking-[0.16em] text-[var(--accent)]">Deep analysis</p>
+              <h2 className="mt-2 text-3xl font-black text-[var(--ink)]">Full squad health diagnostics</h2>
             </div>
-            <Link href="/squad/health" className="rounded-xl border border-[#D8C9FF] bg-[#F8F5FF] px-4 py-3 text-sm font-black text-[#6C1DFF]">Open dedicated view</Link>
+            <Link href="/squad/health" className="rounded-xl border border-[var(--accent-border)] bg-[var(--surface-2)] px-4 py-3 text-sm font-black text-[var(--accent)]">Open dedicated view</Link>
           </div>
           <SquadHealthEmbed />
         </section>
@@ -971,10 +971,10 @@ export default function SquadPage() {
         <section>
           <div className="mb-5 flex items-end justify-between gap-4">
             <div>
-              <p className="text-xs font-black uppercase tracking-[0.16em] text-[#6C1DFF]">Player detail</p>
-              <h2 className="mt-2 text-3xl font-black text-[#070B28]">Starting XI</h2>
+              <p className="text-xs font-black uppercase tracking-[0.16em] text-[var(--accent)]">Player detail</p>
+              <h2 className="mt-2 text-3xl font-black text-[var(--ink)]">Starting XI</h2>
             </div>
-            <span className="rounded-full bg-[#EFFFF5] px-3 py-1 text-xs font-black text-[#008B49]">11 starters</span>
+            <span className="rounded-full bg-[var(--success-soft)] px-3 py-1 text-xs font-black text-[var(--success)]">11 starters</span>
           </div>
           <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
             {starters.map((player) => <PlayerCard key={player.id} player={player} />)}
@@ -984,10 +984,10 @@ export default function SquadPage() {
         <section>
           <div className="mb-5 flex items-end justify-between gap-4">
             <div>
-              <p className="text-xs font-black uppercase tracking-[0.16em] text-[#6C1DFF]">Substitutes</p>
-              <h2 className="mt-2 text-3xl font-black text-[#070B28]">Bench detail</h2>
+              <p className="text-xs font-black uppercase tracking-[0.16em] text-[var(--accent)]">Substitutes</p>
+              <h2 className="mt-2 text-3xl font-black text-[var(--ink)]">Bench detail</h2>
             </div>
-            <span className="rounded-full bg-[#F1E8FF] px-3 py-1 text-xs font-black text-[#6C1DFF]">{bench.length} players</span>
+            <span className="rounded-full bg-[var(--accent-soft)] px-3 py-1 text-xs font-black text-[var(--accent)]">{bench.length} players</span>
           </div>
           <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
             {bench.map((player) => <PlayerCard key={player.id} player={player} compact />)}

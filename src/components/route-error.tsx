@@ -30,9 +30,9 @@ export function RouteError({ title, route, error }: { title: string; route: stri
 
   return (
     <AppShell title={title} eyebrow={`${importRequired ? "Import required" : "Strict backend error"} - ${route}`} state={importRequiredState} dataSource={dataSource}>
-      <section className="rounded-2xl border border-[#E8DEF8] bg-white p-6 shadow-[0_18px_45px_rgba(55,0,60,0.08)]">
-        <h2 className="text-2xl font-black text-[#17002F]">{importRequired ? "Import your FPL team first" : "Could not load this view"}</h2>
-        <p className="mt-2 text-sm font-bold text-[#5D4A70]">Route: {route}</p>
+      <section className="rounded-2xl border border-[var(--border-soft)] bg-[var(--surface)] p-6 shadow-[0_18px_45px_rgba(55,0,60,0.08)]">
+        <h2 className="text-2xl font-black text-[var(--ink)]">{importRequired ? "Import your FPL team first" : "Could not load this view"}</h2>
+        <p className="mt-2 text-sm font-bold text-[var(--muted)]">Route: {route}</p>
         <div className="mt-4">
           <ErrorState message={message} />
         </div>

@@ -4,16 +4,16 @@ import { loadPricingData } from "@/lib/use-command-centre";
 
 function GateCard({ title, tier, body, locked = false }: { title: string; tier: string; body: string; locked?: boolean }) {
   return (
-    <article className={`rounded-2xl border p-5 shadow-[0_18px_45px_rgba(55,0,60,0.08)] ${locked ? "border-[#17002F] bg-[#17002F] text-white" : "border-[#E8DEF8] bg-white text-[#17002F]"}`}>
+    <article className={`rounded-2xl border p-5 shadow-[0_18px_45px_rgba(55,0,60,0.08)] ${locked ? "border-[#17002F] bg-[#17002F] text-white" : "border-[var(--border-soft)] bg-[var(--surface)] text-[var(--ink)]"}`}>
       <div className="flex items-start justify-between gap-3">
         <div>
-          <p className={`text-xs font-black uppercase tracking-[0.16em] ${locked ? "text-[#A7F3D0]" : "text-[#6C1DFF]"}`}>{tier}</p>
+          <p className={`text-xs font-black uppercase tracking-[0.16em] ${locked ? "text-[#A7F3D0]" : "text-[var(--accent)]"}`}>{tier}</p>
           <h2 className="mt-2 text-xl font-black">{title}</h2>
         </div>
-        {locked ? <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-black text-white">Locked</span> : <span className="rounded-full bg-[#00C853]/12 px-3 py-1 text-xs font-black text-[#008B3A]">Open</span>}
+        {locked ? <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-black text-white">Locked</span> : <span className="rounded-full bg-[var(--success)]/12 px-3 py-1 text-xs font-black text-[var(--success)]">Open</span>}
       </div>
-      <p className={`mt-3 text-sm font-semibold leading-6 ${locked ? "text-white/70" : "text-[#5D4A70]"}`}>{body}</p>
-      <button type="button" className={`mt-4 rounded-xl px-4 py-3 text-sm font-black ${locked ? "bg-[#00E6A8] text-[#05070D]" : "bg-[#6C1DFF] text-white"}`}>
+      <p className={`mt-3 text-sm font-semibold leading-6 ${locked ? "text-white/70" : "text-[var(--muted)]"}`}>{body}</p>
+      <button type="button" className={`mt-4 rounded-xl px-4 py-3 text-sm font-black ${locked ? "bg-[#00E6A8] text-[#05070D]" : "bg-[var(--accent)] text-white"}`}>
         {locked ? "Upgrade" : "Use feature"}
       </button>
     </article>
@@ -39,7 +39,7 @@ export default function PricingPage() {
       <div className="grid gap-4 md:grid-cols-3">{pricingTiers.map((tier) => <PricingCard key={tier.name} tier={tier} />)}</div>
 
       <section className="mt-8">
-        <h2 className="mb-4 text-2xl font-black text-[#17002F]">Feature gates</h2>
+        <h2 className="mb-4 text-2xl font-black text-[var(--ink)]">Feature gates</h2>
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           <GateCard title="Best move each GW" tier="Free" body="Core recommendation with why, risk, confidence, and downside." />
           <GateCard title="3 scenario checks" tier="Free" body="Test transfers, captains, bench switches, and hits before upgrading." />

@@ -48,11 +48,11 @@ function FormationRow({ label, players, roles, loading }: { label: string; playe
 function BenchPlayer({ player, loading }: { player: Player; loading?: boolean }) {
   const noFixtureData = !loading && player.team_has_fixture === false;
   return (
-    <div className="flex min-w-0 items-center gap-2 rounded-lg border border-[#E8DEF8] bg-white px-2 py-2 shadow-sm">
+    <div className="flex min-w-0 items-center gap-2 rounded-lg border border-[var(--border-soft)] bg-[var(--surface)] px-2 py-2 shadow-sm">
       <PlayerVisual player={player} size="sm" preferPhoto={false} />
       <div className="min-w-0">
-        <p className="truncate text-xs font-black text-[#17002F]">{player.name}</p>
-        <p className="truncate text-[10px] font-bold text-[#5D4A70]">
+        <p className="truncate text-xs font-black text-[var(--ink)]">{player.name}</p>
+        <p className="truncate text-[10px] font-bold text-[var(--muted)]">
           {player.position} / {noFixtureData ? "no fixture" : loading ? "…" : `${player.projected.toFixed(1)} pts`}
         </p>
       </div>
@@ -88,13 +88,13 @@ export function PitchView({
   const fwd = starters.filter((player) => player.position === "FWD");
 
   return (
-    <section className="h-full rounded-2xl border border-[#E8DEF8] bg-white p-3 shadow-[0_18px_45px_rgba(55,0,60,0.08)] sm:p-4">
+    <section className="h-full rounded-2xl border border-[var(--border-soft)] bg-[var(--surface)] p-3 shadow-[0_18px_45px_rgba(55,0,60,0.08)] sm:p-4">
       <div className="mb-3 flex items-center justify-between gap-3">
         <div>
-          <p className="text-xs font-black uppercase tracking-[0.14em] text-[#6C1DFF]">Squad pitch</p>
-          <h2 className="text-xl font-black text-[#17002F]">{teamName}</h2>
+          <p className="text-xs font-black uppercase tracking-[0.14em] text-[var(--accent)]">Squad pitch</p>
+          <h2 className="text-xl font-black text-[var(--ink)]">{teamName}</h2>
         </div>
-        <span className="rounded-xl bg-[#F1E8FF] px-4 py-2 text-sm font-black text-[#6C1DFF]">{formation}</span>
+        <span className="rounded-xl bg-[var(--accent-soft)] px-4 py-2 text-sm font-black text-[var(--accent)]">{formation}</span>
       </div>
       <div className="relative overflow-hidden rounded-xl bg-[linear-gradient(90deg,rgba(255,255,255,0.08)_50%,transparent_50%),linear-gradient(#3CCB6F,#178340)] bg-[length:72px_100%,100%_100%] px-4 py-5">
         <div className="absolute inset-4 rounded-xl border-2 border-white/65" />

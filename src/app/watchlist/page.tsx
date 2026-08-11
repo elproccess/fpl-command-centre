@@ -9,7 +9,7 @@ export const dynamic = "force-dynamic";
 function Group({ title, items }: { title: string; items: WatchlistItem[] }) {
   return (
     <section>
-      <h2 className="mb-4 text-2xl font-black text-[#17002F]">{title}</h2>
+      <h2 className="mb-4 text-2xl font-black text-[var(--ink)]">{title}</h2>
       {items.length ? (
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {items.map((item) => <WatchlistCard key={`${title}-${item.player.id}`} item={item} />)}
@@ -50,16 +50,16 @@ export default async function WatchlistPage() {
       )}
 
       <div className="mt-8 grid gap-4 lg:grid-cols-2">
-        <section className="rounded-2xl border border-[#E8DEF8] bg-white p-5 shadow-[0_18px_45px_rgba(55,0,60,0.08)]">
-          <h2 className="text-2xl font-black text-[#17002F]">Fixture swing alerts</h2>
-          <ul className="mt-4 space-y-3 text-sm font-semibold text-[#5D4A70]">
-            {watchlist.fixture_swing_alerts.map((alert) => <li key={alert} className="rounded-xl bg-[#F8F5FF] p-3">- {alert}</li>)}
+        <section className="rounded-2xl border border-[var(--border-soft)] bg-[var(--surface)] p-5 shadow-[0_18px_45px_rgba(55,0,60,0.08)]">
+          <h2 className="text-2xl font-black text-[var(--ink)]">Fixture swing alerts</h2>
+          <ul className="mt-4 space-y-3 text-sm font-semibold text-[var(--muted)]">
+            {watchlist.fixture_swing_alerts.map((alert) => <li key={alert} className="rounded-xl bg-[var(--surface-2)] p-3">- {alert}</li>)}
           </ul>
         </section>
-        <section className="rounded-2xl border border-[#E8DEF8] bg-white p-5 shadow-[0_18px_45px_rgba(55,0,60,0.08)]">
-          <h2 className="text-2xl font-black text-[#17002F]">Price and value alerts</h2>
-          <ul className="mt-4 space-y-3 text-sm font-semibold text-[#5D4A70]">
-            {watchlist.price_value_alerts.map((alert) => <li key={alert} className="rounded-xl bg-[#F8F5FF] p-3">- {alert}</li>)}
+        <section className="rounded-2xl border border-[var(--border-soft)] bg-[var(--surface)] p-5 shadow-[0_18px_45px_rgba(55,0,60,0.08)]">
+          <h2 className="text-2xl font-black text-[var(--ink)]">Price and value alerts</h2>
+          <ul className="mt-4 space-y-3 text-sm font-semibold text-[var(--muted)]">
+            {watchlist.price_value_alerts.map((alert) => <li key={alert} className="rounded-xl bg-[var(--surface-2)] p-3">- {alert}</li>)}
           </ul>
         </section>
       </div>

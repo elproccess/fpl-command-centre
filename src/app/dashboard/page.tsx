@@ -6,7 +6,7 @@ export const dynamic = "force-dynamic";
 
 export default function DashboardPage() {
   return (
-    <Suspense fallback={<main className="min-h-screen bg-[#F4F0FA] p-6"><LoadingState label="Loading command centre" /></main>}>
+    <Suspense fallback={<main className="min-h-screen bg-[var(--surface-2)] p-6"><LoadingState label="Loading command centre" /></main>}>
       <ImportedDashboardFlow />
     </Suspense>
   );

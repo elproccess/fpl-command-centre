@@ -8,9 +8,9 @@ export const dynamic = "force-dynamic";
 
 function TrustCard({ title, body }: { title: string; body: string }) {
   return (
-    <section className="rounded-2xl border border-[#E8DEF8] bg-white p-5 shadow-[0_18px_45px_rgba(55,0,60,0.08)]">
-      <h2 className="text-xl font-black text-[#17002F]">{title}</h2>
-      <p className="mt-3 text-sm font-semibold leading-6 text-[#5D4A70]">{body}</p>
+    <section className="rounded-2xl border border-[var(--border-soft)] bg-[var(--surface)] p-5 shadow-[0_18px_45px_rgba(55,0,60,0.08)]">
+      <h2 className="text-xl font-black text-[var(--ink)]">{title}</h2>
+      <p className="mt-3 text-sm font-semibold leading-6 text-[var(--muted)]">{body}</p>
     </section>
   );
 }
@@ -80,39 +80,39 @@ export default async function TrustPage() {
         <TrustCard title="Rollback safety" body={trust.rollback_safety} />
       </div>
 
-      <section className="mt-6 rounded-2xl border border-[#E8DEF8] bg-white p-5 shadow-[0_18px_45px_rgba(55,0,60,0.08)]">
+      <section className="mt-6 rounded-2xl border border-[var(--border-soft)] bg-[var(--surface)] p-5 shadow-[0_18px_45px_rgba(55,0,60,0.08)]">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div>
-            <p className="text-xs font-black uppercase tracking-[0.16em] text-[#6C1DFF]">Active model status</p>
-            <h2 className="mt-2 text-2xl font-black text-[#17002F]">{String(projectionStatus.projection_model_type ?? "Projection status")}</h2>
-            <p className="mt-2 text-sm font-semibold text-[#5D4A70]">
+            <p className="text-xs font-black uppercase tracking-[0.16em] text-[var(--accent)]">Active model status</p>
+            <h2 className="mt-2 text-2xl font-black text-[var(--ink)]">{String(projectionStatus.projection_model_type ?? "Projection status")}</h2>
+            <p className="mt-2 text-sm font-semibold text-[var(--muted)]">
               Fallback: {projectionStatus.fallback_used ? "active" : "not reported"} {projectionStatus.fallback_reason ? `- ${projectionStatus.fallback_reason}` : ""}
             </p>
           </div>
-          <span className="rounded-full bg-[#17002F] px-4 py-2 text-sm font-black text-white">Advanced details folded away</span>
+          <span className="rounded-full bg-[var(--ink)] px-4 py-2 text-sm font-black text-[var(--surface)]">Advanced details folded away</span>
         </div>
       </section>
 
-      <section className="mt-6 rounded-2xl border border-[#E8DEF8] bg-white p-5 shadow-[0_18px_45px_rgba(55,0,60,0.08)]">
-        <p className="text-xs font-black uppercase tracking-[0.16em] text-[#6C1DFF]">Decision variables</p>
-        <h2 className="mt-2 text-2xl font-black text-[#17002F]">What actually drives a recommendation</h2>
+      <section className="mt-6 rounded-2xl border border-[var(--border-soft)] bg-[var(--surface)] p-5 shadow-[0_18px_45px_rgba(55,0,60,0.08)]">
+        <p className="text-xs font-black uppercase tracking-[0.16em] text-[var(--accent)]">Decision variables</p>
+        <h2 className="mt-2 text-2xl font-black text-[var(--ink)]">What actually drives a recommendation</h2>
         {variablesError ? (
-          <p className="mt-3 text-sm font-bold text-[#C80046]">{variablesError}</p>
+          <p className="mt-3 text-sm font-bold text-[var(--danger)]">{variablesError}</p>
         ) : (
           <div className="mt-4 grid gap-4 md:grid-cols-2">
-            <div className="rounded-xl bg-[#F8F5FF] p-4">
-              <p className="text-xs font-black uppercase tracking-[0.1em] text-[#7B688E]">Used in scoring today ({usedVariables.length})</p>
+            <div className="rounded-xl bg-[var(--surface-2)] p-4">
+              <p className="text-xs font-black uppercase tracking-[0.1em] text-[var(--muted)]">Used in scoring today ({usedVariables.length})</p>
               <div className="mt-2 flex max-h-40 flex-wrap gap-1.5 overflow-auto">
                 {usedVariables.map((variable) => (
-                  <span key={String(variable)} className="rounded-full bg-[#00C853]/12 px-2 py-1 text-[11px] font-bold text-[#008B3A]">{String(variable)}</span>
+                  <span key={String(variable)} className="rounded-full bg-[var(--success)]/12 px-2 py-1 text-[11px] font-bold text-[var(--success)]">{String(variable)}</span>
                 ))}
               </div>
             </div>
-            <div className="rounded-xl bg-[#F8F5FF] p-4">
-              <p className="text-xs font-black uppercase tracking-[0.1em] text-[#7B688E]">Tracked but not yet scored ({availableVariables.length})</p>
+            <div className="rounded-xl bg-[var(--surface-2)] p-4">
+              <p className="text-xs font-black uppercase tracking-[0.1em] text-[var(--muted)]">Tracked but not yet scored ({availableVariables.length})</p>
               <div className="mt-2 flex max-h-40 flex-wrap gap-1.5 overflow-auto">
                 {availableVariables.map((variable) => (
-                  <span key={String(variable)} className="rounded-full bg-[#FFB800]/12 px-2 py-1 text-[11px] font-bold text-[#8A6200]">{String(variable)}</span>
+                  <span key={String(variable)} className="rounded-full bg-[var(--warning)]/12 px-2 py-1 text-[11px] font-bold text-[var(--warning)]">{String(variable)}</span>
                 ))}
               </div>
             </div>
@@ -120,52 +120,52 @@ export default async function TrustPage() {
         )}
       </section>
 
-      <section className="mt-6 rounded-2xl border border-[#E8DEF8] bg-white p-5 shadow-[0_18px_45px_rgba(55,0,60,0.08)]">
-        <p className="text-xs font-black uppercase tracking-[0.16em] text-[#6C1DFF]">Backtest results</p>
-        <h2 className="mt-2 text-2xl font-black text-[#17002F]">How the model performs against real gameweek outcomes</h2>
+      <section className="mt-6 rounded-2xl border border-[var(--border-soft)] bg-[var(--surface)] p-5 shadow-[0_18px_45px_rgba(55,0,60,0.08)]">
+        <p className="text-xs font-black uppercase tracking-[0.16em] text-[var(--accent)]">Backtest results</p>
+        <h2 className="mt-2 text-2xl font-black text-[var(--ink)]">How the model performs against real gameweek outcomes</h2>
 
         {backtestError ? (
-          <p className="mt-3 text-sm font-bold text-[#C80046]">{backtestError}</p>
+          <p className="mt-3 text-sm font-bold text-[var(--danger)]">{backtestError}</p>
         ) : (
           <>
             <div className="mt-4 grid gap-3 sm:grid-cols-4">
-              <div className="rounded-xl bg-[#F8F5FF] p-3">
-                <p className="text-xs font-black uppercase text-[#7B688E]">Last run</p>
-                <p className="mt-1 text-sm font-black text-[#17002F]">{backtestStatus.latest_run_at ? new Date(String(backtestStatus.latest_run_at)).toLocaleString() : "—"}</p>
+              <div className="rounded-xl bg-[var(--surface-2)] p-3">
+                <p className="text-xs font-black uppercase text-[var(--muted)]">Last run</p>
+                <p className="mt-1 text-sm font-black text-[var(--ink)]">{backtestStatus.latest_run_at ? new Date(String(backtestStatus.latest_run_at)).toLocaleString() : "—"}</p>
               </div>
-              <div className="rounded-xl bg-[#F8F5FF] p-3">
-                <p className="text-xs font-black uppercase text-[#7B688E]">Model version</p>
-                <p className="mt-1 truncate text-sm font-black text-[#17002F]">{String(backtestStatus.projection_model_version ?? "—")}</p>
+              <div className="rounded-xl bg-[var(--surface-2)] p-3">
+                <p className="text-xs font-black uppercase text-[var(--muted)]">Model version</p>
+                <p className="mt-1 truncate text-sm font-black text-[var(--ink)]">{String(backtestStatus.projection_model_version ?? "—")}</p>
               </div>
-              <div className="rounded-xl bg-[#F8F5FF] p-3">
-                <p className="text-xs font-black uppercase text-[#7B688E]">Leakage risk</p>
-                <p className="mt-1 text-sm font-black text-[#17002F]">{String(dataQuality.leakage_risk ?? "—")}</p>
+              <div className="rounded-xl bg-[var(--surface-2)] p-3">
+                <p className="text-xs font-black uppercase text-[var(--muted)]">Leakage risk</p>
+                <p className="mt-1 text-sm font-black text-[var(--ink)]">{String(dataQuality.leakage_risk ?? "—")}</p>
               </div>
-              <div className="rounded-xl bg-[#F8F5FF] p-3">
-                <p className="text-xs font-black uppercase text-[#7B688E]">Actual results available</p>
-                <p className="mt-1 text-sm font-black text-[#17002F]">{String(backtestStatus.available_actual_results ?? "—")}</p>
+              <div className="rounded-xl bg-[var(--surface-2)] p-3">
+                <p className="text-xs font-black uppercase text-[var(--muted)]">Actual results available</p>
+                <p className="mt-1 text-sm font-black text-[var(--ink)]">{String(backtestStatus.available_actual_results ?? "—")}</p>
               </div>
             </div>
 
             <div className="mt-4 space-y-2">
               {backtestRuns.length === 0 ? (
-                <p className="text-sm font-semibold text-[#5D4A70]">No backtest runs recorded yet.</p>
+                <p className="text-sm font-semibold text-[var(--muted)]">No backtest runs recorded yet.</p>
               ) : (
                 backtestRuns.map((run) => {
                   const mae = extractRunMae(run.summary);
                   return (
-                    <div key={String(run.id)} className="flex flex-col gap-2 rounded-xl bg-[#F8F5FF] p-4 sm:flex-row sm:items-center sm:justify-between">
+                    <div key={String(run.id)} className="flex flex-col gap-2 rounded-xl bg-[var(--surface-2)] p-4 sm:flex-row sm:items-center sm:justify-between">
                       <div className="min-w-0">
-                        <p className="text-sm font-black text-[#17002F]">
+                        <p className="text-sm font-black text-[var(--ink)]">
                           {String(run.backtest_type)} - GW{String(run.from_gw)}-{String(run.to_gw)}
                         </p>
-                        <p className="truncate text-xs font-semibold text-[#7B688E]">
+                        <p className="truncate text-xs font-semibold text-[var(--muted)]">
                           {String(run.model_version)} - {run.created_at ? new Date(String(run.created_at)).toLocaleString() : "unknown date"}
                         </p>
                       </div>
                       <div className="flex shrink-0 items-center gap-3">
-                        <p className="text-sm font-black text-[#6C1DFF]">MAE {mae != null ? mae.toFixed(3) : "—"}</p>
-                        <span className={`rounded-full px-3 py-1 text-xs font-black ${run.status === "completed" ? "bg-[#00C853]/12 text-[#008B3A]" : "bg-[#FFB800]/12 text-[#8A6200]"}`}>
+                        <p className="text-sm font-black text-[var(--accent)]">MAE {mae != null ? mae.toFixed(3) : "—"}</p>
+                        <span className={`rounded-full px-3 py-1 text-xs font-black ${run.status === "completed" ? "bg-[var(--success)]/12 text-[var(--success)]" : "bg-[var(--warning)]/12 text-[var(--warning)]"}`}>
                           {String(run.status)}
                         </span>
                       </div>

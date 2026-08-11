@@ -201,13 +201,14 @@ function Icon({ name, className = "h-5 w-5", ...props }: SVGProps<SVGSVGElement>
 // zero extra width instead of a second header row squeezed onto an already-tight screen.
 function BrandMark({ compact = false, title }: { compact?: boolean; title?: string }) {
   return (
-    <Link href="/dashboard" className="group flex min-w-0 items-center gap-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#8D68FF]">
+    <Link href="/dashboard" className="group flex min-w-0 items-center gap-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--accent)]">
+      {/* Brand mark gradient stays fixed purple in both themes - it's the logo, not themed UI. */}
       <span className={`grid shrink-0 place-items-center rounded-xl bg-[linear-gradient(145deg,#7C2CFF,#5A17E8)] font-black text-white shadow-[0_12px_28px_rgba(108,29,255,0.25)] transition group-hover:-translate-y-0.5 ${compact ? "h-10 w-10 text-lg" : "h-11 w-11 text-xl"}`}>
         M
       </span>
       <span className="min-w-0">
-        <span className={`block truncate font-black tracking-[-0.025em] text-[#0A1031] ${compact ? "text-base" : "text-lg"}`}>{title || "Matchday OS"}</span>
-        <span className="block truncate text-[11px] font-bold text-[#737B98]">{title ? "Matchday OS" : "FPL command layer"}</span>
+        <span className={`block truncate font-black tracking-[-0.025em] text-[var(--ink)] ${compact ? "text-base" : "text-lg"}`}>{title || "Matchday OS"}</span>
+        <span className="block truncate text-[11px] font-bold text-[var(--muted)]">{title ? "Matchday OS" : "FPL command layer"}</span>
       </span>
     </Link>
   );
@@ -221,13 +222,13 @@ function NavLink({ href, label, icon, compact = false }: NavItem & { compact?: b
     <Link
       href={href}
       aria-current={active ? "page" : undefined}
-      className={`group flex min-w-0 items-center gap-3 rounded-xl border px-3 py-2.5 text-sm font-black transition focus:outline-none focus:ring-2 focus:ring-[#8D68FF] ${
+      className={`group flex min-w-0 items-center gap-3 rounded-xl border px-3 py-2.5 text-sm font-black transition focus:outline-none focus:ring-2 focus:ring-[var(--accent)] ${
         active
-          ? "border-[#D2BEFF] bg-[#F3EDFF] text-[#6C1DFF] shadow-[0_10px_24px_rgba(108,29,255,0.10)]"
-          : "border-transparent text-[#505978] hover:border-[#E4E8F0] hover:bg-[#F8F9FC] hover:text-[#121938]"
+          ? "border-[var(--accent-border)] bg-[var(--accent-soft)] text-[var(--accent)] shadow-[0_10px_24px_rgba(108,29,255,0.10)]"
+          : "border-transparent text-[var(--muted)] hover:border-[var(--border)] hover:bg-[var(--surface-3)] hover:text-[var(--ink)]"
       } ${compact ? "justify-center px-2" : ""}`}
     >
-      <span className={`grid h-8 w-8 shrink-0 place-items-center rounded-lg transition ${active ? "bg-[#6C1DFF] text-white" : "bg-[#F0F2F7] text-[#66708D] group-hover:bg-white"}`}>
+      <span className={`grid h-8 w-8 shrink-0 place-items-center rounded-lg transition ${active ? "bg-[var(--accent)] text-white" : "bg-[var(--surface-3)] text-[var(--muted)] group-hover:bg-[var(--surface)]"}`}>
         <Icon name={icon} className="h-4.5 w-4.5" />
       </span>
       {!compact ? <span className="truncate">{label}</span> : null}
@@ -240,12 +241,12 @@ export function DataModeBadge({ source }: { source?: DataSourceStatus }) {
 
   const tone =
     source.mode === "real"
-      ? "border-[#AEE7C9] bg-[#ECFFF5] text-[#008D4F]"
+      ? "border-[var(--success-border)] bg-[var(--success-soft)] text-[var(--success)]"
       : source.mode === "unavailable"
-        ? "border-[#FFC5D8] bg-[#FFF1F6] text-[#C80043]"
+        ? "border-[var(--danger-border)] bg-[var(--danger-soft)] text-[var(--danger)]"
         : source.mode === "future"
-          ? "border-[#B9E9FF] bg-[#ECF9FF] text-[#007EA8]"
-          : "border-[#F4DC9E] bg-[#FFF9E8] text-[#9B6500]";
+          ? "border-[var(--info-border)] bg-[var(--info-soft)] text-[var(--info)]"
+          : "border-[var(--warning-border)] bg-[var(--warning-soft)] text-[var(--warning)]";
 
   return (
     <div className={`inline-flex min-h-9 items-center gap-2 rounded-xl border px-3 py-2 text-xs font-black ${tone}`} title={source.detail ?? source.endpoint ?? source.label}>
@@ -257,7 +258,7 @@ export function DataModeBadge({ source }: { source?: DataSourceStatus }) {
 
 export function Sidebar({ state = fallbackState }: { state?: UserGameState }) {
   return (
-    <aside className="hidden w-[276px] shrink-0 border-r border-[#E3E7EF] bg-white px-4 py-5 shadow-[10px_0_35px_rgba(15,23,60,0.035)] lg:flex lg:flex-col">
+    <aside className="hidden w-[276px] shrink-0 border-r border-[var(--border)] bg-[var(--surface)] px-4 py-5 shadow-[10px_0_35px_rgba(15,23,60,0.035)] lg:flex lg:flex-col">
       <BrandMark />
 
       <nav className="mt-7 space-y-1" aria-label="Primary navigation">
@@ -266,27 +267,27 @@ export function Sidebar({ state = fallbackState }: { state?: UserGameState }) {
         ))}
       </nav>
 
-      <div className="mt-auto overflow-hidden rounded-2xl border border-[#D9CBFF] bg-[linear-gradient(145deg,#F7F2FF,#FFFFFF)] p-4 shadow-[0_16px_38px_rgba(108,29,255,0.08)]">
+      <div className="mt-auto overflow-hidden rounded-2xl border border-[var(--accent-border)] bg-[linear-gradient(145deg,var(--accent-soft),var(--surface))] p-4 shadow-[0_16px_38px_rgba(108,29,255,0.08)]">
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
-            <p className="truncate text-sm font-black text-[#11183C]">{state.gameweek_label}</p>
-            <p className="mt-1 line-clamp-2 text-xs font-semibold leading-5 text-[#737B98]">{state.deadline_label}</p>
+            <p className="truncate text-sm font-black text-[var(--ink)]">{state.gameweek_label}</p>
+            <p className="mt-1 line-clamp-2 text-xs font-semibold leading-5 text-[var(--muted)]">{state.deadline_label}</p>
           </div>
-          <span className="shrink-0 rounded-full bg-[#EEE6FF] px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.1em] text-[#6C1DFF]">{state.current_tier}</span>
+          <span className="shrink-0 rounded-full bg-[var(--accent-soft)] px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.1em] text-[var(--accent)]">{state.current_tier}</span>
         </div>
 
         <div className="mt-4 grid grid-cols-2 gap-2">
-          <div className="rounded-xl border border-[#E4E8F0] bg-white px-3 py-3">
-            <p className="text-xl font-black text-[#6C1DFF]">{state.free_transfers}</p>
-            <p className="mt-1 text-[9px] font-black uppercase tracking-[0.1em] text-[#858CA3]">Free transfers</p>
+          <div className="rounded-xl border border-[var(--border)] bg-[var(--surface)] px-3 py-3">
+            <p className="text-xl font-black text-[var(--accent)]">{state.free_transfers}</p>
+            <p className="mt-1 text-[9px] font-black uppercase tracking-[0.1em] text-[var(--muted)]">Free transfers</p>
           </div>
-          <div className="rounded-xl border border-[#E4E8F0] bg-white px-3 py-3">
-            <p className="text-xl font-black text-[#11183C]">£{state.bank.toFixed(1)}m</p>
-            <p className="mt-1 text-[9px] font-black uppercase tracking-[0.1em] text-[#858CA3]">Bank</p>
+          <div className="rounded-xl border border-[var(--border)] bg-[var(--surface)] px-3 py-3">
+            <p className="text-xl font-black text-[var(--ink)]">£{state.bank.toFixed(1)}m</p>
+            <p className="mt-1 text-[9px] font-black uppercase tracking-[0.1em] text-[var(--muted)]">Bank</p>
           </div>
         </div>
 
-        <Link href="/planner" className="mt-3 flex items-center justify-center gap-2 rounded-xl bg-[#6C1DFF] px-4 py-3 text-sm font-black text-white shadow-[0_12px_24px_rgba(108,29,255,0.22)] transition hover:bg-[#5D14E6] focus:outline-none focus:ring-2 focus:ring-[#8D68FF] focus:ring-offset-2">
+        <Link href="/planner" className="mt-3 flex items-center justify-center gap-2 rounded-xl bg-[var(--accent)] px-4 py-3 text-sm font-black text-white shadow-[0_12px_24px_rgba(108,29,255,0.22)] transition hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:ring-offset-2">
           <Icon name="planner" className="h-4 w-4" />
           View plan
         </Link>
@@ -303,10 +304,10 @@ function MobileTab({ item }: { item: NavItem }) {
     <Link
       href={item.href}
       aria-current={active ? "page" : undefined}
-      className={`flex min-h-[54px] min-w-0 flex-col items-center justify-center rounded-xl border px-1.5 py-2 text-center transition focus:outline-none focus:ring-2 focus:ring-[#8D68FF] ${
+      className={`flex min-h-[54px] min-w-0 flex-col items-center justify-center rounded-xl border px-1.5 py-2 text-center transition focus:outline-none focus:ring-2 focus:ring-[var(--accent)] ${
         active
-          ? "border-[#CDB8FF] bg-[#F2ECFF] text-[#6C1DFF] shadow-[0_8px_20px_rgba(108,29,255,0.10)]"
-          : "border-[#E1E5ED] bg-white text-[#4B5473]"
+          ? "border-[var(--accent-border)] bg-[var(--accent-soft)] text-[var(--accent)] shadow-[0_8px_20px_rgba(108,29,255,0.10)]"
+          : "border-[var(--border)] bg-[var(--surface)] text-[var(--muted)]"
       }`}
     >
       <Icon name={item.icon} className="h-[18px] w-[18px]" />
@@ -323,13 +324,13 @@ export function TopNav({ title, state = fallbackState }: { title?: string; state
   const moreActive = moreMobile.some((item) => isActive(pathname, item.href));
 
   return (
-    <header className="sticky top-0 z-40 border-b border-[#E1E5ED] bg-white/95 px-3 py-3 shadow-[0_8px_28px_rgba(15,23,60,0.045)] backdrop-blur-xl sm:px-4 md:px-6">
+    <header className="sticky top-0 z-40 border-b border-[var(--border)] bg-[var(--surface-translucent)] px-3 py-3 shadow-[0_8px_28px_rgba(15,23,60,0.045)] backdrop-blur-xl sm:px-4 md:px-6">
       <div className="mx-auto max-w-[1540px]">
         <div className="flex items-center justify-between gap-3">
           <div className="min-w-0 lg:hidden">
             <BrandMark compact title={title} />
           </div>
-          <h1 className="hidden min-w-0 truncate text-lg font-black tracking-[-0.01em] text-[#080D2B] lg:block">{title}</h1>
+          <h1 className="hidden min-w-0 truncate text-lg font-black tracking-[-0.01em] text-[var(--ink)] lg:block">{title}</h1>
 
           <div className="flex items-center gap-2 lg:hidden">
             {!onImportPage ? (
@@ -337,35 +338,35 @@ export function TopNav({ title, state = fallbackState }: { title?: string; state
                 href="/import"
                 aria-label="Import team"
                 title="Import team"
-                className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-[#DED3F8] bg-[#F8F5FF] text-[#6C1DFF] transition hover:bg-[#EFE6FF]"
+                className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-[var(--accent-border)] bg-[var(--accent-soft)] text-[var(--accent)] transition hover:opacity-90"
               >
                 <Icon name="upload" className="h-4.5 w-4.5" />
               </Link>
             ) : null}
-            <span className="rounded-xl border border-[#DED3F8] bg-[#F8F5FF] px-3 py-2 text-xs font-black text-[#2F2350]">{state.gameweek_label}</span>
-            <span className="grid h-10 w-10 place-items-center rounded-full bg-[#6C1DFF] text-xs font-black text-white shadow-[0_10px_22px_rgba(108,29,255,0.18)]">{initials(state.team_name)}</span>
+            <span className="rounded-xl border border-[var(--accent-border)] bg-[var(--accent-soft)] px-3 py-2 text-xs font-black text-[var(--ink)]">{state.gameweek_label}</span>
+            <span className="grid h-10 w-10 place-items-center rounded-full bg-[var(--accent)] text-xs font-black text-white shadow-[0_10px_22px_rgba(108,29,255,0.18)]">{initials(state.team_name)}</span>
           </div>
 
           <div className="hidden min-w-0 flex-1 items-center justify-end gap-3 lg:flex">
             <div className="relative w-full max-w-sm">
-              <Icon name="search" className="pointer-events-none absolute left-4 top-1/2 h-4.5 w-4.5 -translate-y-1/2 text-[#858CA3]" />
+              <Icon name="search" className="pointer-events-none absolute left-4 top-1/2 h-4.5 w-4.5 -translate-y-1/2 text-[var(--muted)]" />
               <input
                 aria-label="Search players and teams"
                 placeholder="Search players or clubs"
-                className="h-11 w-full rounded-xl border border-[#E1E5ED] bg-[#FAFBFD] pl-11 pr-4 text-sm font-semibold text-[#151C3D] outline-none transition placeholder:text-[#9298AA] focus:border-[#A98BFF] focus:bg-white focus:ring-4 focus:ring-[#6C1DFF]/8"
+                className="h-11 w-full rounded-xl border border-[var(--border)] bg-[var(--surface-3)] pl-11 pr-4 text-sm font-semibold text-[var(--ink)] outline-none transition placeholder:text-[var(--muted)] focus:border-[var(--accent)] focus:bg-[var(--surface)] focus:ring-4 focus:ring-[var(--accent)]/8"
               />
             </div>
             {!onImportPage ? (
               <Link
                 href="/import"
-                className="inline-flex shrink-0 items-center gap-1.5 rounded-xl border border-[#E1E5ED] bg-white px-3 py-2.5 text-sm font-black text-[#1A2142] transition hover:border-[#DED3F8] hover:bg-[#F8F5FF]"
+                className="inline-flex shrink-0 items-center gap-1.5 rounded-xl border border-[var(--border)] bg-[var(--surface)] px-3 py-2.5 text-sm font-black text-[var(--ink)] transition hover:border-[var(--accent-border)] hover:bg-[var(--accent-soft)]"
               >
-                <Icon name="upload" className="h-4 w-4 text-[#6C1DFF]" />
+                <Icon name="upload" className="h-4 w-4 text-[var(--accent)]" />
                 Import
               </Link>
             ) : null}
-            <span className="rounded-xl border border-[#E1E5ED] bg-white px-3 py-2.5 text-sm font-black text-[#1A2142]">{state.gameweek_label}</span>
-            <div className="grid h-10 w-10 place-items-center rounded-full bg-[#6C1DFF] text-xs font-black text-white">{initials(state.team_name)}</div>
+            <span className="rounded-xl border border-[var(--border)] bg-[var(--surface)] px-3 py-2.5 text-sm font-black text-[var(--ink)]">{state.gameweek_label}</span>
+            <div className="grid h-10 w-10 place-items-center rounded-full bg-[var(--accent)] text-xs font-black text-white">{initials(state.team_name)}</div>
           </div>
         </div>
 
@@ -376,19 +377,19 @@ export function TopNav({ title, state = fallbackState }: { title?: string; state
 
           <details className="group relative">
             <summary
-              className={`flex min-h-[54px] cursor-pointer list-none flex-col items-center justify-center rounded-xl border px-1.5 py-2 text-center transition focus:outline-none focus:ring-2 focus:ring-[#8D68FF] ${
+              className={`flex min-h-[54px] cursor-pointer list-none flex-col items-center justify-center rounded-xl border px-1.5 py-2 text-center transition focus:outline-none focus:ring-2 focus:ring-[var(--accent)] ${
                 moreActive
-                  ? "border-[#CDB8FF] bg-[#F2ECFF] text-[#6C1DFF] shadow-[0_8px_20px_rgba(108,29,255,0.10)]"
-                  : "border-[#E1E5ED] bg-white text-[#4B5473]"
+                  ? "border-[var(--accent-border)] bg-[var(--accent-soft)] text-[var(--accent)] shadow-[0_8px_20px_rgba(108,29,255,0.10)]"
+                  : "border-[var(--border)] bg-[var(--surface)] text-[var(--muted)]"
               }`}
             >
               <Icon name="more" className="h-[18px] w-[18px]" />
               <span className="mt-1 text-[10px] font-black sm:text-[11px]">More</span>
             </summary>
-            <div className="absolute right-0 top-[62px] z-50 w-[min(86vw,330px)] rounded-2xl border border-[#DDD3F5] bg-white p-3 shadow-[0_24px_70px_rgba(15,23,60,0.18)]">
+            <div className="absolute right-0 top-[62px] z-50 w-[min(86vw,330px)] rounded-2xl border border-[var(--accent-border)] bg-[var(--surface)] p-3 shadow-[0_24px_70px_rgba(15,23,60,0.18)]">
               <div className="mb-2 flex items-center justify-between px-1">
-                <p className="text-[10px] font-black uppercase tracking-[0.14em] text-[#858CA3]">More tools</p>
-                <span className="rounded-full bg-[#F2ECFF] px-2 py-1 text-[9px] font-black text-[#6C1DFF]">{moreMobile.length}</span>
+                <p className="text-[10px] font-black uppercase tracking-[0.14em] text-[var(--muted)]">More tools</p>
+                <span className="rounded-full bg-[var(--accent-soft)] px-2 py-1 text-[9px] font-black text-[var(--accent)]">{moreMobile.length}</span>
               </div>
               <div className="grid grid-cols-2 gap-2">
                 {moreMobile.map((item) => {
@@ -398,7 +399,7 @@ export function TopNav({ title, state = fallbackState }: { title?: string; state
                       key={item.href}
                       href={item.href}
                       className={`flex min-w-0 items-center gap-2 rounded-xl border px-3 py-2.5 text-xs font-black transition ${
-                        active ? "border-[#CDB8FF] bg-[#F2ECFF] text-[#6C1DFF]" : "border-[#E5E8EF] bg-[#FAFBFD] text-[#343D60] hover:bg-white"
+                        active ? "border-[var(--accent-border)] bg-[var(--accent-soft)] text-[var(--accent)]" : "border-[var(--border)] bg-[var(--surface-3)] text-[var(--ink)] hover:bg-[var(--surface)]"
                       }`}
                     >
                       <Icon name={item.icon} className="h-4 w-4 shrink-0" />
@@ -429,7 +430,7 @@ export function AppShell({
 }) {
   return (
     <PlayerDetailProvider>
-      <div className="min-h-screen bg-[linear-gradient(180deg,#F8F7FB_0%,#F3F0F8_42%,#F7F8FB_100%)] text-[#11183C]">
+      <div className="min-h-screen bg-[var(--surface-2)] text-[var(--ink)]">
         <div className="flex min-h-screen">
           <Sidebar state={state} />
 

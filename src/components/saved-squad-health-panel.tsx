@@ -36,12 +36,12 @@ export function SavedSquadHealthPanel({ entryId, currentGameweek }: { entryId: s
   }
 
   return (
-    <section className="mt-6 rounded-2xl border border-[#E8DEF8] bg-white p-5 shadow-[0_18px_45px_rgba(55,0,60,0.08)]">
+    <section className="mt-6 rounded-2xl border border-[var(--border-soft)] bg-[var(--surface)] p-5 shadow-[0_18px_45px_rgba(55,0,60,0.08)]">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <p className="text-sm font-black uppercase tracking-[0.14em] text-[#6C1DFF]">Saved / historical view</p>
-          <h2 className="text-2xl font-black text-[#17002F]">Squad health for a past gameweek</h2>
-          <p className="mt-1 max-w-2xl text-sm font-semibold leading-6 text-[#5D4A70]">
+          <p className="text-sm font-black uppercase tracking-[0.14em] text-[var(--accent)]">Saved / historical view</p>
+          <h2 className="text-2xl font-black text-[var(--ink)]">Squad health for a past gameweek</h2>
+          <p className="mt-1 max-w-2xl text-sm font-semibold leading-6 text-[var(--muted)]">
             GET /squad-health/{"{entry_id}"} re-runs diagnostics on whatever squad was actually saved for a chosen
             gameweek, unlike the live view above which always reflects your current squad.
           </p>
@@ -52,29 +52,29 @@ export function SavedSquadHealthPanel({ entryId, currentGameweek }: { entryId: s
             onChange={(event) => setGameweek(event.target.value)}
             inputMode="numeric"
             aria-label="Gameweek"
-            className="w-24 rounded-xl border border-[#E8DEF8] bg-white px-3 py-2 text-sm font-semibold text-[#17002F] outline-none focus:border-[#6C1DFF]"
+            className="w-24 rounded-xl border border-[var(--border-soft)] bg-[var(--surface)] px-3 py-2 text-sm font-semibold text-[var(--ink)] outline-none focus:border-[var(--accent)]"
           />
           <button
             type="button"
             onClick={() => void handleView()}
             disabled={status === "loading"}
-            className="shrink-0 rounded-xl bg-[#6C1DFF] px-4 py-3 text-sm font-black text-white disabled:cursor-wait disabled:opacity-60"
+            className="shrink-0 rounded-xl bg-[var(--accent)] px-4 py-3 text-sm font-black text-white disabled:cursor-wait disabled:opacity-60"
           >
             {status === "loading" ? "Loading..." : "View saved health"}
           </button>
         </div>
       </div>
 
-      {status === "error" ? <p className="mt-4 text-sm font-bold text-[#C80046]">{error}</p> : null}
+      {status === "error" ? <p className="mt-4 text-sm font-bold text-[var(--danger)]">{error}</p> : null}
 
       {status === "ready" && diagnostics ? (
         <div className="mt-5 space-y-4">
-          <p className="text-xs font-black uppercase tracking-[0.12em] text-[#7B688E]">Showing saved squad health for GW{viewedGw}</p>
+          <p className="text-xs font-black uppercase tracking-[0.12em] text-[var(--muted)]">Showing saved squad health for GW{viewedGw}</p>
           <SquadHealthCard health={diagnostics.health} compact />
-          <div className="rounded-xl border border-[#E8DEF8] bg-[#F8F5FF] p-4">
-            <p className="text-xs font-black uppercase tracking-[0.14em] text-[#6C1DFF]">Recommended fix (as of GW{viewedGw})</p>
-            <h3 className="mt-2 text-lg font-black text-[#17002F]">{diagnostics.recommended_fix.action}</h3>
-            <p className="mt-2 text-sm font-semibold leading-6 text-[#5D4A70]">{diagnostics.recommended_fix.why}</p>
+          <div className="rounded-xl border border-[var(--border-soft)] bg-[var(--surface-2)] p-4">
+            <p className="text-xs font-black uppercase tracking-[0.14em] text-[var(--accent)]">Recommended fix (as of GW{viewedGw})</p>
+            <h3 className="mt-2 text-lg font-black text-[var(--ink)]">{diagnostics.recommended_fix.action}</h3>
+            <p className="mt-2 text-sm font-semibold leading-6 text-[var(--muted)]">{diagnostics.recommended_fix.why}</p>
             <div className="mt-3 flex gap-2">
               <ConfidenceBadge value={diagnostics.recommended_fix.confidence} />
               <RiskBadge value={diagnostics.recommended_fix.risk} />

@@ -24,10 +24,10 @@ function ImportErrorNotice({ error, status, message }: { error: string; status: 
   // team-ID import fails with this. It's expected, not broken - say so.
   if (/no finished fpl events/i.test(detail)) {
     return (
-      <div className="rounded-2xl border-2 border-dashed border-[#6C1DFF] bg-[#F5EFFF] p-5">
-        <p className="text-[10px] font-black uppercase tracking-[0.14em] text-[#6C1DFF]">Season not started yet</p>
-        <h2 className="mt-2 text-lg font-black text-[#17002F]">Team imports open at the Gameweek 1 deadline</h2>
-        <p className="mt-2 text-sm font-semibold leading-6 text-[#3C2752]">
+      <div className="rounded-2xl border-2 border-dashed border-[var(--accent)] bg-[var(--accent-soft)] p-5">
+        <p className="text-[10px] font-black uppercase tracking-[0.14em] text-[var(--accent)]">Season not started yet</p>
+        <h2 className="mt-2 text-lg font-black text-[var(--ink)]">Team imports open at the Gameweek 1 deadline</h2>
+        <p className="mt-2 text-sm font-semibold leading-6 text-[var(--ink-soft)]">
           The 2026/27 season hasn&apos;t kicked off, so FPL keeps every manager&apos;s squad private —
           there&apos;s nothing to import yet. Imports start working the moment the GW1 deadline passes
           (Friday 21 Aug, 18:30 UK). Until then, use the demo squad below to explore the full platform.
@@ -38,10 +38,10 @@ function ImportErrorNotice({ error, status, message }: { error: string; status: 
 
   if (status === "404") {
     return (
-      <div className="rounded-2xl border border-[#F3D99C] bg-[#FFF9E8] p-5">
-        <p className="text-[10px] font-black uppercase tracking-[0.14em] text-[#9B6500]">Team not found</p>
-        <h2 className="mt-2 text-lg font-black text-[#17002F]">That team ID doesn&apos;t exist yet</h2>
-        <p className="mt-2 text-sm font-semibold leading-6 text-[#705315]">
+      <div className="rounded-2xl border border-[var(--warning-border)] bg-[var(--warning-soft)] p-5">
+        <p className="text-[10px] font-black uppercase tracking-[0.14em] text-[var(--warning)]">Team not found</p>
+        <h2 className="mt-2 text-lg font-black text-[var(--ink)]">That team ID doesn&apos;t exist yet</h2>
+        <p className="mt-2 text-sm font-semibold leading-6 text-[var(--warning)]">
           FPL couldn&apos;t find a team with that ID. Entry IDs reset every season — check yours on
           fantasy.premierleague.com under Points (it&apos;s the number in the page URL).
         </p>
@@ -50,10 +50,10 @@ function ImportErrorNotice({ error, status, message }: { error: string; status: 
   }
 
   return (
-    <div className="rounded-2xl border border-[#E90052]/25 bg-[#E90052]/8 p-5">
-      <p className="text-[10px] font-black uppercase tracking-[0.14em] text-[#C80046]">Import failed</p>
-      <h2 className="mt-2 text-lg font-black text-[#17002F]">That import didn&apos;t go through</h2>
-      <p className="mt-2 text-sm font-semibold leading-6 text-[#8A0038]">
+    <div className="rounded-2xl border border-[var(--danger)]/25 bg-[var(--danger)]/8 p-5">
+      <p className="text-[10px] font-black uppercase tracking-[0.14em] text-[var(--danger)]">Import failed</p>
+      <h2 className="mt-2 text-lg font-black text-[var(--ink)]">That import didn&apos;t go through</h2>
+      <p className="mt-2 text-sm font-semibold leading-6 text-[var(--danger)]">
         {detail || "Something went wrong talking to the FPL API. Try again in a moment."}
       </p>
     </div>

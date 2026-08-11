@@ -45,18 +45,18 @@ export function GroupedPlayerDropdownPanel({
   );
   const groups = useMemo(() => groupByClub(filtered, excludeId), [filtered, excludeId]);
   return (
-    <div className="absolute right-0 top-full z-50 mt-2 max-h-80 w-72 overflow-y-auto rounded-xl border border-[#E8DEF8] bg-white p-2 shadow-[0_18px_45px_rgba(55,0,60,0.18)]">
-      <p className="px-2 pb-2 pt-1 text-xs font-black text-[#17002F]">{headerText}</p>
-      {groups.length === 0 ? <p className="px-2 py-3 text-sm font-semibold text-[#8B7A9B]">No players match &ldquo;{searchQuery}&rdquo;.</p> : null}
+    <div className="absolute right-0 top-full z-50 mt-2 max-h-80 w-72 overflow-y-auto rounded-xl border border-[var(--border-soft)] bg-[var(--surface)] p-2 shadow-[0_18px_45px_rgba(55,0,60,0.18)]">
+      <p className="px-2 pb-2 pt-1 text-xs font-black text-[var(--ink)]">{headerText}</p>
+      {groups.length === 0 ? <p className="px-2 py-3 text-sm font-semibold text-[var(--muted)]">No players match &ldquo;{searchQuery}&rdquo;.</p> : null}
       {groups.map(([team, entries]) => (
-        <div key={team} className="mb-2 border-t border-[#F1E8FF] pt-2 first:mt-0 first:border-0 first:pt-0">
-          <p className="px-2 pb-1 text-[10px] font-black uppercase tracking-[0.14em] text-[#8B7A9B]">{team}</p>
+        <div key={team} className="mb-2 border-t border-[var(--accent-soft)] pt-2 first:mt-0 first:border-0 first:pt-0">
+          <p className="px-2 pb-1 text-[10px] font-black uppercase tracking-[0.14em] text-[var(--muted)]">{team}</p>
           {entries.map((entry) => (
             <button
               key={entry.player_id}
               type="button"
               onClick={() => onPick(entry)}
-              className="flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-left text-sm font-bold text-[#17002F] hover:bg-[#F8F5FF]"
+              className="flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-left text-sm font-bold text-[var(--ink)] hover:bg-[var(--surface-2)]"
             >
               <span className="grid h-6 w-6 shrink-0 place-items-center">
                 <TeamShirtImage team={entry.team_short_name} position={entry.position} size={66} className="h-full w-full object-contain" />
@@ -93,7 +93,7 @@ export function ComparePlayerPicker({ sourcePlayer, directory }: { sourcePlayer:
           setOpen(true);
         }}
         placeholder="Compare with…"
-        className="w-40 rounded-lg border border-[#6C1DFF] px-3 py-1.5 text-xs font-black text-[#6C1DFF] placeholder:text-[#6C1DFF]/60"
+        className="w-40 rounded-lg border border-[var(--accent)] px-3 py-1.5 text-xs font-black text-[var(--accent)] placeholder:text-[var(--accent)]/60"
       />
       {open ? (
         <>

@@ -78,7 +78,7 @@ export function TeamShirtImage({
 
 function InitialsAvatar({ player, className = "" }: { player: Player; className?: string }) {
   return (
-    <span className={`grid place-items-center rounded-full bg-[#6C1DFF] text-sm font-black text-white ${className}`}>
+    <span className={`grid place-items-center rounded-full bg-[var(--accent)] text-sm font-black text-white ${className}`}>
       {initials(player.name)}
     </span>
   );
@@ -97,7 +97,7 @@ export function PlayerVisual({ player, size = "md", preferPhoto = true }: { play
 
   if (fallback === "photo" && photo) {
     return (
-      <span className={`relative block shrink-0 overflow-hidden rounded-xl bg-[#F8F5FF] ${sizes[size]}`}>
+      <span className={`relative block shrink-0 overflow-hidden rounded-xl bg-[var(--surface-2)] ${sizes[size]}`}>
         <Image
           src={photo}
           alt={`${player.name} player photo`}
@@ -112,7 +112,7 @@ export function PlayerVisual({ player, size = "md", preferPhoto = true }: { play
 
   if (fallback === "shirt" && hasKnownKit) {
     return (
-      <span className={`grid shrink-0 place-items-center rounded-xl bg-[#F8F5FF] p-1 ${sizes[size]}`}>
+      <span className={`grid shrink-0 place-items-center rounded-xl bg-[var(--surface-2)] p-1 ${sizes[size]}`}>
         <TeamShirtImage
           team={player.team}
           position={player.position}

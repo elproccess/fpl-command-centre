@@ -184,25 +184,25 @@ function directoryEntryToPlayer(entry: PlayerDirectoryEntry | null): Player | nu
 function PlayerMetric({ label, value, tone = "default" }: { label: string; value: string; tone?: "default" | "green" | "pink" | "amber" }) {
   const toneClass =
     tone === "green"
-      ? "text-[#008F4C]"
+      ? "text-[var(--success)]"
       : tone === "pink"
-        ? "text-[#D9004A]"
+        ? "text-[var(--danger)]"
         : tone === "amber"
-          ? "text-[#B57700]"
-          : "text-[#101947]";
+          ? "text-[var(--warning)]"
+          : "text-[var(--ink)]";
   return (
-    <div className="rounded-xl bg-[#F7F8FC] px-3 py-2.5">
-      <p className="text-[10px] font-black uppercase tracking-[0.12em] text-[#737A9B]">{label}</p>
+    <div className="rounded-xl bg-[var(--surface-3)] px-3 py-2.5">
+      <p className="text-[10px] font-black uppercase tracking-[0.12em] text-[var(--muted)]">{label}</p>
       <p className={`mt-1 text-sm font-black ${toneClass}`}>{value}</p>
     </div>
   );
 }
 
 function SquadPlayerCard({ label, player, tone }: { label: string; player: Player; tone: "pink" | "purple" }) {
-  const labelClass = tone === "pink" ? "bg-[#FFF0F5] text-[#D9004A]" : "bg-[#F1E8FF] text-[#6C1DFF]";
+  const labelClass = tone === "pink" ? "bg-[var(--danger-soft)] text-[var(--danger)]" : "bg-[var(--accent-soft)] text-[var(--accent)]";
   const { open } = usePlayerDetail();
   return (
-    <div className="rounded-2xl border border-[#E1E7F2] bg-white p-4">
+    <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-4">
       <div className="flex items-center justify-between gap-3">
         <span className={`rounded-lg px-3 py-1 text-[10px] font-black uppercase tracking-[0.14em] ${labelClass}`}>{label}</span>
         <FixturePill fixture={player.fixture ?? "TBC"} difficulty={player.fixture_difficulty ?? 3} />
@@ -210,8 +210,8 @@ function SquadPlayerCard({ label, player, tone }: { label: string; player: Playe
       <button type="button" onClick={() => open(player)} className="mt-4 flex w-full items-center gap-3 text-left">
         <PlayerVisual player={player} size="sm" />
         <div className="min-w-0">
-          <p className="truncate text-base font-black text-[#101947]">{player.name}</p>
-          <p className="text-xs font-bold text-[#737A9B]">{player.team} / {player.position}</p>
+          <p className="truncate text-base font-black text-[var(--ink)]">{player.name}</p>
+          <p className="text-xs font-bold text-[var(--muted)]">{player.team} / {player.position}</p>
         </div>
       </button>
       <div className="mt-4 grid grid-cols-2 gap-2">
@@ -228,10 +228,10 @@ function IncomingPlayerCard({ entry, directoryStatus }: { entry: PlayerDirectory
   const player = directoryEntryToPlayer(entry);
   const { open } = usePlayerDetail();
   return (
-    <div className="rounded-2xl border border-[#E1E7F2] bg-white p-4">
+    <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-4">
       <div className="flex items-center justify-between gap-3">
-        <span className="rounded-lg bg-[#EFFFF5] px-3 py-1 text-[10px] font-black uppercase tracking-[0.14em] text-[#008F4C]">Buy</span>
-        <span className="rounded-full bg-[#F7F8FC] px-3 py-1 text-[10px] font-black text-[#737A9B]">
+        <span className="rounded-lg bg-[var(--success-soft)] px-3 py-1 text-[10px] font-black uppercase tracking-[0.14em] text-[var(--success)]">Buy</span>
+        <span className="rounded-full bg-[var(--surface-3)] px-3 py-1 text-[10px] font-black text-[var(--muted)]">
           {directoryStatus === "loading" ? "Loading players" : "Same position"}
         </span>
       </div>
@@ -241,14 +241,14 @@ function IncomingPlayerCard({ entry, directoryStatus }: { entry: PlayerDirectory
             <TeamShirtImage team={player.team} position={player.position} size={66} className="h-full w-full object-contain" />
           </span>
           <div className="min-w-0">
-            <p className="truncate text-base font-black text-[#101947]">{player.name}</p>
-            <p className="text-xs font-bold text-[#737A9B]">{player.team} / {player.position}</p>
-            <p className="mt-2 text-xs font-black text-[#6C1DFF]">Full metrics appear in the analysed result</p>
+            <p className="truncate text-base font-black text-[var(--ink)]">{player.name}</p>
+            <p className="text-xs font-bold text-[var(--muted)]">{player.team} / {player.position}</p>
+            <p className="mt-2 text-xs font-black text-[var(--accent)]">Full metrics appear in the analysed result</p>
           </div>
         </button>
       ) : (
-        <div className="mt-4 flex min-h-[92px] items-center justify-center rounded-xl border border-dashed border-[#DDE3F0] bg-[#FBFCFF] px-4 text-center">
-          <p className="text-sm font-bold text-[#737A9B]">Choose a non-owned {directoryStatus === "loading" ? "player once loading completes" : "player"}.</p>
+        <div className="mt-4 flex min-h-[92px] items-center justify-center rounded-xl border border-dashed border-[var(--border)] bg-[var(--surface-3)] px-4 text-center">
+          <p className="text-sm font-bold text-[var(--muted)]">Choose a non-owned {directoryStatus === "loading" ? "player once loading completes" : "player"}.</p>
         </div>
       )}
     </div>
@@ -271,19 +271,19 @@ function CaptainChoice({
   const selectable = players.slice(0, 15).filter((player) => player.id !== excludeId);
   const selected = findPlayer(players, value);
   return (
-    <label className="block rounded-2xl border border-[#E1E7F2] bg-white p-4">
-      <span className="text-[10px] font-black uppercase tracking-[0.14em] text-[#737A9B]">{label}</span>
+    <label className="block rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-4">
+      <span className="text-[10px] font-black uppercase tracking-[0.14em] text-[var(--muted)]">{label}</span>
       <div className="mt-3 flex items-center gap-3">
         <PlayerVisual player={selected} size="sm" />
         <div className="min-w-0 flex-1">
-          <p className="truncate text-sm font-black text-[#101947]">{selected.name}</p>
-          <p className="text-xs font-bold text-[#737A9B]">{points(selected.projected)} projected</p>
+          <p className="truncate text-sm font-black text-[var(--ink)]">{selected.name}</p>
+          <p className="text-xs font-bold text-[var(--muted)]">{points(selected.projected)} projected</p>
         </div>
       </div>
       <select
         value={value}
         onChange={(event) => onChange(Number(event.target.value))}
-        className="mt-3 w-full rounded-xl border border-[#DDE3F0] bg-white px-3 py-2.5 text-sm font-bold text-[#101947] outline-none focus:border-[#6C1DFF] focus:ring-2 focus:ring-[#6C1DFF]/10"
+        className="mt-3 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-3 py-2.5 text-sm font-bold text-[var(--ink)] outline-none focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--accent)]/10"
       >
         {selectable.map((player) => (
           <option key={player.id} value={player.id}>
@@ -298,15 +298,15 @@ function CaptainChoice({
 function SummaryItem({ label, value, tone = "default" }: { label: string; value: string; tone?: "default" | "green" | "pink" | "amber" }) {
   const toneClass =
     tone === "green"
-      ? "text-[#008F4C]"
+      ? "text-[var(--success)]"
       : tone === "pink"
-        ? "text-[#D9004A]"
+        ? "text-[var(--danger)]"
         : tone === "amber"
-          ? "text-[#B57700]"
-          : "text-[#101947]";
+          ? "text-[var(--warning)]"
+          : "text-[var(--ink)]";
   return (
-    <div className="flex items-center justify-between gap-4 border-b border-[#EDF0F6] py-3 last:border-b-0">
-      <span className="text-sm font-semibold text-[#626A8B]">{label}</span>
+    <div className="flex items-center justify-between gap-4 border-b border-[var(--border-soft)] py-3 last:border-b-0">
+      <span className="text-sm font-semibold text-[var(--muted)]">{label}</span>
       <span className={`text-right text-sm font-black ${toneClass}`}>{value}</span>
     </div>
   );
@@ -314,14 +314,14 @@ function SummaryItem({ label, value, tone = "default" }: { label: string; value:
 
 function ResultPlayerCard({ label, player, tone }: { label: string; player: Player; tone: "pink" | "green" | "purple" | "cyan" }) {
   const toneClass = {
-    pink: "bg-[#FFF0F5] text-[#D9004A]",
-    green: "bg-[#EFFFF5] text-[#008F4C]",
-    purple: "bg-[#F1E8FF] text-[#6C1DFF]",
-    cyan: "bg-[#E9F9FF] text-[#007EA8]",
+    pink: "bg-[var(--danger-soft)] text-[var(--danger)]",
+    green: "bg-[var(--success-soft)] text-[var(--success)]",
+    purple: "bg-[var(--accent-soft)] text-[var(--accent)]",
+    cyan: "bg-[var(--info-soft)] text-[var(--info)]",
   }[tone];
   const { open } = usePlayerDetail();
   return (
-    <article className="flex h-full flex-col rounded-2xl border border-[#E1E7F2] bg-white p-4 shadow-[0_14px_34px_rgba(15,23,60,0.05)]">
+    <article className="flex h-full flex-col rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-4 shadow-[0_14px_34px_rgba(15,23,60,0.05)]">
       <div className="flex items-center justify-between gap-3">
         <span className={`rounded-lg px-3 py-1 text-[10px] font-black uppercase tracking-[0.14em] ${toneClass}`}>{label}</span>
         <FixturePill fixture={player.fixture ?? "TBC"} difficulty={player.fixture_difficulty ?? 3} />
@@ -329,8 +329,8 @@ function ResultPlayerCard({ label, player, tone }: { label: string; player: Play
       <button type="button" onClick={() => open(player)} className="mt-4 flex w-full items-center gap-3 text-left">
         <PlayerVisual player={player} size="sm" />
         <div className="min-w-0">
-          <p className="truncate text-base font-black text-[#101947]">{player.name}</p>
-          <p className="text-xs font-bold text-[#737A9B]">{player.team} / {player.position}</p>
+          <p className="truncate text-base font-black text-[var(--ink)]">{player.name}</p>
+          <p className="text-xs font-bold text-[var(--muted)]">{player.team} / {player.position}</p>
         </div>
       </button>
       <div className="mt-4 grid grid-cols-2 gap-2">
@@ -362,7 +362,7 @@ function RecentSavedScenarios({
   loadingId: number | null;
   onLoad: (id: number) => void;
 }) {
-  if (!items.length) return <p className="text-sm font-semibold text-[#737A9B]">Saved scenarios from this browser will appear here.</p>;
+  if (!items.length) return <p className="text-sm font-semibold text-[var(--muted)]">Saved scenarios from this browser will appear here.</p>;
   return (
     <div className="space-y-2">
       {items.map((item) => (
@@ -371,13 +371,13 @@ function RecentSavedScenarios({
           type="button"
           onClick={() => onLoad(item.id)}
           disabled={loadingId === item.id}
-          className="flex w-full items-center justify-between gap-3 rounded-xl border border-[#E1E7F2] bg-white px-3 py-3 text-left transition hover:border-[#BCA6FF] disabled:cursor-wait disabled:opacity-60"
+          className="flex w-full items-center justify-between gap-3 rounded-xl border border-[var(--border)] bg-[var(--surface)] px-3 py-3 text-left transition hover:border-[var(--accent-border)] disabled:cursor-wait disabled:opacity-60"
         >
           <span className="min-w-0">
-            <span className="block truncate text-sm font-black text-[#101947]">{item.name}</span>
-            <span className="block text-xs font-semibold text-[#737A9B]">{new Date(item.createdAt).toLocaleString()}</span>
+            <span className="block truncate text-sm font-black text-[var(--ink)]">{item.name}</span>
+            <span className="block text-xs font-semibold text-[var(--muted)]">{new Date(item.createdAt).toLocaleString()}</span>
           </span>
-          <span className="shrink-0 text-xs font-black text-[#6C1DFF]">{loadingId === item.id ? "Loading" : "Open"}</span>
+          <span className="shrink-0 text-xs font-black text-[var(--accent)]">{loadingId === item.id ? "Loading" : "Open"}</span>
         </button>
       ))}
     </div>
@@ -635,18 +635,18 @@ export function ScenarioBuilder({
 
   return (
     <section className="space-y-4">
-      <div className="grid grid-cols-2 rounded-2xl border border-[#E1E7F2] bg-white p-1 shadow-[0_10px_26px_rgba(15,23,60,0.05)] lg:hidden">
+      <div className="grid grid-cols-2 rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-1 shadow-[0_10px_26px_rgba(15,23,60,0.05)] lg:hidden">
         <button
           type="button"
           onClick={() => setMobileView("build")}
-          className={`rounded-xl px-4 py-3 text-sm font-black transition ${mobileView === "build" ? "bg-[#6C1DFF] text-white" : "text-[#626A8B]"}`}
+          className={`rounded-xl px-4 py-3 text-sm font-black transition ${mobileView === "build" ? "bg-[var(--accent)] text-white" : "text-[var(--muted)]"}`}
         >
           Build
         </button>
         <button
           type="button"
           onClick={() => setMobileView("compare")}
-          className={`rounded-xl px-4 py-3 text-sm font-black transition ${mobileView === "compare" ? "bg-[#6C1DFF] text-white" : "text-[#626A8B]"}`}
+          className={`rounded-xl px-4 py-3 text-sm font-black transition ${mobileView === "compare" ? "bg-[var(--accent)] text-white" : "text-[var(--muted)]"}`}
         >
           {scenarioResult ? "Result" : "Review"}
         </button>
@@ -659,29 +659,29 @@ export function ScenarioBuilder({
               event.preventDefault();
               void handleRunScenario();
             }}
-            className="rounded-[22px] border border-[#E1E7F2] bg-white p-4 shadow-[0_22px_60px_rgba(15,23,60,0.08)] sm:p-5 lg:sticky lg:top-24"
+            className="rounded-[22px] border border-[var(--border)] bg-[var(--surface)] p-4 shadow-[0_22px_60px_rgba(15,23,60,0.08)] sm:p-5 lg:sticky lg:top-24"
           >
             <div className="flex items-start justify-between gap-3">
               <div>
-                <p className="text-xs font-black uppercase tracking-[0.18em] text-[#6C1DFF]">Test a decision</p>
-                <h2 className="mt-1 text-2xl font-black tracking-tight text-[#101947]">Scenario builder</h2>
-                <p className="mt-1 text-sm font-semibold leading-6 text-[#626A8B]">Build one clear alternative and compare it with the live recommendation.</p>
+                <p className="text-xs font-black uppercase tracking-[0.18em] text-[var(--accent)]">Test a decision</p>
+                <h2 className="mt-1 text-2xl font-black tracking-tight text-[var(--ink)]">Scenario builder</h2>
+                <p className="mt-1 text-sm font-semibold leading-6 text-[var(--muted)]">Build one clear alternative and compare it with the live recommendation.</p>
               </div>
-              <span className="rounded-full bg-[#EFFFF5] px-3 py-1 text-[10px] font-black uppercase tracking-[0.12em] text-[#008F4C]">Live model</span>
+              <span className="rounded-full bg-[var(--success-soft)] px-3 py-1 text-[10px] font-black uppercase tracking-[0.12em] text-[var(--success)]">Live model</span>
             </div>
 
-            <div className="mt-5 grid grid-cols-2 gap-2 rounded-xl bg-[#F5F2FF] p-1">
+            <div className="mt-5 grid grid-cols-2 gap-2 rounded-xl bg-[var(--accent-soft)] p-1">
               <button
                 type="button"
                 onClick={() => changeMode("transfer")}
-                className={`rounded-lg px-3 py-2.5 text-sm font-black transition ${mode === "transfer" ? "bg-white text-[#6C1DFF] shadow-[0_8px_20px_rgba(108,29,255,0.12)]" : "text-[#737A9B]"}`}
+                className={`rounded-lg px-3 py-2.5 text-sm font-black transition ${mode === "transfer" ? "bg-[var(--surface)] text-[var(--accent)] shadow-[0_8px_20px_rgba(108,29,255,0.12)]" : "text-[var(--muted)]"}`}
               >
                 Transfer
               </button>
               <button
                 type="button"
                 onClick={() => changeMode("captaincy")}
-                className={`rounded-lg px-3 py-2.5 text-sm font-black transition ${mode === "captaincy" ? "bg-white text-[#6C1DFF] shadow-[0_8px_20px_rgba(108,29,255,0.12)]" : "text-[#737A9B]"}`}
+                className={`rounded-lg px-3 py-2.5 text-sm font-black transition ${mode === "captaincy" ? "bg-[var(--surface)] text-[var(--accent)] shadow-[0_8px_20px_rgba(108,29,255,0.12)]" : "text-[var(--muted)]"}`}
               >
                 Captaincy
               </button>
@@ -690,14 +690,14 @@ export function ScenarioBuilder({
             {requiresTransfer ? (
               <div className="mt-5 space-y-4">
                 <label className="block">
-                  <span className="text-xs font-black uppercase tracking-[0.14em] text-[#737A9B]">Player to sell</span>
+                  <span className="text-xs font-black uppercase tracking-[0.14em] text-[var(--muted)]">Player to sell</span>
                   <select
                     value={playerOutId}
                     onChange={(event) => {
                       setPlayerOutId(Number(event.target.value));
                       resetResult();
                     }}
-                    className="mt-2 w-full rounded-xl border border-[#DDE3F0] bg-white px-3 py-3 text-sm font-bold text-[#101947] outline-none focus:border-[#6C1DFF] focus:ring-2 focus:ring-[#6C1DFF]/10"
+                    className="mt-2 w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-3 py-3 text-sm font-bold text-[var(--ink)] outline-none focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--accent)]/10"
                   >
                     {players.slice(0, 15).map((player) => (
                       <option key={player.id} value={player.id}>
@@ -724,24 +724,24 @@ export function ScenarioBuilder({
                 />
 
                 {directoryStatus === "loading" ? (
-                  <p className="rounded-xl bg-[#F7F8FC] px-3 py-2.5 text-xs font-bold text-[#737A9B]">Loading the full league player picker…</p>
+                  <p className="rounded-xl bg-[var(--surface-3)] px-3 py-2.5 text-xs font-bold text-[var(--muted)]">Loading the full league player picker…</p>
                 ) : null}
                 {directoryStatus === "error" ? (
-                  <p className="rounded-xl border border-[#FFD0DF] bg-[#FFF7FA] px-3 py-2.5 text-xs font-bold text-[#C80046]">{directoryMessage || "The incoming-player directory is unavailable."}</p>
+                  <p className="rounded-xl border border-[var(--danger-border)] bg-[var(--danger-soft)] px-3 py-2.5 text-xs font-bold text-[var(--danger)]">{directoryMessage || "The incoming-player directory is unavailable."}</p>
                 ) : null}
               </div>
             ) : (
-              <div className="mt-5 rounded-2xl border border-[#D8C9FF] bg-[#F8F5FF] p-4">
-                <p className="text-sm font-black text-[#6C1DFF]">Captaincy-only test</p>
-                <p className="mt-1 text-sm font-semibold leading-6 text-[#626A8B]">Keep the squad and transfer plan unchanged, then test a different armband combination.</p>
+              <div className="mt-5 rounded-2xl border border-[var(--accent-border)] bg-[var(--surface-2)] p-4">
+                <p className="text-sm font-black text-[var(--accent)]">Captaincy-only test</p>
+                <p className="mt-1 text-sm font-semibold leading-6 text-[var(--muted)]">Keep the squad and transfer plan unchanged, then test a different armband combination.</p>
               </div>
             )}
 
-            <details open={mode === "captaincy"} className="mt-5 rounded-2xl border border-[#E1E7F2] bg-[#FBFCFF] p-4">
-              <summary className="cursor-pointer list-none text-sm font-black text-[#101947] [&::-webkit-details-marker]:hidden">
+            <details open={mode === "captaincy"} className="mt-5 rounded-2xl border border-[var(--border)] bg-[var(--surface-3)] p-4">
+              <summary className="cursor-pointer list-none text-sm font-black text-[var(--ink)] [&::-webkit-details-marker]:hidden">
                 <span className="flex items-center justify-between gap-3">
                   Captain and vice captain
-                  <span className="text-xs font-black text-[#6C1DFF]">Edit</span>
+                  <span className="text-xs font-black text-[var(--accent)]">Edit</span>
                 </span>
               </summary>
               <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
@@ -769,18 +769,18 @@ export function ScenarioBuilder({
             </details>
 
             {requiresTransfer ? (
-              <details className="mt-3 rounded-2xl border border-[#E1E7F2] bg-[#FBFCFF] p-4">
-                <summary className="cursor-pointer list-none text-sm font-black text-[#101947] [&::-webkit-details-marker]:hidden">
+              <details className="mt-3 rounded-2xl border border-[var(--border)] bg-[var(--surface-3)] p-4">
+                <summary className="cursor-pointer list-none text-sm font-black text-[var(--ink)] [&::-webkit-details-marker]:hidden">
                   <span className="flex items-center justify-between gap-3">
                     Transfer cost and bench
-                    <span className="text-xs font-black text-[#6C1DFF]">Optional</span>
+                    <span className="text-xs font-black text-[var(--accent)]">Optional</span>
                   </span>
                 </summary>
                 <div className="mt-4 space-y-4">
-                  <label className="flex items-center justify-between gap-4 rounded-xl border border-[#E1E7F2] bg-white px-3 py-3">
+                  <label className="flex items-center justify-between gap-4 rounded-xl border border-[var(--border)] bg-[var(--surface)] px-3 py-3">
                     <span>
-                      <span className="block text-sm font-black text-[#101947]">Include bench switch</span>
-                      <span className="block text-xs font-semibold text-[#737A9B]">Evaluate the transfer with a lineup adjustment.</span>
+                      <span className="block text-sm font-black text-[var(--ink)]">Include bench switch</span>
+                      <span className="block text-xs font-semibold text-[var(--muted)]">Evaluate the transfer with a lineup adjustment.</span>
                     </span>
                     <input
                       type="checkbox"
@@ -789,11 +789,11 @@ export function ScenarioBuilder({
                         setBenchSwitch(event.target.checked);
                         resetResult();
                       }}
-                      className="h-5 w-5 accent-[#6C1DFF]"
+                      className="h-5 w-5 accent-[var(--accent)]"
                     />
                   </label>
                   <div>
-                    <p className="text-xs font-black uppercase tracking-[0.14em] text-[#737A9B]">Hit cost</p>
+                    <p className="text-xs font-black uppercase tracking-[0.14em] text-[var(--muted)]">Hit cost</p>
                     <div className="mt-2 grid grid-cols-3 gap-2">
                       {[0, 4, 8].map((value) => (
                         <button
@@ -803,7 +803,7 @@ export function ScenarioBuilder({
                             setHitCost(value as 0 | 4 | 8);
                             resetResult();
                           }}
-                          className={`rounded-xl border px-3 py-3 text-sm font-black transition ${hitCost === value ? "border-[#6C1DFF] bg-[#F1E8FF] text-[#6C1DFF]" : "border-[#DDE3F0] bg-white text-[#101947] hover:border-[#BCA6FF]"}`}
+                          className={`rounded-xl border px-3 py-3 text-sm font-black transition ${hitCost === value ? "border-[var(--accent)] bg-[var(--accent-soft)] text-[var(--accent)]" : "border-[var(--border)] bg-[var(--surface)] text-[var(--ink)] hover:border-[var(--accent-border)]"}`}
                         >
                           {value === 0 ? "No hit" : `-${value}`}
                         </button>
@@ -814,8 +814,8 @@ export function ScenarioBuilder({
               </details>
             ) : null}
 
-            <div className="mt-5 rounded-2xl border border-[#E1E7F2] bg-white p-4">
-              <p className="text-xs font-black uppercase tracking-[0.16em] text-[#6C1DFF]">Scenario summary</p>
+            <div className="mt-5 rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-4">
+              <p className="text-xs font-black uppercase tracking-[0.16em] text-[var(--accent)]">Scenario summary</p>
               <SummaryItem label="Decision" value={scenarioName} />
               <SummaryItem label="Captain" value={captain.name} />
               <SummaryItem label="Vice" value={vice.name} />
@@ -823,46 +823,46 @@ export function ScenarioBuilder({
               {requiresTransfer ? <SummaryItem label="Bench switch" value={benchSwitch ? "Included" : "No"} /> : null}
             </div>
 
-            <div className="sticky bottom-3 z-20 mt-5 rounded-2xl bg-white/92 p-1 shadow-[0_16px_34px_rgba(15,23,60,0.14)] backdrop-blur lg:static lg:bg-transparent lg:p-0 lg:shadow-none">
+            <div className="sticky bottom-3 z-20 mt-5 rounded-2xl bg-[var(--surface)]/92 p-1 shadow-[0_16px_34px_rgba(15,23,60,0.14)] backdrop-blur lg:static lg:bg-transparent lg:p-0 lg:shadow-none">
               <button
                 type="submit"
                 disabled={!requestPayload || runStatus === "loading" || (requiresTransfer && directoryStatus === "loading")}
-                className="w-full rounded-xl bg-[#6C1DFF] px-4 py-3.5 text-sm font-black text-white shadow-[0_12px_24px_rgba(108,29,255,0.22)] transition hover:bg-[#5813E4] disabled:cursor-not-allowed disabled:opacity-40"
+                className="w-full rounded-xl bg-[var(--accent)] px-4 py-3.5 text-sm font-black text-white shadow-[0_12px_24px_rgba(108,29,255,0.22)] transition hover:bg-[var(--accent-2)] disabled:cursor-not-allowed disabled:opacity-40"
               >
                 {runStatus === "loading" ? "Running scenario…" : "Run scenario"}
               </button>
             </div>
-            {requiresTransfer && !playerIn ? <p className="mt-2 text-xs font-bold text-[#737A9B]">Choose the incoming player before running the scenario.</p> : null}
-            {runStatus === "error" ? <p className="mt-2 rounded-xl border border-[#FFD0DF] bg-[#FFF7FA] px-3 py-2 text-xs font-bold text-[#C80046]">{runError}</p> : null}
+            {requiresTransfer && !playerIn ? <p className="mt-2 text-xs font-bold text-[var(--muted)]">Choose the incoming player before running the scenario.</p> : null}
+            {runStatus === "error" ? <p className="mt-2 rounded-xl border border-[var(--danger-border)] bg-[var(--danger-soft)] px-3 py-2 text-xs font-bold text-[var(--danger)]">{runError}</p> : null}
 
-            <details className="mt-4 rounded-2xl border border-[#E1E7F2] bg-[#FBFCFF] p-4">
-              <summary className="cursor-pointer list-none text-sm font-black text-[#101947] [&::-webkit-details-marker]:hidden">
+            <details className="mt-4 rounded-2xl border border-[var(--border)] bg-[var(--surface-3)] p-4">
+              <summary className="cursor-pointer list-none text-sm font-black text-[var(--ink)] [&::-webkit-details-marker]:hidden">
                 <span className="flex items-center justify-between gap-3">
                   Saved scenarios
-                  <span className="text-xs font-black text-[#6C1DFF]">Restore</span>
+                  <span className="text-xs font-black text-[var(--accent)]">Restore</span>
                 </span>
               </summary>
               <div className="mt-4">
                 <RecentSavedScenarios items={recentSaved} loadingId={loadingSavedId} onLoad={(id) => void handleLoadScenario(String(id))} />
-                <div className="mt-4 flex gap-2 border-t border-[#E1E7F2] pt-4">
+                <div className="mt-4 flex gap-2 border-t border-[var(--border)] pt-4">
                   <input
                     value={loadIdInput}
                     onChange={(event) => setLoadIdInput(event.target.value)}
                     inputMode="numeric"
                     placeholder="Load by ID"
-                    className="min-w-0 flex-1 rounded-xl border border-[#DDE3F0] bg-white px-3 py-2.5 text-sm font-semibold text-[#101947] outline-none focus:border-[#6C1DFF]"
+                    className="min-w-0 flex-1 rounded-xl border border-[var(--border)] bg-[var(--surface)] px-3 py-2.5 text-sm font-semibold text-[var(--ink)] outline-none focus:border-[var(--accent)]"
                   />
                   <button
                     type="button"
                     onClick={() => void handleLoadScenario(loadIdInput)}
                     disabled={loadStatus === "loading"}
-                    className="shrink-0 rounded-xl border border-[#6C1DFF] bg-white px-4 py-2.5 text-sm font-black text-[#6C1DFF] disabled:cursor-wait disabled:opacity-60"
+                    className="shrink-0 rounded-xl border border-[var(--accent)] bg-[var(--surface)] px-4 py-2.5 text-sm font-black text-[var(--accent)] disabled:cursor-wait disabled:opacity-60"
                   >
                     {loadStatus === "loading" ? "Loading" : "Load"}
                   </button>
                 </div>
-                {loadStatus === "error" ? <p className="mt-2 text-xs font-bold text-[#C80046]">{loadError}</p> : null}
-                {loadStatus === "ready" ? <p className="mt-2 text-xs font-bold text-[#008F4C]">Scenario restored. Run it for fresh projections.</p> : null}
+                {loadStatus === "error" ? <p className="mt-2 text-xs font-bold text-[var(--danger)]">{loadError}</p> : null}
+                {loadStatus === "ready" ? <p className="mt-2 text-xs font-bold text-[var(--success)]">Scenario restored. Run it for fresh projections.</p> : null}
               </div>
             </details>
           </form>
@@ -923,13 +923,13 @@ export function ScenarioBuilder({
 
               {scenarioResult.valid ? (
                 <>
-                  <section className="rounded-[22px] border border-[#E1E7F2] bg-white p-5 shadow-[0_22px_60px_rgba(15,23,60,0.08)] sm:p-6">
+                  <section className="rounded-[22px] border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[0_22px_60px_rgba(15,23,60,0.08)] sm:p-6">
                     <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
                       <div>
-                        <p className="text-xs font-black uppercase tracking-[0.18em] text-[#6C1DFF]">Impact breakdown</p>
-                        <h3 className="mt-1 text-2xl font-black text-[#101947]">Where the result comes from</h3>
+                        <p className="text-xs font-black uppercase tracking-[0.18em] text-[var(--accent)]">Impact breakdown</p>
+                        <h3 className="mt-1 text-2xl font-black text-[var(--ink)]">Where the result comes from</h3>
                       </div>
-                      <span className="rounded-full bg-[#F1E8FF] px-3 py-1 text-xs font-black text-[#6C1DFF]">Transparent model output</span>
+                      <span className="rounded-full bg-[var(--accent-soft)] px-3 py-1 text-xs font-black text-[var(--accent)]">Transparent model output</span>
                     </div>
                     <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
                       {transferEdge != null ? <PlayerMetric label="Transfer edge" value={`${signed(transferEdge)} pts`} tone={transferEdge >= 0 ? "green" : "pink"} /> : null}
@@ -949,17 +949,17 @@ export function ScenarioBuilder({
                   </section>
 
                   <section className="grid gap-4 xl:grid-cols-2">
-                    <div className="rounded-[22px] border border-[#D8C9FF] bg-[#F8F5FF] p-5 sm:p-6">
-                      <p className="text-xs font-black uppercase tracking-[0.18em] text-[#6C1DFF]">Why this result</p>
-                      <ul className="mt-4 space-y-3 text-sm font-semibold leading-6 text-[#3E4770]">
+                    <div className="rounded-[22px] border border-[var(--accent-border)] bg-[var(--surface-2)] p-5 sm:p-6">
+                      <p className="text-xs font-black uppercase tracking-[0.18em] text-[var(--accent)]">Why this result</p>
+                      <ul className="mt-4 space-y-3 text-sm font-semibold leading-6 text-[var(--ink-soft)]">
                         {(resultExplanation.length ? resultExplanation : scenarioResult.reasons).map((reason) => (
-                          <li key={reason} className="flex gap-3"><span className="mt-0.5 text-[#6C1DFF]">•</span><span>{reason}</span></li>
+                          <li key={reason} className="flex gap-3"><span className="mt-0.5 text-[var(--accent)]">•</span><span>{reason}</span></li>
                         ))}
                       </ul>
                     </div>
-                    <div className="rounded-[22px] border border-[#FFE0EA] bg-[#FFF7FA] p-5 sm:p-6">
-                      <p className="text-xs font-black uppercase tracking-[0.18em] text-[#D9004A]">Monitor before deadline</p>
-                      <ul className="mt-4 space-y-3 text-sm font-semibold leading-6 text-[#6D4560]">
+                    <div className="rounded-[22px] border border-[var(--danger-border)] bg-[var(--danger-soft)] p-5 sm:p-6">
+                      <p className="text-xs font-black uppercase tracking-[0.18em] text-[var(--danger)]">Monitor before deadline</p>
+                      <ul className="mt-4 space-y-3 text-sm font-semibold leading-6 text-[var(--danger)]">
                         {(
                           scenarioResult.what_to_monitor.length
                             ? scenarioResult.what_to_monitor
@@ -967,7 +967,7 @@ export function ScenarioBuilder({
                               ? scenarioResult.risks
                               : ["No specific deadline risk was returned for this scenario."]
                         ).map((item) => (
-                          <li key={item} className="flex gap-3"><span className="mt-0.5 text-[#D9004A]">•</span><span>{item}</span></li>
+                          <li key={item} className="flex gap-3"><span className="mt-0.5 text-[var(--danger)]">•</span><span>{item}</span></li>
                         ))}
                       </ul>
                     </div>
@@ -975,36 +975,36 @@ export function ScenarioBuilder({
                 </>
               ) : null}
 
-              <details className="rounded-[22px] border border-[#E1E7F2] bg-white p-5 shadow-[0_18px_45px_rgba(15,23,60,0.05)]">
-                <summary className="cursor-pointer list-none text-sm font-black text-[#101947] [&::-webkit-details-marker]:hidden">
-                  <span className="flex items-center justify-between gap-3">Recommended route detail <span className="text-xs font-black text-[#6C1DFF]">Compare reasoning</span></span>
+              <details className="rounded-[22px] border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[0_18px_45px_rgba(15,23,60,0.05)]">
+                <summary className="cursor-pointer list-none text-sm font-black text-[var(--ink)] [&::-webkit-details-marker]:hidden">
+                  <span className="flex items-center justify-between gap-3">Recommended route detail <span className="text-xs font-black text-[var(--accent)]">Compare reasoning</span></span>
                 </summary>
                 <div className="mt-4"><TransferRouteCard route={recommendedRoute} /></div>
               </details>
 
               {debugMode ? (
-                <details className="rounded-[22px] border border-[#E1E7F2] bg-white p-5">
-                  <summary className="cursor-pointer text-sm font-black text-[#6C1DFF]">Developer request and response</summary>
-                  <p className="mt-4 text-xs font-black uppercase tracking-[0.12em] text-[#737A9B]">Request</p>
+                <details className="rounded-[22px] border border-[var(--border)] bg-[var(--surface)] p-5">
+                  <summary className="cursor-pointer text-sm font-black text-[var(--accent)]">Developer request and response</summary>
+                  <p className="mt-4 text-xs font-black uppercase tracking-[0.12em] text-[var(--muted)]">Request</p>
                   <pre className="mt-2 max-h-64 overflow-auto rounded-xl bg-[#070912] p-4 text-xs font-semibold leading-5 text-[#A7F3D0]">{JSON.stringify(requestPayload, null, 2)}</pre>
-                  <p className="mt-4 text-xs font-black uppercase tracking-[0.12em] text-[#737A9B]">Response</p>
+                  <p className="mt-4 text-xs font-black uppercase tracking-[0.12em] text-[var(--muted)]">Response</p>
                   <pre className="mt-2 max-h-64 overflow-auto rounded-xl bg-[#070912] p-4 text-xs font-semibold leading-5 text-[#A7F3D0]">{JSON.stringify(scenarioResult, null, 2)}</pre>
                 </details>
               ) : null}
             </div>
           ) : (
             <div className="space-y-5">
-              <section className="rounded-[22px] border border-[#E1E7F2] bg-white p-5 shadow-[0_22px_60px_rgba(15,23,60,0.08)] sm:p-6">
+              <section className="rounded-[22px] border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[0_22px_60px_rgba(15,23,60,0.08)] sm:p-6">
                 <div className="flex items-start justify-between gap-4">
                   <div>
-                    <p className="text-xs font-black uppercase tracking-[0.18em] text-[#6C1DFF]">Review before running</p>
-                    <h2 className="mt-1 text-2xl font-black text-[#101947]">Your scenario</h2>
+                    <p className="text-xs font-black uppercase tracking-[0.18em] text-[var(--accent)]">Review before running</p>
+                    <h2 className="mt-1 text-2xl font-black text-[var(--ink)]">Your scenario</h2>
                   </div>
-                  <span className={`rounded-full px-3 py-1 text-xs font-black ${requestPayload ? "bg-[#EFFFF5] text-[#008F4C]" : "bg-[#FFF4D7] text-[#B57700]"}`}>
+                  <span className={`rounded-full px-3 py-1 text-xs font-black ${requestPayload ? "bg-[var(--success-soft)] text-[var(--success)]" : "bg-[var(--warning-soft)] text-[var(--warning)]"}`}>
                     {requestPayload ? "Ready" : "Incomplete"}
                   </span>
                 </div>
-                <div className="mt-5 rounded-2xl border border-[#E1E7F2] bg-[#FBFCFF] px-4">
+                <div className="mt-5 rounded-2xl border border-[var(--border)] bg-[var(--surface-3)] px-4">
                   <SummaryItem label="Decision" value={scenarioName} />
                   <SummaryItem label="Captain" value={`${captain.name} (${points(captain.projected)})`} />
                   <SummaryItem label="Vice" value={vice.name} />
@@ -1017,26 +1017,26 @@ export function ScenarioBuilder({
                     setMobileView("build");
                     window.scrollTo({ top: 0, behavior: "smooth" });
                   }}
-                  className="mt-4 w-full rounded-xl border border-[#D8C9FF] bg-white px-4 py-3 text-sm font-black text-[#6C1DFF] lg:hidden"
+                  className="mt-4 w-full rounded-xl border border-[var(--accent-border)] bg-[var(--surface)] px-4 py-3 text-sm font-black text-[var(--accent)] lg:hidden"
                 >
                   Edit scenario
                 </button>
               </section>
 
               {recommendationStatus === "loading" ? (
-                <section className="rounded-[22px] border border-[#E1E7F2] bg-white p-6 shadow-[0_22px_60px_rgba(15,23,60,0.08)]">
+                <section className="rounded-[22px] border border-[var(--border)] bg-[var(--surface)] p-6 shadow-[0_22px_60px_rgba(15,23,60,0.08)]">
                   <div className="flex items-center gap-3">
-                    <span className="h-6 w-6 animate-spin rounded-full border-2 border-[#6C1DFF] border-t-transparent" aria-hidden />
+                    <span className="h-6 w-6 animate-spin rounded-full border-2 border-[var(--accent)] border-t-transparent" aria-hidden />
                     <div>
-                      <p className="text-sm font-black text-[#101947]">Recommended route is computing</p>
-                      <p className="mt-1 text-sm font-semibold text-[#626A8B]">You can finish building the scenario while the comparison route loads.</p>
+                      <p className="text-sm font-black text-[var(--ink)]">Recommended route is computing</p>
+                      <p className="mt-1 text-sm font-semibold text-[var(--muted)]">You can finish building the scenario while the comparison route loads.</p>
                     </div>
                   </div>
                 </section>
               ) : recommendationStatus === "error" ? (
-                <section className="rounded-[22px] border border-[#FFD0DF] bg-[#FFF7FA] p-5">
-                  <p className="text-sm font-black text-[#C80046]">The recommended route could not be loaded.</p>
-                  <p className="mt-1 text-sm font-semibold text-[#6D4560]">{recommendationMessage || "The Scenario Builder remains available, but the comparison will use the neutral hold fallback."}</p>
+                <section className="rounded-[22px] border border-[var(--danger-border)] bg-[var(--danger-soft)] p-5">
+                  <p className="text-sm font-black text-[var(--danger)]">The recommended route could not be loaded.</p>
+                  <p className="mt-1 text-sm font-semibold text-[var(--danger)]">{recommendationMessage || "The Scenario Builder remains available, but the comparison will use the neutral hold fallback."}</p>
                 </section>
               ) : null}
 

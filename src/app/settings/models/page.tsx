@@ -52,14 +52,14 @@ export default async function ProjectionModelsPage() {
   return (
     <AppShell title="Model Training" eyebrow="Projection engine training pipeline" state={appState} dataSource={dataSource}>
       <div className="mb-4">
-        <Link href="/settings" className="text-sm font-black text-[#6C1DFF]">
+        <Link href="/settings" className="text-sm font-black text-[var(--accent)]">
           &larr; Back to Settings
         </Link>
       </div>
 
       {loadError ? (
-        <section className="rounded-2xl border border-[#FF4D8D]/30 bg-[#FF4D8D]/10 p-5">
-          <p className="text-sm font-bold text-[#C80046]">{loadError}</p>
+        <section className="rounded-2xl border border-[var(--danger)]/30 bg-[var(--danger)]/10 p-5">
+          <p className="text-sm font-bold text-[var(--danger)]">{loadError}</p>
         </section>
       ) : (
         <>
@@ -89,29 +89,29 @@ export default async function ProjectionModelsPage() {
 
           <RunTrainingPanel />
 
-          <section className="mt-6 rounded-2xl border border-[#E8DEF8] bg-white p-5 shadow-[0_18px_45px_rgba(55,0,60,0.08)]">
-            <h2 className="text-2xl font-black text-[#17002F]">Promotion history</h2>
-            <p className="mt-1 text-sm font-semibold text-[#5D4A70]">GET /projection-training/models - every trained candidate, promoted or rejected.</p>
+          <section className="mt-6 rounded-2xl border border-[var(--border-soft)] bg-[var(--surface)] p-5 shadow-[0_18px_45px_rgba(55,0,60,0.08)]">
+            <h2 className="text-2xl font-black text-[var(--ink)]">Promotion history</h2>
+            <p className="mt-1 text-sm font-semibold text-[var(--muted)]">GET /projection-training/models - every trained candidate, promoted or rejected.</p>
             <div className="mt-4 space-y-2">
               {models.length === 0 ? (
-                <p className="text-sm font-semibold text-[#5D4A70]">No trained candidates recorded yet.</p>
+                <p className="text-sm font-semibold text-[var(--muted)]">No trained candidates recorded yet.</p>
               ) : (
                 models.map((model) => {
                   const mae = extractMae(model.metrics);
                   return (
-                    <div key={String(model.model_version)} className="flex flex-col gap-2 rounded-xl bg-[#F8F5FF] p-4 sm:flex-row sm:items-center sm:justify-between">
+                    <div key={String(model.model_version)} className="flex flex-col gap-2 rounded-xl bg-[var(--surface-2)] p-4 sm:flex-row sm:items-center sm:justify-between">
                       <div className="min-w-0">
-                        <p className="truncate text-sm font-black text-[#17002F]">{String(model.model_version)}</p>
-                        <p className="text-xs font-semibold text-[#7B688E]">
+                        <p className="truncate text-sm font-black text-[var(--ink)]">{String(model.model_version)}</p>
+                        <p className="text-xs font-semibold text-[var(--muted)]">
                           {String(model.model_type ?? "")} - {model.created_at ? new Date(String(model.created_at)).toLocaleString() : "unknown date"}
                           {model.promoted_at ? ` - promoted ${new Date(String(model.promoted_at)).toLocaleString()}` : ""}
                         </p>
                       </div>
                       <div className="flex shrink-0 items-center gap-3">
-                        <p className="text-sm font-black text-[#6C1DFF]">MAE {mae != null ? mae.toFixed(3) : "—"}</p>
+                        <p className="text-sm font-black text-[var(--accent)]">MAE {mae != null ? mae.toFixed(3) : "—"}</p>
                         <span
                           className={`w-fit rounded-full px-3 py-1 text-xs font-black ${
-                            model.active ? "bg-[#00C853]/12 text-[#008B3A]" : model.status === "rejected" ? "bg-[#E90052]/10 text-[#C80046]" : "bg-[#FFB800]/12 text-[#8A6200]"
+                            model.active ? "bg-[var(--success)]/12 text-[var(--success)]" : model.status === "rejected" ? "bg-[var(--danger)]/10 text-[var(--danger)]" : "bg-[var(--warning)]/12 text-[var(--warning)]"
                           }`}
                         >
                           {model.active ? "active" : String(model.status ?? "unknown")}

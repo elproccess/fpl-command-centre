@@ -6,14 +6,14 @@ import { usePlayerDetail } from "./player-detail-modal";
 import { PlayerVisual } from "./player-visual";
 
 const ACTION_LABEL: Record<string, { label: string; tone: string }> = {
-  transfer: { label: "Transfer", tone: "bg-[#6C1DFF]/10 text-[#6C1DFF] ring-[#6C1DFF]/20" },
-  multiple_transfers: { label: "Transfers", tone: "bg-[#6C1DFF]/10 text-[#6C1DFF] ring-[#6C1DFF]/20" },
-  roll: { label: "Roll", tone: "bg-[#00B8FF]/10 text-[#007AA8] ring-[#00B8FF]/25" },
-  hold: { label: "Hold", tone: "bg-[#F1E8FF] text-[#7B688E] ring-[#E8DEF8]" },
+  transfer: { label: "Transfer", tone: "bg-[var(--accent)]/10 text-[var(--accent)] ring-[var(--accent)]/20" },
+  multiple_transfers: { label: "Transfers", tone: "bg-[var(--accent)]/10 text-[var(--accent)] ring-[var(--accent)]/20" },
+  roll: { label: "Roll", tone: "bg-[var(--info)]/10 text-[var(--info)] ring-[var(--info)]/25" },
+  hold: { label: "Hold", tone: "bg-[var(--accent-soft)] text-[var(--muted)] ring-[var(--border-soft)]" },
 };
 
 function ActionBadge({ action }: { action: string }) {
-  const entry = ACTION_LABEL[action] ?? { label: action || "Hold", tone: "bg-[#F1E8FF] text-[#7B688E] ring-[#E8DEF8]" };
+  const entry = ACTION_LABEL[action] ?? { label: action || "Hold", tone: "bg-[var(--accent-soft)] text-[var(--muted)] ring-[var(--border-soft)]" };
   return <span className={`shrink-0 rounded-lg px-3 py-1 text-xs font-black ring-1 ${entry.tone}`}>{entry.label}</span>;
 }
 
@@ -31,11 +31,11 @@ function TransferMoveRow({ transfersOut, transfersIn, squadPoints }: { transfers
   const { open } = usePlayerDetail();
 
   return (
-    <div className="rounded-xl border border-[#E8DEF8] bg-white p-3">
+    <div className="rounded-xl border border-[var(--border-soft)] bg-[var(--surface)] p-3">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <p className="text-[10px] font-black uppercase tracking-[0.12em] text-[#7B688E]">Transfer this gameweek</p>
+        <p className="text-[10px] font-black uppercase tracking-[0.12em] text-[var(--muted)]">Transfer this gameweek</p>
         {squadPoints != null ? (
-          <span className="rounded-lg bg-[#EFFFF5] px-2 py-0.5 text-[10px] font-black text-[#00A85A]">{squadPoints.toFixed(1)} pts</span>
+          <span className="rounded-lg bg-[var(--success-soft)] px-2 py-0.5 text-[10px] font-black text-[var(--success)]">{squadPoints.toFixed(1)} pts</span>
         ) : null}
       </div>
       <div className="mt-2 space-y-2">
@@ -49,11 +49,11 @@ function TransferMoveRow({ transfersOut, transfersIn, squadPoints }: { transfers
             >
               {pair.out ? <PlayerVisual player={pair.out} size="sm" /> : null}
               <div className="min-w-0">
-                <p className="truncate text-xs font-black uppercase tracking-[0.08em] text-[#E90052]">Out</p>
-                <p className="truncate text-sm font-black text-[#17002F]">{pair.out?.name ?? "TBC"}</p>
+                <p className="truncate text-xs font-black uppercase tracking-[0.08em] text-[var(--danger)]">Out</p>
+                <p className="truncate text-sm font-black text-[var(--ink)]">{pair.out?.name ?? "TBC"}</p>
               </div>
             </button>
-            <span className="shrink-0 text-lg font-black text-[#8B7A9B]">&rarr;</span>
+            <span className="shrink-0 text-lg font-black text-[var(--muted)]">&rarr;</span>
             <button
               type="button"
               disabled={!pair.in}
@@ -62,8 +62,8 @@ function TransferMoveRow({ transfersOut, transfersIn, squadPoints }: { transfers
             >
               {pair.in ? <PlayerVisual player={pair.in} size="sm" /> : null}
               <div className="min-w-0">
-                <p className="truncate text-xs font-black uppercase tracking-[0.08em] text-[#00A844]">In</p>
-                <p className="truncate text-sm font-black text-[#17002F]">{pair.in?.name ?? "TBC"}</p>
+                <p className="truncate text-xs font-black uppercase tracking-[0.08em] text-[var(--success)]">In</p>
+                <p className="truncate text-sm font-black text-[var(--ink)]">{pair.in?.name ?? "TBC"}</p>
               </div>
             </button>
           </div>
@@ -83,17 +83,17 @@ function ConsideredCandidateRow({ candidate, hadRealTransfer }: { candidate: Tra
   const gainLabel = candidate.net_projected_gain > 0 ? `+${candidate.net_projected_gain}` : `${candidate.net_projected_gain}`;
   const verdict = hadRealTransfer ? "Runner-up" : "Didn't beat holding";
   return (
-    <div className="flex items-center gap-2 rounded-lg border border-[#E8DEF8] bg-white p-2">
+    <div className="flex items-center gap-2 rounded-lg border border-[var(--border-soft)] bg-[var(--surface)] p-2">
       <div className="flex min-w-0 flex-1 items-center gap-1.5">
         <PlayerVisual player={candidate.out_player} size="sm" />
-        <span className="shrink-0 text-xs font-black text-[#8B7A9B]">&rarr;</span>
+        <span className="shrink-0 text-xs font-black text-[var(--muted)]">&rarr;</span>
         <PlayerVisual player={candidate.in_player} size="sm" />
       </div>
       <div className="min-w-0 flex-1">
-        <p className="truncate text-xs font-black text-[#17002F]">
+        <p className="truncate text-xs font-black text-[var(--ink)]">
           {candidate.out_player.name} &rarr; {candidate.in_player.name}
         </p>
-        <p className="text-[10px] font-bold text-[#7B688E]">
+        <p className="text-[10px] font-bold text-[var(--muted)]">
           {gainLabel} pts &middot; {verdict}
         </p>
       </div>
@@ -118,8 +118,8 @@ function ConsideredCandidates({
     // stops an empty section from reading as missing/broken data.
     if (isBaselineRoute) {
       return (
-        <div className="mt-3 rounded-xl border border-dashed border-[#E8DEF8] bg-[#FBFAFF] p-3">
-          <p className="text-[10px] font-semibold text-[#7B688E]">
+        <div className="mt-3 rounded-xl border border-dashed border-[var(--border-soft)] bg-[var(--surface-2)] p-3">
+          <p className="text-[10px] font-semibold text-[var(--muted)]">
             No alternatives evaluated for this hold week - the baseline route only re-checks transfer options once for the whole horizon (GW1).
           </p>
         </div>
@@ -128,8 +128,8 @@ function ConsideredCandidates({
     return null;
   }
   return (
-    <div className="mt-3 rounded-xl border border-[#E8DEF8] bg-[#FBFAFF] p-3">
-      <p className="text-[10px] font-black uppercase tracking-[0.12em] text-[#7B688E]">
+    <div className="mt-3 rounded-xl border border-[var(--border-soft)] bg-[var(--surface-2)] p-3">
+      <p className="text-[10px] font-black uppercase tracking-[0.12em] text-[var(--muted)]">
         {hadRealTransfer ? "Also considered this week" : "Transfers considered but didn't beat holding"}
       </p>
       <div className="mt-2 space-y-1.5">
@@ -150,12 +150,12 @@ export function PlannerTimeline({ steps, isBaselineRoute }: { steps: PlannerStep
   const gridStyle = { gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))` };
 
   return (
-    <div className="rounded-2xl border border-[#E8DEF8] bg-white p-5 shadow-[0_18px_45px_rgba(55,0,60,0.08)]">
+    <div className="rounded-2xl border border-[var(--border-soft)] bg-[var(--surface)] p-5 shadow-[0_18px_45px_rgba(55,0,60,0.08)]">
       <div className="mb-6 grid gap-2" style={gridStyle}>
         {steps.map((step, index) => (
           <div key={step.gw} className="flex items-center gap-2">
-            <span className={`grid h-8 w-8 place-items-center rounded-full text-xs font-black ${index === 0 ? "bg-[#6C1DFF] text-white" : "bg-[#F1E8FF] text-[#6C1DFF]"}`}>{step.gw.replace("GW", "")}</span>
-            {index < steps.length - 1 ? <span className={`h-1 flex-1 rounded-full ${index === 0 ? "bg-[#6C1DFF]" : "bg-[#E8DEF8]"}`} /> : null}
+            <span className={`grid h-8 w-8 place-items-center rounded-full text-xs font-black ${index === 0 ? "bg-[var(--accent)] text-white" : "bg-[var(--accent-soft)] text-[var(--accent)]"}`}>{step.gw.replace("GW", "")}</span>
+            {index < steps.length - 1 ? <span className={`h-1 flex-1 rounded-full ${index === 0 ? "bg-[var(--accent)]" : "bg-[var(--border-soft)]"}`} /> : null}
           </div>
         ))}
       </div>
@@ -170,21 +170,21 @@ export function PlannerTimeline({ steps, isBaselineRoute }: { steps: PlannerStep
             return (
               <article
                 key={step.gw}
-                className="gw-placeholder-pulse flex h-full min-h-[220px] flex-col items-center justify-center gap-3 rounded-xl border border-dashed border-[#E8DEF8] bg-white/70 p-5 text-center"
+                className="gw-placeholder-pulse flex h-full min-h-[220px] flex-col items-center justify-center gap-3 rounded-xl border border-dashed border-[var(--border-soft)] bg-[var(--surface)]/70 p-5 text-center"
               >
-                <p className="text-xl font-black text-[#6C1DFF]">{step.gw}</p>
-                <span className="h-6 w-6 animate-spin rounded-full border-2 border-[#6C1DFF] border-t-transparent" aria-hidden />
-                <p className="text-sm font-black text-[#6C1DFF]">Calculating...</p>
+                <p className="text-xl font-black text-[var(--accent)]">{step.gw}</p>
+                <span className="h-6 w-6 animate-spin rounded-full border-2 border-[var(--accent)] border-t-transparent" aria-hidden />
+                <p className="text-sm font-black text-[var(--accent)]">Calculating...</p>
               </article>
             );
           }
           const hasTransfers = Boolean(step.transfers_out?.length || step.transfers_in?.length);
           const reasoning = step.reasoning?.length ? step.reasoning : step.warning ? [step.warning] : [];
           return (
-            <article key={step.gw} className="gw-pop-in flex h-full flex-col rounded-xl border border-[#E8DEF8] bg-[#FBFAFF] p-5">
+            <article key={step.gw} className="gw-pop-in flex h-full flex-col rounded-xl border border-[var(--border-soft)] bg-[var(--surface-2)] p-5">
               {/* Header: GW number, fixture, action */}
               <div className="flex items-center justify-between gap-2">
-                <p className="text-2xl font-black text-[#6C1DFF]">{step.gw}</p>
+                <p className="text-2xl font-black text-[var(--accent)]">{step.gw}</p>
                 <div className="flex items-center gap-2">
                   <FixturePill fixture={step.fixture} difficulty={step.fixture_difficulty} />
                   <ActionBadge action={step.action} />
@@ -193,8 +193,8 @@ export function PlannerTimeline({ steps, isBaselineRoute }: { steps: PlannerStep
 
               {/* Visual section: captain, plus the transfer this gameweek if there was one */}
               <div className="mt-4 space-y-3">
-                <div className="rounded-xl border border-[#E8DEF8] bg-white p-3">
-                  <p className="text-[10px] font-black uppercase tracking-[0.12em] text-[#7B688E]">Captain</p>
+                <div className="rounded-xl border border-[var(--border-soft)] bg-[var(--surface)] p-3">
+                  <p className="text-[10px] font-black uppercase tracking-[0.12em] text-[var(--muted)]">Captain</p>
                   <button
                     type="button"
                     disabled={!step.captain}
@@ -203,8 +203,8 @@ export function PlannerTimeline({ steps, isBaselineRoute }: { steps: PlannerStep
                   >
                     {step.captain ? <PlayerVisual player={step.captain} size="sm" /> : null}
                     <div className="min-w-0">
-                      <p className="truncate font-black text-[#17002F]">{step.captain?.name ?? "TBC"}</p>
-                      <p className="text-xs font-bold text-[#5D4A70]">{step.captain ? `${step.captain.team} / ${step.captain.position}` : "Captain model pending"}</p>
+                      <p className="truncate font-black text-[var(--ink)]">{step.captain?.name ?? "TBC"}</p>
+                      <p className="text-xs font-bold text-[var(--muted)]">{step.captain ? `${step.captain.team} / ${step.captain.position}` : "Captain model pending"}</p>
                     </div>
                   </button>
                 </div>
@@ -215,24 +215,24 @@ export function PlannerTimeline({ steps, isBaselineRoute }: { steps: PlannerStep
               {/* Squad points / risk */}
               <div className="mt-4 flex items-end justify-between">
                 <div>
-                  <p className="text-xs font-black uppercase tracking-[0.12em] text-[#7B688E]">Squad points</p>
-                  <span className="text-3xl font-black text-[#00A844]">{step.projected_points ?? "—"}</span>
+                  <p className="text-xs font-black uppercase tracking-[0.12em] text-[var(--muted)]">Squad points</p>
+                  <span className="text-3xl font-black text-[var(--success)]">{step.projected_points ?? "—"}</span>
                 </div>
                 <RiskText value={step.risk} />
               </div>
 
               {step.data_quality_warning ? (
-                <div className="mt-3 rounded-lg border border-[#E90052]/25 bg-[#E90052]/8 p-3">
-                  <p className="text-[10px] font-black uppercase tracking-[0.12em] text-[#C80046]">Data confidence</p>
-                  <p className="mt-1 text-xs font-bold text-[#8A0038]">{step.data_quality_warning}</p>
+                <div className="mt-3 rounded-lg border border-[var(--danger)]/25 bg-[var(--danger)]/8 p-3">
+                  <p className="text-[10px] font-black uppercase tracking-[0.12em] text-[var(--danger)]">Data confidence</p>
+                  <p className="mt-1 text-xs font-bold text-[var(--danger)]">{step.data_quality_warning}</p>
                 </div>
               ) : null}
 
               {/* Reasoning: its own clearly separated block, not mixed into the visual section */}
               {reasoning.length ? (
-                <div className="mt-4 rounded-xl bg-[#F1E8FF]/50 p-3">
-                  <p className="text-[10px] font-black uppercase tracking-[0.12em] text-[#7B688E]">Why</p>
-                  <ul className="mt-2 space-y-1.5 text-xs font-semibold leading-5 text-[#3C2752]">
+                <div className="mt-4 rounded-xl bg-[var(--accent-soft)]/50 p-3">
+                  <p className="text-[10px] font-black uppercase tracking-[0.12em] text-[var(--muted)]">Why</p>
+                  <ul className="mt-2 space-y-1.5 text-xs font-semibold leading-5 text-[var(--ink-soft)]">
                     {reasoning.map((line, index) => (
                       <li key={index}>{line}</li>
                     ))}

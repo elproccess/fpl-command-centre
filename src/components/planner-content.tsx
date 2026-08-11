@@ -612,15 +612,15 @@ function confidencePercent(value: ConfidenceBand) {
 }
 
 function riskTextClass(value: RiskLevel) {
-  if (value === "Low") return "text-[#009B56]";
-  if (value === "Medium") return "text-[#B77900]";
-  return "text-[#D9004A]";
+  if (value === "Low") return "text-[var(--success)]";
+  if (value === "Medium") return "text-[var(--warning)]";
+  return "text-[var(--danger)]";
 }
 
 function riskSurfaceClass(value: RiskLevel) {
-  if (value === "Low") return "border-[#BCEBD2] bg-[#EDFFF5] text-[#008C4E]";
-  if (value === "Medium") return "border-[#F5D993] bg-[#FFF9E8] text-[#9B6500]";
-  return "border-[#FFC5D8] bg-[#FFF1F6] text-[#C80043]";
+  if (value === "Low") return "border-[var(--success-border)] bg-[var(--success-soft)] text-[var(--success)]";
+  if (value === "Medium") return "border-[var(--warning-border)] bg-[var(--warning-soft)] text-[var(--warning)]";
+  return "border-[var(--danger-border)] bg-[var(--danger-soft)] text-[var(--danger)]";
 }
 
 function actionLabel(action: string) {
@@ -634,9 +634,9 @@ function actionLabel(action: string) {
 
 function actionSurfaceClass(action: string) {
   const normalized = action.trim().toLowerCase();
-  if (normalized === "transfer" || normalized === "multiple_transfers") return "border-[#D6C4FF] bg-[#F4EFFF] text-[#6C1DFF]";
-  if (normalized === "roll") return "border-[#B9E9FF] bg-[#ECF9FF] text-[#007EA8]";
-  return "border-[#DDE3EF] bg-[#F7F9FC] text-[#56607E]";
+  if (normalized === "transfer" || normalized === "multiple_transfers") return "border-[var(--accent-border)] bg-[var(--accent-soft)] text-[var(--accent)]";
+  if (normalized === "roll") return "border-[var(--info-border)] bg-[var(--info-soft)] text-[var(--info)]";
+  return "border-[var(--border)] bg-[var(--surface-3)] text-[var(--muted)]";
 }
 
 function parseFixture(step: PlannerStep) {
@@ -683,17 +683,17 @@ function routeActionSummary(step: PlannerStep) {
 
 function PlannerUnavailablePanel({ planner }: { planner: MultiGwPlanner }) {
   return (
-    <section className="overflow-hidden rounded-[26px] border border-[#E1E7F2] bg-white shadow-[0_24px_70px_rgba(15,23,60,0.08)]">
-      <div className="border-b border-[#E8ECF4] bg-[#FFF9E8] px-6 py-5 sm:px-8">
-        <p className="text-xs font-black uppercase tracking-[0.18em] text-[#A76D00]">Planner unavailable</p>
-        <h2 className="mt-2 text-3xl font-black tracking-[-0.03em] text-[#070B28] sm:text-4xl">
+    <section className="overflow-hidden rounded-[26px] border border-[var(--border)] bg-[var(--surface)] shadow-[0_24px_70px_rgba(15,23,60,0.08)]">
+      <div className="border-b border-[var(--border-soft)] bg-[var(--warning-soft)] px-6 py-5 sm:px-8">
+        <p className="text-xs font-black uppercase tracking-[0.18em] text-[var(--warning)]">Planner unavailable</p>
+        <h2 className="mt-2 text-3xl font-black tracking-[-0.03em] text-[var(--ink)] sm:text-4xl">
           {PLANNER_STATUS_LABEL[planner.status] ?? "A plan could not be calculated"}
         </h2>
-        <p className="mt-3 max-w-3xl text-sm font-semibold leading-6 text-[#59617E]">
+        <p className="mt-3 max-w-3xl text-sm font-semibold leading-6 text-[var(--ink-soft)]">
           {planner.horizon_clamp_reason ?? "The planner could not build a legal route from the currently loaded fixture calendar."}
         </p>
       </div>
-      <div className="grid gap-px bg-[#E8ECF4] sm:grid-cols-2 xl:grid-cols-4">
+      <div className="grid gap-px bg-[var(--border-soft)] sm:grid-cols-2 xl:grid-cols-4">
         <PlannerFact label="Fixture season" value={planner.fixture_season ?? "Unknown"} />
         <PlannerFact label="Max fixture GW" value={planner.max_fixture_gameweek ?? "—"} />
         <PlannerFact label="Season status" value={planner.season_status ?? "Unknown"} />
@@ -705,9 +705,9 @@ function PlannerUnavailablePanel({ planner }: { planner: MultiGwPlanner }) {
 
 function PlannerFact({ label, value }: { label: string; value: string | number }) {
   return (
-    <div className="bg-white px-6 py-5">
-      <p className="text-[11px] font-black uppercase tracking-[0.14em] text-[#747C99]">{label}</p>
-      <p className="mt-2 text-xl font-black text-[#0B1134]">{value}</p>
+    <div className="bg-[var(--surface)] px-6 py-5">
+      <p className="text-[11px] font-black uppercase tracking-[0.14em] text-[var(--muted)]">{label}</p>
+      <p className="mt-2 text-xl font-black text-[var(--ink)]">{value}</p>
     </div>
   );
 }
@@ -722,29 +722,29 @@ function PhaseBanner({ phase, elapsedMs }: { phase: PlannerPollState["phase"]; e
   // time, which reads as the number just being wrong rather than provisional.
   const copy = phase === "preview" ? "Showing the fast preview while the full route comparison completes." : "Live gameweek results are arriving as the planner finishes comparing routes - the recommended route below is still provisional and may change once every alternative is scored.";
   return (
-    <div className="mb-4 flex flex-col gap-2 rounded-2xl border border-[#D8C9FF] bg-[#F8F4FF] px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+    <div className="mb-4 flex flex-col gap-2 rounded-2xl border border-[var(--accent-border)] bg-[var(--accent-soft)] px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex items-center gap-3">
         <span className="relative flex h-2.5 w-2.5">
-          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#6C1DFF] opacity-40" />
-          <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-[#6C1DFF]" />
+          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[var(--accent)] opacity-40" />
+          <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-[var(--accent)]" />
         </span>
-        <p className="text-sm font-bold text-[#45336D]">{copy}</p>
+        <p className="text-sm font-bold text-[var(--ink-soft)]">{copy}</p>
       </div>
-      {elapsedMs != null ? <span className="text-xs font-black text-[#6C1DFF]">{Math.max(1, Math.round(elapsedMs / 1000))}s elapsed</span> : null}
+      {elapsedMs != null ? <span className="text-xs font-black text-[var(--accent)]">{Math.max(1, Math.round(elapsedMs / 1000))}s elapsed</span> : null}
     </div>
   );
 }
 
 function StatusPill({ label, value, tone = "default" }: { label: string; value: string; tone?: "default" | "green" | "purple" | "amber" | "pink" }) {
   const toneClass = tone === "green"
-    ? "border-[#BCEBD2] bg-[#F0FFF7] text-[#008D4F]"
+    ? "border-[var(--success-border)] bg-[var(--success-soft)] text-[var(--success)]"
     : tone === "purple"
-      ? "border-[#D7C7FF] bg-[#F5F0FF] text-[#6C1DFF]"
+      ? "border-[var(--accent-border)] bg-[var(--accent-soft)] text-[var(--accent)]"
       : tone === "amber"
-        ? "border-[#F4DC9E] bg-[#FFF9E8] text-[#9B6500]"
+        ? "border-[var(--warning-border)] bg-[var(--warning-soft)] text-[var(--warning)]"
         : tone === "pink"
-          ? "border-[#FFC8D9] bg-[#FFF2F6] text-[#CF0045]"
-          : "border-[#E0E5EF] bg-white text-[#3E486B]";
+          ? "border-[var(--danger-border)] bg-[var(--danger-soft)] text-[var(--danger)]"
+          : "border-[var(--border)] bg-[var(--surface)] text-[var(--ink-soft)]";
   return (
     <div className={`rounded-xl border px-2 py-2 sm:px-3 ${toneClass}`}>
       <p className="text-[8px] font-black uppercase tracking-[0.08em] opacity-70 sm:text-[10px] sm:tracking-[0.12em]">{label}</p>
@@ -767,7 +767,7 @@ function HeroPlayerArtwork({ player, animationKey }: { player: Player; animation
       className="planner-hero-player-swap pointer-events-none absolute -top-12 right-0 z-20 h-[205px] w-[148px] sm:-top-16 sm:right-6 sm:h-[260px] sm:w-[194px] lg:-top-20 lg:right-10 lg:h-[292px] lg:w-[218px]"
       aria-hidden
     >
-      <div className="absolute bottom-4 right-1/2 h-24 w-24 translate-x-1/2 rounded-full bg-[#6C1DFF]/10 blur-2xl sm:h-32 sm:w-32" />
+      <div className="absolute bottom-4 right-1/2 h-24 w-24 translate-x-1/2 rounded-full bg-[var(--accent)]/10 blur-2xl sm:h-32 sm:w-32" />
       {mode === "photo" && photo ? (
         <Image
           src={photo}
@@ -779,7 +779,7 @@ function HeroPlayerArtwork({ player, animationKey }: { player: Player; animation
           onError={() => setMode("kit")}
         />
       ) : mode === "kit" ? (
-        <div className="absolute bottom-5 right-1/2 grid h-[126px] w-[126px] translate-x-1/2 place-items-center rounded-[30px] border border-[#D9CBFF] bg-white/88 p-3 shadow-[0_20px_36px_rgba(55,0,60,0.15)] backdrop-blur sm:h-[158px] sm:w-[158px] sm:p-4 lg:h-[174px] lg:w-[174px]">
+        <div className="absolute bottom-5 right-1/2 grid h-[126px] w-[126px] translate-x-1/2 place-items-center rounded-[30px] border border-[var(--accent-border)] bg-[var(--surface)]/88 p-3 shadow-[0_20px_36px_rgba(55,0,60,0.15)] backdrop-blur sm:h-[158px] sm:w-[158px] sm:p-4 lg:h-[174px] lg:w-[174px]">
           <TeamShirtImage
             team={player.team}
             position={player.position}
@@ -854,25 +854,25 @@ function PlannerHeader({
 
   return (
     <section className="mt-12 sm:mt-16">
-      <div className="relative overflow-visible rounded-[22px] border border-[#CDBBFF] bg-[linear-gradient(135deg,#FFFFFF_0%,#FCFAFF_58%,#F3ECFF_100%)] shadow-[0_24px_70px_rgba(55,0,60,0.10)] sm:rounded-[28px]">
+      <div className="relative overflow-visible rounded-[22px] border border-[var(--accent-border)] bg-[linear-gradient(135deg,var(--surface)_0%,var(--surface-2)_58%,var(--accent-soft)_100%)] shadow-[0_24px_70px_rgba(55,0,60,0.10)] sm:rounded-[28px]">
         <div className="pointer-events-none absolute inset-0 overflow-hidden rounded-[inherit]">
-          <div className="absolute -right-20 -top-28 h-72 w-72 rounded-full bg-[#6C1DFF]/[0.08] blur-3xl" />
-          <div className="absolute left-[43%] top-12 h-24 w-24 rotate-12 border-r-[18px] border-t-[18px] border-[#6C1DFF]/[0.045]" />
-          <div className="absolute right-5 top-6 text-[58px] font-black leading-none text-[#37003C]/[0.07] sm:right-9 sm:text-[76px]">FPL</div>
+          <div className="absolute -right-20 -top-28 h-72 w-72 rounded-full bg-[var(--accent)]/[0.08] blur-3xl" />
+          <div className="absolute left-[43%] top-12 h-24 w-24 rotate-12 border-r-[18px] border-t-[18px] border-[var(--accent)]/[0.045]" />
+          <div className="absolute right-5 top-6 text-[58px] font-black leading-none text-[var(--ink)]/[0.07] sm:right-9 sm:text-[76px]">FPL</div>
         </div>
 
         {heroPlayer ? <HeroPlayerArtwork player={heroPlayer} animationKey={heroAnimationKey} /> : null}
 
         <div className="relative z-10 min-h-[212px] px-4 pb-[104px] pt-5 pr-[142px] sm:min-h-[250px] sm:px-7 sm:pb-[112px] sm:pt-7 sm:pr-[224px] lg:px-9 lg:pr-[270px]">
           <div className="flex flex-wrap items-center gap-2">
-            <span className="rounded-full bg-[#6C1DFF] px-3 py-1 text-[9px] font-black uppercase tracking-[0.13em] text-white shadow-[0_8px_18px_rgba(108,29,255,0.20)] sm:text-[10px]">
+            <span className="rounded-full bg-[var(--accent)] px-3 py-1 text-[9px] font-black uppercase tracking-[0.13em] text-white shadow-[0_8px_18px_rgba(108,29,255,0.20)] sm:text-[10px]">
               {isRecommended ? (provisional ? "Leading candidate" : "Recommended") : "Selected route"}
             </span>
-            <span className={`rounded-full border px-3 py-1 text-[9px] font-black uppercase tracking-[0.13em] sm:text-[10px] ${isRecommended && provisional ? "border-[#F4DC9E] bg-[#FFF9E8] text-[#9B6500]" : "border-[#BCEBD2] bg-[#EDFFF5] text-[#008D4F]"}`}>
+            <span className={`rounded-full border px-3 py-1 text-[9px] font-black uppercase tracking-[0.13em] sm:text-[10px] ${isRecommended && provisional ? "border-[var(--warning-border)] bg-[var(--warning-soft)] text-[var(--warning)]" : "border-[var(--success-border)] bg-[var(--success-soft)] text-[var(--success)]"}`}>
               {isRecommended ? (provisional ? "Still comparing" : "Best route") : route.route_type}
             </span>
             {activeStep?.gw ? (
-              <span className="rounded-full border border-[#D8C9FF] bg-white/90 px-3 py-1 text-[9px] font-black uppercase tracking-[0.11em] text-[#6C1DFF] sm:text-[10px]">
+              <span className="rounded-full border border-[var(--accent-border)] bg-[var(--surface)]/90 px-3 py-1 text-[9px] font-black uppercase tracking-[0.11em] text-[var(--accent)] sm:text-[10px]">
                 {activeStep.gw}
               </span>
             ) : null}
@@ -880,7 +880,7 @@ function PlannerHeader({
               <button
                 type="button"
                 onClick={onBack}
-                className="rounded-full border border-[#D8C9FF] bg-white/90 px-3 py-1 text-[9px] font-black uppercase tracking-[0.11em] text-[#6C1DFF] transition hover:bg-[#F6F1FF] focus:outline-none focus:ring-2 focus:ring-[#8D68FF] sm:text-[10px]"
+                className="rounded-full border border-[var(--accent-border)] bg-[var(--surface)]/90 px-3 py-1 text-[9px] font-black uppercase tracking-[0.11em] text-[var(--accent)] transition hover:bg-[var(--accent-soft)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-2)] sm:text-[10px]"
               >
                 Reset
               </button>
@@ -888,18 +888,18 @@ function PlannerHeader({
           </div>
 
           <div key={`${heroAnimationKey}-copy`} className="planner-hero-copy-swap">
-            <h1 className="mt-4 max-w-[14rem] text-[1.44rem] font-black leading-[1.07] tracking-[-0.045em] text-[#12002D] sm:max-w-xl sm:text-4xl lg:text-[2.55rem]">
+            <h1 className="mt-4 max-w-[14rem] text-[1.44rem] font-black leading-[1.07] tracking-[-0.045em] text-[var(--ink)] sm:max-w-xl sm:text-4xl lg:text-[2.55rem]">
               <span className="block">{headlinePrimary}</span>
-              {headlineSecondary ? <span className="mt-1 block text-[#6C1DFF]">{headlineSecondary}</span> : null}
+              {headlineSecondary ? <span className="mt-1 block text-[var(--accent)]">{headlineSecondary}</span> : null}
             </h1>
-            <p className="mt-3 max-w-[14rem] text-[11px] font-semibold leading-5 text-[#5F5878] sm:max-w-xl sm:text-sm sm:leading-6">
+            <p className="mt-3 max-w-[14rem] text-[11px] font-semibold leading-5 text-[var(--ink-soft)] sm:max-w-xl sm:text-sm sm:leading-6">
               {support}
               <span className="block">{verdict}</span>
             </p>
           </div>
         </div>
 
-        <div className="absolute inset-x-3 bottom-3 z-30 grid grid-cols-5 overflow-hidden rounded-xl border border-[#E0E5EF] bg-white/95 shadow-[0_12px_32px_rgba(15,23,60,0.08)] backdrop-blur sm:inset-x-6 sm:bottom-5 lg:inset-x-8">
+        <div className="absolute inset-x-3 bottom-3 z-30 grid grid-cols-5 overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--surface)]/95 shadow-[0_12px_32px_rgba(15,23,60,0.08)] backdrop-blur sm:inset-x-6 sm:bottom-5 lg:inset-x-8">
           <HeroMetric label="Projected total" value={`${formatPoints(route.expected_total_points)} pts`} featured />
           <HeroMetric label="Gain vs baseline" value={`${formatSignedPoints(route.expected_gain)} pts`} positive={route.expected_gain >= 0} featured />
           <HeroMetric label="Transfers" value={String(transferCount)} />
@@ -940,17 +940,17 @@ function HeroMetric({
 }) {
   const valueClass = risk
     ? risk === "Low"
-      ? "text-[#008D4F]"
+      ? "text-[var(--success)]"
       : risk === "Medium"
-        ? "text-[#B77900]"
-        : "text-[#D9004A]"
+        ? "text-[var(--warning)]"
+        : "text-[var(--danger)]"
     : positive
-      ? "text-[#008D4F]"
-      : "text-[#12002D]";
+      ? "text-[var(--success)]"
+      : "text-[var(--ink)]";
 
   return (
-    <div className="min-w-0 border-r border-[#E7EAF1] px-1.5 py-2.5 last:border-r-0 sm:px-3 sm:py-3">
-      <p className="truncate text-[6px] font-black uppercase tracking-[0.05em] text-[#858CA3] sm:text-[9px] sm:tracking-[0.11em]">{label}</p>
+    <div className="min-w-0 border-r border-[var(--border)] px-1.5 py-2.5 last:border-r-0 sm:px-3 sm:py-3">
+      <p className="truncate text-[6px] font-black uppercase tracking-[0.05em] text-[var(--muted)] sm:text-[9px] sm:tracking-[0.11em]">{label}</p>
       <p className={`mt-1 truncate font-black tracking-[-0.025em] ${featured ? "text-[11px] sm:text-lg" : "text-[10px] sm:text-base"} ${valueClass}`}>{value}</p>
     </div>
   );
@@ -959,30 +959,30 @@ function HeroMetric({
 function PlannerContextBar({ planner, route }: { planner: MultiGwPlanner; route: PlannerRoute }) {
   const average = route.steps.length ? route.expected_total_points / route.steps.length : 0;
   const mobileFacts = [
-    { label: "Profile", value: planner.risk_profile, tone: "text-[#6C1DFF]" },
-    { label: "Average / GW", value: `${formatPoints(average)} pts`, tone: "text-[#263052]" },
-    { label: "Free transfers", value: String(planner.free_transfers), tone: "text-[#6C1DFF]" },
-    { label: "Bank", value: `£${planner.bank.toFixed(1)}m`, tone: "text-[#263052]" },
-    { label: "Complete", value: `${completedSteps(route)}/${route.steps.length} GWs`, tone: "text-[#008D4F]" },
+    { label: "Profile", value: planner.risk_profile, tone: "text-[var(--accent)]" },
+    { label: "Average / GW", value: `${formatPoints(average)} pts`, tone: "text-[var(--ink-soft)]" },
+    { label: "Free transfers", value: String(planner.free_transfers), tone: "text-[var(--accent)]" },
+    { label: "Bank", value: `£${planner.bank.toFixed(1)}m`, tone: "text-[var(--ink-soft)]" },
+    { label: "Complete", value: `${completedSteps(route)}/${route.steps.length} GWs`, tone: "text-[var(--success)]" },
   ];
   return (
     <>
-      <section className="mt-3 rounded-2xl border border-[#E0E5EF] bg-white p-3 shadow-[0_10px_28px_rgba(15,23,60,0.04)] sm:hidden">
+      <section className="mt-3 rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-3 shadow-[0_10px_28px_rgba(15,23,60,0.04)] sm:hidden">
         <div className="flex snap-x gap-2 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {mobileFacts.map((fact) => (
-            <div key={fact.label} className="min-w-[112px] shrink-0 snap-start rounded-xl border border-[#E7EAF1] bg-[#FAFBFD] px-3 py-2.5">
-              <p className="text-[8px] font-black uppercase tracking-[0.11em] text-[#858CA3]">{fact.label}</p>
+            <div key={fact.label} className="min-w-[112px] shrink-0 snap-start rounded-xl border border-[var(--border)] bg-[var(--surface-3)] px-3 py-2.5">
+              <p className="text-[8px] font-black uppercase tracking-[0.11em] text-[var(--muted)]">{fact.label}</p>
               <p className={`mt-1 text-xs font-black ${fact.tone}`}>{fact.value}</p>
             </div>
           ))}
         </div>
       </section>
 
-      <section className="mt-4 hidden flex-col gap-3 rounded-2xl border border-[#E0E5EF] bg-white px-4 py-3 shadow-[0_12px_32px_rgba(15,23,60,0.045)] sm:flex lg:flex-row lg:items-center lg:justify-between">
+      <section className="mt-4 hidden flex-col gap-3 rounded-2xl border border-[var(--border)] bg-[var(--surface)] px-4 py-3 shadow-[0_12px_32px_rgba(15,23,60,0.045)] sm:flex lg:flex-row lg:items-center lg:justify-between">
         <div className="flex flex-wrap items-center gap-2">
-          <span className="text-[10px] font-black uppercase tracking-[0.14em] text-[#747C99]">Planning profile</span>
-          <span className="rounded-lg border border-[#D7C7FF] bg-[#F5F0FF] px-3 py-1.5 text-xs font-black text-[#6C1DFF]">{planner.risk_profile}</span>
-          {planner.horizon_clamped ? <span className="rounded-lg border border-[#F4DC9E] bg-[#FFF9E8] px-3 py-1.5 text-xs font-black text-[#9B6500]">Horizon adjusted</span> : null}
+          <span className="text-[10px] font-black uppercase tracking-[0.14em] text-[var(--muted)]">Planning profile</span>
+          <span className="rounded-lg border border-[var(--accent-border)] bg-[var(--accent-soft)] px-3 py-1.5 text-xs font-black text-[var(--accent)]">{planner.risk_profile}</span>
+          {planner.horizon_clamped ? <span className="rounded-lg border border-[var(--warning-border)] bg-[var(--warning-soft)] px-3 py-1.5 text-xs font-black text-[var(--warning)]">Horizon adjusted</span> : null}
         </div>
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 lg:flex lg:items-center">
           <StatusPill label="Average / GW" value={`${formatPoints(average)} pts`} />
@@ -999,10 +999,10 @@ function GameweekCard({ step, index, selected, onSelect, animateSwivel = false }
   const fixture = parseFixture(step);
   if (step.__pending) {
     return (
-      <button type="button" onClick={onSelect} className={`gw-placeholder-pulse relative min-h-[148px] rounded-2xl border border-dashed bg-white/75 p-5 text-center transition focus:outline-none focus:ring-2 focus:ring-[#8D68FF] ${animateSwivel ? "planner-gw-swivel" : ""} ${selected ? "border-[#6C1DFF]" : "border-[#DDE3EF] hover:border-[#BFA8FF]"}`}>
-        <p className="text-lg font-black text-[#6C1DFF]">{step.gw}</p>
-        <span className="mx-auto mt-4 block h-5 w-5 animate-spin rounded-full border-2 border-[#6C1DFF] border-t-transparent" aria-hidden />
-        <p className="mt-3 text-xs font-black text-[#747C99]">Calculating...</p>
+      <button type="button" onClick={onSelect} className={`gw-placeholder-pulse relative min-h-[148px] rounded-2xl border border-dashed bg-[var(--surface)]/75 p-5 text-center transition focus:outline-none focus:ring-2 focus:ring-[var(--accent-2)] ${animateSwivel ? "planner-gw-swivel" : ""} ${selected ? "border-[var(--accent)]" : "border-[var(--border)] hover:border-[var(--accent-border)]"}`}>
+        <p className="text-lg font-black text-[var(--accent)]">{step.gw}</p>
+        <span className="mx-auto mt-4 block h-5 w-5 animate-spin rounded-full border-2 border-[var(--accent)] border-t-transparent" aria-hidden />
+        <p className="mt-3 text-xs font-black text-[var(--muted)]">Calculating...</p>
       </button>
     );
   }
@@ -1011,27 +1011,27 @@ function GameweekCard({ step, index, selected, onSelect, animateSwivel = false }
       type="button"
       onClick={onSelect}
       aria-pressed={selected}
-      className={`gw-pop-in relative min-h-[148px] rounded-2xl border bg-white p-5 text-left transition focus:outline-none focus:ring-2 focus:ring-[#8D68FF] ${animateSwivel ? "planner-gw-swivel" : ""} ${selected ? "border-[#6C1DFF] shadow-[0_16px_36px_rgba(108,29,255,0.14)] ring-1 ring-[#6C1DFF]/10" : "border-[#E0E5EF] shadow-[0_12px_28px_rgba(15,23,60,0.05)] hover:-translate-y-0.5 hover:border-[#C9B7F7]"}`}
+      className={`gw-pop-in relative min-h-[148px] rounded-2xl border bg-[var(--surface)] p-5 text-left transition focus:outline-none focus:ring-2 focus:ring-[var(--accent-2)] ${animateSwivel ? "planner-gw-swivel" : ""} ${selected ? "border-[var(--accent)] shadow-[0_16px_36px_rgba(108,29,255,0.14)] ring-1 ring-[var(--accent)]/10" : "border-[var(--border)] shadow-[0_12px_28px_rgba(15,23,60,0.05)] hover:-translate-y-0.5 hover:border-[var(--accent-border)]"}`}
     >
       <div className="flex items-start justify-between gap-3">
         <div>
-          <p className="text-2xl font-black tracking-[-0.03em] text-[#6C1DFF]">{step.gw}</p>
-          <p className="mt-1 text-xs font-bold text-[#68718F]">{fixture.opponent}{fixture.venue ? ` (${fixture.venue})` : ""}</p>
+          <p className="text-2xl font-black tracking-[-0.03em] text-[var(--accent)]">{step.gw}</p>
+          <p className="mt-1 text-xs font-bold text-[var(--muted)]">{fixture.opponent}{fixture.venue ? ` (${fixture.venue})` : ""}</p>
         </div>
         <span className={`rounded-lg border px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.1em] ${actionSurfaceClass(step.action)}`}>{actionLabel(step.action)}</span>
       </div>
       <div className="mt-5 grid grid-cols-[0.8fr_1.2fr] items-end gap-4">
         <div>
-          <p className="text-2xl font-black text-[#0A1031]">{formatPoints(step.projected_points)}</p>
-          <p className="mt-1 text-[11px] font-bold text-[#747C99]">Projected points</p>
+          <p className="text-2xl font-black text-[var(--ink)]">{formatPoints(step.projected_points)}</p>
+          <p className="mt-1 text-[11px] font-bold text-[var(--muted)]">Projected points</p>
         </div>
-        <div className="border-l border-[#E4E8F1] pl-4">
-          <p className="mb-2 text-[10px] font-black uppercase tracking-[0.12em] text-[#747C99]">Captain</p>
+        <div className="border-l border-[var(--border-soft)] pl-4">
+          <p className="mb-2 text-[10px] font-black uppercase tracking-[0.12em] text-[var(--muted)]">Captain</p>
           <PlayerMini player={step.captain} compact />
         </div>
       </div>
-      <span className={`absolute -bottom-7 left-1/2 hidden h-6 w-6 -translate-x-1/2 place-items-center rounded-full border-2 2xl:grid ${selected ? "border-[#6C1DFF] bg-[#6C1DFF]" : "border-[#BDA7F7] bg-white"}`}>
-        {selected ? <span className="h-2 w-2 rounded-full bg-white" /> : null}
+      <span className={`absolute -bottom-7 left-1/2 hidden h-6 w-6 -translate-x-1/2 place-items-center rounded-full border-2 2xl:grid ${selected ? "border-[var(--accent)] bg-[var(--accent)]" : "border-[var(--accent-border)] bg-[var(--surface)]"}`}>
+        {selected ? <span className="h-2 w-2 rounded-full bg-[var(--surface)]" /> : null}
       </span>
       <span className="sr-only">Timeline position {index + 1}</span>
     </button>
@@ -1059,18 +1059,18 @@ function GameweekHorizon({ route, selectedStepIndex, onSelectStep, animateFirstS
 
   return (
     <>
-      <section className="mt-3 rounded-[20px] border border-[#E0E5EF] bg-white p-3 shadow-[0_14px_38px_rgba(15,23,60,0.055)] sm:hidden">
+      <section className="mt-3 rounded-[20px] border border-[var(--border)] bg-[var(--surface)] p-3 shadow-[0_14px_38px_rgba(15,23,60,0.055)] sm:hidden">
         {/* The prev/next controls deliberately do NOT live up here on mobile - they sit in
             MobileGameweekNav, directly above the selected-gameweek workspace, so the content
             that changes on a tap is on screen when it changes. */}
         <div className="flex items-center justify-between gap-3">
           <div>
-            <p className="text-[9px] font-black uppercase tracking-[0.14em] text-[#6C1DFF]">Gameweek timeline</p>
-            <p className="mt-1 text-sm font-black text-[#0A1031]">{route.steps[selectedStepIndex]?.gw ?? "GW"} of {route.steps.length}</p>
+            <p className="text-[9px] font-black uppercase tracking-[0.14em] text-[var(--accent)]">Gameweek timeline</p>
+            <p className="mt-1 text-sm font-black text-[var(--ink)]">{route.steps[selectedStepIndex]?.gw ?? "GW"} of {route.steps.length}</p>
           </div>
         </div>
-        <div className="mt-3 h-1 overflow-hidden rounded-full bg-[#ECE7F7]">
-          <div className="h-full rounded-full bg-[#6C1DFF] transition-all duration-300" style={{ width: `${selectedProgress}%` }} />
+        <div className="mt-3 h-1 overflow-hidden rounded-full bg-[var(--border-soft)]">
+          <div className="h-full rounded-full bg-[var(--accent)] transition-all duration-300" style={{ width: `${selectedProgress}%` }} />
         </div>
         <div ref={mobileScrollRef} className="mt-3 flex snap-x gap-2 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {route.steps.map((step, index) => {
@@ -1082,16 +1082,16 @@ function GameweekHorizon({ route, selectedStepIndex, onSelectStep, animateFirstS
                   type="button"
                   onClick={() => onSelectStep(index)}
                   aria-pressed={selected}
-                  className={`w-full rounded-xl border p-2.5 text-left transition ${animateFirstStep && index === 0 && selected ? "planner-gw-swivel" : ""} ${selected ? "border-[#6C1DFF] bg-[#F7F3FF] shadow-[0_8px_20px_rgba(108,29,255,0.12)]" : "border-[#E2E6EF] bg-[#FAFBFD]"}`}
+                  className={`w-full rounded-xl border p-2.5 text-left transition ${animateFirstStep && index === 0 && selected ? "planner-gw-swivel" : ""} ${selected ? "border-[var(--accent)] bg-[var(--accent-soft)] shadow-[0_8px_20px_rgba(108,29,255,0.12)]" : "border-[var(--border)] bg-[var(--surface-3)]"}`}
                 >
                   <div className="flex items-center justify-between gap-2">
-                    <span className="text-sm font-black text-[#6C1DFF]">{step.gw}</span>
-                    <span className="text-[8px] font-black uppercase tracking-[0.06em] text-[#747C99]">{step.__pending ? "Pending" : actionLabel(step.action)}</span>
+                    <span className="text-sm font-black text-[var(--accent)]">{step.gw}</span>
+                    <span className="text-[8px] font-black uppercase tracking-[0.06em] text-[var(--muted)]">{step.__pending ? "Pending" : actionLabel(step.action)}</span>
                   </div>
-                  <p className="mt-1 truncate text-[10px] font-bold text-[#68718F]">{fixture.opponent}{fixture.venue ? ` (${fixture.venue})` : ""}</p>
+                  <p className="mt-1 truncate text-[10px] font-bold text-[var(--muted)]">{fixture.opponent}{fixture.venue ? ` (${fixture.venue})` : ""}</p>
                   <div className="mt-2 flex items-end justify-between gap-2">
-                    <span className="text-base font-black text-[#0A1031]">{formatPoints(step.projected_points)}</span>
-                    <span className="max-w-[58px] truncate text-[9px] font-bold text-[#747C99]">{step.captain?.name ?? "TBC"}</span>
+                    <span className="text-base font-black text-[var(--ink)]">{formatPoints(step.projected_points)}</span>
+                    <span className="max-w-[58px] truncate text-[9px] font-bold text-[var(--muted)]">{step.captain?.name ?? "TBC"}</span>
                   </div>
                 </button>
               </div>
@@ -1100,25 +1100,25 @@ function GameweekHorizon({ route, selectedStepIndex, onSelectStep, animateFirstS
         </div>
       </section>
 
-      <section className="mt-5 hidden rounded-[24px] border border-[#E0E5EF] bg-white p-4 shadow-[0_20px_55px_rgba(15,23,60,0.065)] sm:block sm:p-5">
+      <section className="mt-5 hidden rounded-[24px] border border-[var(--border)] bg-[var(--surface)] p-4 shadow-[0_20px_55px_rgba(15,23,60,0.065)] sm:block sm:p-5">
         <div className="mb-3 flex flex-wrap items-center justify-between gap-4">
           <div>
-            <p className="text-xs font-black uppercase tracking-[0.17em] text-[#6C1DFF]">Gameweek timeline</p>
-            <h2 className="mt-1 text-xl font-black tracking-[-0.02em] text-[#0A1031]">Move through the selected route</h2>
+            <p className="text-xs font-black uppercase tracking-[0.17em] text-[var(--accent)]">Gameweek timeline</p>
+            <h2 className="mt-1 text-xl font-black tracking-[-0.02em] text-[var(--ink)]">Move through the selected route</h2>
           </div>
           <div className="flex items-center gap-2">
-            <span className="mr-1 rounded-full bg-[#F5F0FF] px-3 py-1 text-xs font-black text-[#6C1DFF]">{route.steps[selectedStepIndex]?.gw ?? "GW"} of {route.steps.length}</span>
-            <button type="button" onClick={() => onSelectStep(Math.max(0, selectedStepIndex - 1))} disabled={!canGoPrevious} className="grid h-10 w-10 place-items-center rounded-full border border-[#DDD3F5] bg-white text-lg font-black text-[#6C1DFF] transition hover:bg-[#F7F3FF] disabled:cursor-not-allowed disabled:opacity-35" aria-label="Previous gameweek">‹</button>
-            <button type="button" onClick={() => onSelectStep(Math.min(route.steps.length - 1, selectedStepIndex + 1))} disabled={!canGoNext} className="grid h-10 w-10 place-items-center rounded-full border border-[#DDD3F5] bg-white text-lg font-black text-[#6C1DFF] transition hover:bg-[#F7F3FF] disabled:cursor-not-allowed disabled:opacity-35" aria-label="Next gameweek">›</button>
+            <span className="mr-1 rounded-full bg-[var(--accent-soft)] px-3 py-1 text-xs font-black text-[var(--accent)]">{route.steps[selectedStepIndex]?.gw ?? "GW"} of {route.steps.length}</span>
+            <button type="button" onClick={() => onSelectStep(Math.max(0, selectedStepIndex - 1))} disabled={!canGoPrevious} className="grid h-10 w-10 place-items-center rounded-full border border-[var(--accent-border)] bg-[var(--surface)] text-lg font-black text-[var(--accent)] transition hover:bg-[var(--accent-soft)] disabled:cursor-not-allowed disabled:opacity-35" aria-label="Previous gameweek">‹</button>
+            <button type="button" onClick={() => onSelectStep(Math.min(route.steps.length - 1, selectedStepIndex + 1))} disabled={!canGoNext} className="grid h-10 w-10 place-items-center rounded-full border border-[var(--accent-border)] bg-[var(--surface)] text-lg font-black text-[var(--accent)] transition hover:bg-[var(--accent-soft)] disabled:cursor-not-allowed disabled:opacity-35" aria-label="Next gameweek">›</button>
           </div>
         </div>
         <div className="relative">
-          <div className="absolute left-8 right-8 top-7 h-1 rounded-full bg-[#E9E3F7]" />
-          <div className="absolute left-8 top-7 h-1 rounded-full bg-[#6C1DFF] transition-all duration-300" style={{ width: `calc((100% - 4rem) * ${selectedProgress / 100})` }} />
+          <div className="absolute left-8 right-8 top-7 h-1 rounded-full bg-[var(--border-soft)]" />
+          <div className="absolute left-8 top-7 h-1 rounded-full bg-[var(--accent)] transition-all duration-300" style={{ width: `calc((100% - 4rem) * ${selectedProgress / 100})` }} />
           <div ref={desktopScrollRef} className="relative -mx-2 flex snap-x snap-mandatory gap-5 overflow-x-auto px-2 pb-8 pt-12 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             {route.steps.map((step, index) => (
               <div key={`${route.id}-${step.gw}`} ref={(element: HTMLDivElement | null) => { desktopStepRefs.current[index] = element; }} className="relative w-[310px] shrink-0 snap-center lg:w-[300px] xl:w-[320px] 2xl:w-auto 2xl:min-w-0 2xl:flex-1 2xl:shrink">
-                <span className={`absolute -top-9 left-1/2 z-10 grid h-8 w-8 -translate-x-1/2 place-items-center rounded-full text-sm font-black shadow-[0_8px_18px_rgba(108,29,255,0.16)] ${selectedStepIndex === index ? "bg-[#6C1DFF] text-white" : "bg-[#F1E8FF] text-[#6C1DFF]"}`}>{index + 1}</span>
+                <span className={`absolute -top-9 left-1/2 z-10 grid h-8 w-8 -translate-x-1/2 place-items-center rounded-full text-sm font-black shadow-[0_8px_18px_rgba(108,29,255,0.16)] ${selectedStepIndex === index ? "bg-[var(--accent)] text-white" : "bg-[var(--accent-soft)] text-[var(--accent)]"}`}>{index + 1}</span>
                 <GameweekCard step={step} index={index} selected={selectedStepIndex === index} onSelect={() => onSelectStep(index)} animateSwivel={animateFirstStep && index === 0 && selectedStepIndex === 0} />
               </div>
             ))}
@@ -1138,19 +1138,19 @@ function MobileGameweekNav({ route, selectedStepIndex, onSelectStep }: { route: 
   const canGoPrevious = selectedStepIndex > 0;
   const canGoNext = selectedStepIndex < route.steps.length - 1;
   return (
-    <div className="mt-4 flex items-center justify-between gap-3 rounded-t-[20px] border border-b-0 border-[#E0E5EF] bg-white px-3 py-2.5 sm:hidden">
+    <div className="mt-4 flex items-center justify-between gap-3 rounded-t-[20px] border border-b-0 border-[var(--border)] bg-[var(--surface)] px-3 py-2.5 sm:hidden">
       <button
         type="button"
         onClick={() => onSelectStep(Math.max(0, selectedStepIndex - 1))}
         disabled={!canGoPrevious}
-        className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-[#DDD3F5] bg-white text-lg font-black text-[#6C1DFF] transition active:scale-95 disabled:opacity-30"
+        className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-[var(--accent-border)] bg-[var(--surface)] text-lg font-black text-[var(--accent)] transition active:scale-95 disabled:opacity-30"
         aria-label="Previous gameweek"
       >
         ‹
       </button>
       <div className="min-w-0 text-center">
-        <p className="text-[9px] font-black uppercase tracking-[0.14em] text-[#6C1DFF]">Gameweek decision</p>
-        <p className="truncate text-sm font-black text-[#0A1031]">
+        <p className="text-[9px] font-black uppercase tracking-[0.14em] text-[var(--accent)]">Gameweek decision</p>
+        <p className="truncate text-sm font-black text-[var(--ink)]">
           {step?.gw ?? "GW"} of {route.steps.length}
           {step && !step.__pending ? ` · ${actionLabel(step.action)}` : ""}
         </p>
@@ -1159,7 +1159,7 @@ function MobileGameweekNav({ route, selectedStepIndex, onSelectStep }: { route: 
         type="button"
         onClick={() => onSelectStep(Math.min(route.steps.length - 1, selectedStepIndex + 1))}
         disabled={!canGoNext}
-        className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-[#DDD3F5] bg-white text-lg font-black text-[#6C1DFF] transition active:scale-95 disabled:opacity-30"
+        className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-[var(--accent-border)] bg-[var(--surface)] text-lg font-black text-[var(--accent)] transition active:scale-95 disabled:opacity-30"
         aria-label="Next gameweek"
       >
         ›
@@ -1172,10 +1172,10 @@ function PlayerMini({ player, caption, compact = false }: { player?: Player | nu
   if (!player) {
     return (
       <div className="flex min-w-0 items-center gap-2.5">
-        <span className={`grid shrink-0 place-items-center rounded-xl bg-[#F0F3F8] text-xs font-black text-[#747C99] ${compact ? "h-9 w-9" : "h-11 w-11"}`}>—</span>
+        <span className={`grid shrink-0 place-items-center rounded-xl bg-[var(--surface-3)] text-xs font-black text-[var(--muted)] ${compact ? "h-9 w-9" : "h-11 w-11"}`}>—</span>
         <div className="min-w-0">
-          <p className="truncate text-sm font-black text-[#11183C]">No player</p>
-          <p className="truncate text-[11px] font-bold text-[#747C99]">{caption ?? "Not required"}</p>
+          <p className="truncate text-sm font-black text-[var(--ink)]">No player</p>
+          <p className="truncate text-[11px] font-bold text-[var(--muted)]">{caption ?? "Not required"}</p>
         </div>
       </div>
     );
@@ -1184,8 +1184,8 @@ function PlayerMini({ player, caption, compact = false }: { player?: Player | nu
     <div className="flex min-w-0 items-center gap-2.5">
       <PlayerVisual player={player} size="sm" />
       <div className="min-w-0">
-        <p className="truncate text-sm font-black leading-tight text-[#11183C]">{player.name}</p>
-        <p className="truncate text-[11px] font-bold text-[#747C99]">{caption ?? `${player.team} · ${player.position}`}</p>
+        <p className="truncate text-sm font-black leading-tight text-[var(--ink)]">{player.name}</p>
+        <p className="truncate text-[11px] font-bold text-[var(--muted)]">{caption ?? `${player.team} · ${player.position}`}</p>
       </div>
     </div>
   );
@@ -1338,27 +1338,27 @@ function PlayerDecisionStats({ player }: { player?: Player | null }) {
   const ownership = player.ownership != null && Number.isFinite(player.ownership) && player.ownership !== 0 ? `${player.ownership.toFixed(1)}%` : "—";
 
   const metrics = [
-    { label: "Fixture", value: fixture, valueClass: "text-[#343E60]" },
-    { label: "Price", value: price, valueClass: "text-[#343E60]" },
-    { label: "Next GW", value: nextProjection, valueClass: "text-[#008D4F]" },
-    { label: "3-GW", value: horizonProjection, valueClass: "text-[#6C1DFF]" },
-    { label: "Owned", value: ownership, valueClass: "text-[#343E60]" },
+    { label: "Fixture", value: fixture, valueClass: "text-[var(--ink-soft)]" },
+    { label: "Price", value: price, valueClass: "text-[var(--ink-soft)]" },
+    { label: "Next GW", value: nextProjection, valueClass: "text-[var(--success)]" },
+    { label: "3-GW", value: horizonProjection, valueClass: "text-[var(--accent)]" },
+    { label: "Owned", value: ownership, valueClass: "text-[var(--ink-soft)]" },
   ];
 
   return (
     <>
-      <dl className="mt-2.5 grid grid-cols-2 gap-px overflow-hidden rounded-lg border border-[#E5E9F1] bg-[#E5E9F1] sm:hidden">
+      <dl className="mt-2.5 grid grid-cols-2 gap-px overflow-hidden rounded-lg border border-[var(--border-soft)] bg-[var(--border-soft)] sm:hidden">
         {metrics.map((metric) => (
-          <div key={metric.label} className={`min-w-0 bg-white px-2 py-2 ${metric.label === "Fixture" ? "col-span-2" : ""}`}>
-            <dt className="text-[7px] font-black uppercase tracking-[0.08em] text-[#8A91A8]">{metric.label}</dt>
+          <div key={metric.label} className={`min-w-0 bg-[var(--surface)] px-2 py-2 ${metric.label === "Fixture" ? "col-span-2" : ""}`}>
+            <dt className="text-[7px] font-black uppercase tracking-[0.08em] text-[var(--muted)]">{metric.label}</dt>
             <dd className={`mt-0.5 truncate text-[9px] font-black ${metric.valueClass}`} title={metric.value}>{metric.value}</dd>
           </div>
         ))}
       </dl>
-      <dl className="mt-3 hidden overflow-hidden rounded-lg border border-[#E5E9F1] bg-white sm:block">
+      <dl className="mt-3 hidden overflow-hidden rounded-lg border border-[var(--border-soft)] bg-[var(--surface)] sm:block">
         {metrics.map((metric) => (
-          <div key={metric.label} className="flex min-w-0 items-center justify-between gap-3 border-b border-[#EDF0F5] px-3 py-2 last:border-b-0">
-            <dt className="shrink-0 text-[9px] font-black uppercase tracking-[0.1em] text-[#8188A0]">{metric.label}</dt>
+          <div key={metric.label} className="flex min-w-0 items-center justify-between gap-3 border-b border-[var(--border-soft)] px-3 py-2 last:border-b-0">
+            <dt className="shrink-0 text-[9px] font-black uppercase tracking-[0.1em] text-[var(--muted)]">{metric.label}</dt>
             <dd className={`min-w-0 truncate text-right text-[11px] font-black ${metric.valueClass}`} title={metric.value}>{metric.value}</dd>
           </div>
         ))}
@@ -1369,23 +1369,23 @@ function PlayerDecisionStats({ player }: { player?: Player | null }) {
 
 function TransferMove({ out, incoming, gain }: { out?: Player | null; incoming?: Player | null; gain?: number | null }) {
   return (
-    <div className="rounded-2xl border border-[#E0E5EF] bg-[#FAFBFD] p-2.5 sm:p-4">
+    <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface-3)] p-2.5 sm:p-4">
       <div className="mb-2.5 flex flex-wrap items-center justify-between gap-2 sm:mb-3">
-        <p className="text-[9px] font-black uppercase tracking-[0.12em] text-[#747C99] sm:text-[10px] sm:tracking-[0.14em]">Recommended transfer</p>
+        <p className="text-[9px] font-black uppercase tracking-[0.12em] text-[var(--muted)] sm:text-[10px] sm:tracking-[0.14em]">Recommended transfer</p>
         {gain != null && Number.isFinite(gain) ? (
-          <span className={`rounded-lg px-2 py-1 text-[10px] font-black sm:px-2.5 sm:text-xs ${gain >= 0 ? "bg-[#EDFFF5] text-[#008D4F]" : "bg-[#FFF0F5] text-[#D9004A]"}`}>{formatSignedPoints(gain)} pts net</span>
+          <span className={`rounded-lg px-2 py-1 text-[10px] font-black sm:px-2.5 sm:text-xs ${gain >= 0 ? "bg-[var(--success-soft)] text-[var(--success)]" : "bg-[var(--danger-soft)] text-[var(--danger)]"}`}>{formatSignedPoints(gain)} pts net</span>
         ) : null}
       </div>
       <div className="grid grid-cols-[minmax(0,1fr)_28px_minmax(0,1fr)] items-stretch gap-2 sm:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] sm:items-center sm:gap-3">
-        <div className="min-w-0 rounded-xl border border-[#FFD1E0] bg-white p-2.5 sm:p-3">
-          <span className="mb-2 inline-flex rounded-lg bg-[#FFF0F5] px-2 py-1 text-[8px] font-black uppercase tracking-[0.1em] text-[#D9004A] sm:mb-3 sm:px-2.5 sm:text-[10px] sm:tracking-[0.12em]">Out</span>
+        <div className="min-w-0 rounded-xl border border-[var(--danger-border)] bg-[var(--surface)] p-2.5 sm:p-3">
+          <span className="mb-2 inline-flex rounded-lg bg-[var(--danger-soft)] px-2 py-1 text-[8px] font-black uppercase tracking-[0.1em] text-[var(--danger)] sm:mb-3 sm:px-2.5 sm:text-[10px] sm:tracking-[0.12em]">Out</span>
           <div className="sm:hidden"><PlayerMini player={out} compact /></div>
           <div className="hidden sm:block"><PlayerMini player={out} /></div>
           <PlayerDecisionStats player={out} />
         </div>
-        <span className="grid h-7 w-7 place-self-center place-items-center rounded-full bg-[#F1E8FF] text-sm font-black text-[#6C1DFF] sm:h-9 sm:w-9 sm:text-lg">→</span>
-        <div className="min-w-0 rounded-xl border border-[#BFECD4] bg-white p-2.5 sm:p-3">
-          <span className="mb-2 inline-flex rounded-lg bg-[#EDFFF5] px-2 py-1 text-[8px] font-black uppercase tracking-[0.1em] text-[#008D4F] sm:mb-3 sm:px-2.5 sm:text-[10px] sm:tracking-[0.12em]">In</span>
+        <span className="grid h-7 w-7 place-self-center place-items-center rounded-full bg-[var(--accent-soft)] text-sm font-black text-[var(--accent)] sm:h-9 sm:w-9 sm:text-lg">→</span>
+        <div className="min-w-0 rounded-xl border border-[var(--success-border)] bg-[var(--surface)] p-2.5 sm:p-3">
+          <span className="mb-2 inline-flex rounded-lg bg-[var(--success-soft)] px-2 py-1 text-[8px] font-black uppercase tracking-[0.1em] text-[var(--success)] sm:mb-3 sm:px-2.5 sm:text-[10px] sm:tracking-[0.12em]">In</span>
           <div className="sm:hidden"><PlayerMini player={incoming} compact /></div>
           <div className="hidden sm:block"><PlayerMini player={incoming} /></div>
           <PlayerDecisionStats player={incoming} />
@@ -1403,42 +1403,42 @@ function CandidateOption({ candidate, playerIndex, compact = false }: { candidat
 
   const reasoningPanels = (
     <>
-      <div className="h-full rounded-xl border border-[#E6E9F0] bg-[#F7F8FB] p-3">
-        <p className="text-[10px] font-black uppercase tracking-[0.12em] text-[#6C1DFF]">Why it was considered</p>
-        <ul className="mt-2 space-y-1.5 text-xs font-semibold leading-5 text-[#56607D]">
-          {reasons.map((reason, index) => <li key={`reason-${index}`} className="flex gap-2"><span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-[#6C1DFF]" />{reason}</li>)}
+      <div className="h-full rounded-xl border border-[var(--border-soft)] bg-[var(--surface-3)] p-3">
+        <p className="text-[10px] font-black uppercase tracking-[0.12em] text-[var(--accent)]">Why it was considered</p>
+        <ul className="mt-2 space-y-1.5 text-xs font-semibold leading-5 text-[var(--ink-soft)]">
+          {reasons.map((reason, index) => <li key={`reason-${index}`} className="flex gap-2"><span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-[var(--accent)]" />{reason}</li>)}
         </ul>
       </div>
-      <div className="h-full rounded-xl border border-[#F1E0AE] bg-[#FFF9E8] p-3">
-        <p className="text-[10px] font-black uppercase tracking-[0.12em] text-[#9B6500]">Why it was not selected</p>
-        <ul className="mt-2 space-y-1.5 text-xs font-semibold leading-5 text-[#705315]">
-          {rejectedBecause.map((reason, index) => <li key={`rejected-${index}`} className="flex gap-2"><span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-[#C48A13]" />{reason}</li>)}
+      <div className="h-full rounded-xl border border-[var(--warning-border)] bg-[var(--warning-soft)] p-3">
+        <p className="text-[10px] font-black uppercase tracking-[0.12em] text-[var(--warning)]">Why it was not selected</p>
+        <ul className="mt-2 space-y-1.5 text-xs font-semibold leading-5 text-[var(--warning)]">
+          {rejectedBecause.map((reason, index) => <li key={`rejected-${index}`} className="flex gap-2"><span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-[var(--warning)]" />{reason}</li>)}
         </ul>
       </div>
     </>
   );
 
   return (
-    <article className="flex h-full min-w-0 flex-col rounded-xl border border-[#E2E6EF] bg-white p-3 shadow-[0_8px_22px_rgba(15,23,60,0.035)] sm:p-4">
+    <article className="flex h-full min-w-0 flex-col rounded-xl border border-[var(--border)] bg-[var(--surface)] p-3 shadow-[0_8px_22px_rgba(15,23,60,0.035)] sm:p-4">
       <div className="flex min-h-8 flex-wrap items-center justify-between gap-2">
-        <p className="text-[9px] font-black uppercase tracking-[0.11em] text-[#6C1DFF] sm:text-[10px] sm:tracking-[0.13em]">Alternative recommendation</p>
+        <p className="text-[9px] font-black uppercase tracking-[0.11em] text-[var(--accent)] sm:text-[10px] sm:tracking-[0.13em]">Alternative recommendation</p>
         <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
-          {candidate.recommendation_strength ? <span className="rounded-lg bg-[#F1E8FF] px-2 py-1 text-[8px] font-black uppercase tracking-[0.08em] text-[#6C1DFF] sm:px-2.5 sm:text-[10px] sm:tracking-[0.1em]">{candidate.recommendation_strength}</span> : null}
-          <span className={`rounded-lg px-2 py-1 text-[10px] font-black sm:px-2.5 sm:text-xs ${candidate.net_projected_gain >= 0 ? "bg-[#EDFFF5] text-[#008D4F]" : "bg-[#FFF0F5] text-[#D9004A]"}`}>{formatSignedPoints(candidate.net_projected_gain)} pts</span>
+          {candidate.recommendation_strength ? <span className="rounded-lg bg-[var(--accent-soft)] px-2 py-1 text-[8px] font-black uppercase tracking-[0.08em] text-[var(--accent)] sm:px-2.5 sm:text-[10px] sm:tracking-[0.1em]">{candidate.recommendation_strength}</span> : null}
+          <span className={`rounded-lg px-2 py-1 text-[10px] font-black sm:px-2.5 sm:text-xs ${candidate.net_projected_gain >= 0 ? "bg-[var(--success-soft)] text-[var(--success)]" : "bg-[var(--danger-soft)] text-[var(--danger)]"}`}>{formatSignedPoints(candidate.net_projected_gain)} pts</span>
         </div>
       </div>
 
       <div className="mt-3 grid min-w-0 flex-1 grid-cols-[minmax(0,1fr)_24px_minmax(0,1fr)] items-stretch gap-2 md:grid-cols-[minmax(0,1fr)_36px_minmax(0,1fr)] md:gap-3">
-        <div className="flex h-full min-w-0 flex-col rounded-xl border border-[#FFE0EA] bg-[#FFF8FA] p-2.5 sm:p-3">
-          <span className="mb-2 inline-flex w-fit rounded-lg bg-[#FFF0F5] px-2 py-1 text-[8px] font-black uppercase tracking-[0.1em] text-[#D9004A] sm:mb-3 sm:px-2.5 sm:text-[9px] sm:tracking-[0.12em]">Sell</span>
+        <div className="flex h-full min-w-0 flex-col rounded-xl border border-[var(--danger-border)] bg-[var(--danger-soft)] p-2.5 sm:p-3">
+          <span className="mb-2 inline-flex w-fit rounded-lg bg-[var(--danger-soft)] px-2 py-1 text-[8px] font-black uppercase tracking-[0.1em] text-[var(--danger)] sm:mb-3 sm:px-2.5 sm:text-[9px] sm:tracking-[0.12em]">Sell</span>
           <PlayerMini player={outgoing} caption={`${outgoing.team} · ${outgoing.position}`} compact />
           <PlayerDecisionStats player={outgoing} />
         </div>
 
-        <span className="grid h-7 w-7 place-self-center place-items-center rounded-full border border-[#DED3F8] bg-[#F7F3FF] text-sm font-black text-[#6C1DFF] md:h-9 md:w-9 md:text-base">→</span>
+        <span className="grid h-7 w-7 place-self-center place-items-center rounded-full border border-[var(--accent-border)] bg-[var(--accent-soft)] text-sm font-black text-[var(--accent)] md:h-9 md:w-9 md:text-base">→</span>
 
-        <div className="flex h-full min-w-0 flex-col rounded-xl border border-[#CDEEDC] bg-[#F5FFF9] p-2.5 sm:p-3">
-          <span className="mb-2 inline-flex w-fit rounded-lg bg-[#EDFFF5] px-2 py-1 text-[8px] font-black uppercase tracking-[0.1em] text-[#008D4F] sm:mb-3 sm:px-2.5 sm:text-[9px] sm:tracking-[0.12em]">Buy</span>
+        <div className="flex h-full min-w-0 flex-col rounded-xl border border-[var(--success-border)] bg-[var(--success-soft)] p-2.5 sm:p-3">
+          <span className="mb-2 inline-flex w-fit rounded-lg bg-[var(--success-soft)] px-2 py-1 text-[8px] font-black uppercase tracking-[0.1em] text-[var(--success)] sm:mb-3 sm:px-2.5 sm:text-[9px] sm:tracking-[0.12em]">Buy</span>
           <PlayerMini player={incoming} caption={`${incoming.team} · ${incoming.position}`} compact />
           <PlayerDecisionStats player={incoming} />
         </div>
@@ -1446,17 +1446,17 @@ function CandidateOption({ candidate, playerIndex, compact = false }: { candidat
 
       {!compact ? (
         <>
-          <details className="group mt-3 overflow-hidden rounded-xl border border-[#E4E8F0] bg-[#FAFBFD] sm:hidden">
+          <details className="group mt-3 overflow-hidden rounded-xl border border-[var(--border-soft)] bg-[var(--surface-3)] sm:hidden">
             <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-3 py-2.5">
-              <span className="text-[10px] font-black uppercase tracking-[0.1em] text-[#59617E]">Decision reasoning</span>
-              <span className="grid h-7 w-7 place-items-center rounded-full bg-[#F1E8FF] text-sm font-black text-[#6C1DFF] transition group-open:rotate-45">+</span>
+              <span className="text-[10px] font-black uppercase tracking-[0.1em] text-[var(--ink-soft)]">Decision reasoning</span>
+              <span className="grid h-7 w-7 place-items-center rounded-full bg-[var(--accent-soft)] text-sm font-black text-[var(--accent)] transition group-open:rotate-45">+</span>
             </summary>
-            <div className="grid gap-2 border-t border-[#E4E8F0] p-2.5">{reasoningPanels}</div>
+            <div className="grid gap-2 border-t border-[var(--border-soft)] p-2.5">{reasoningPanels}</div>
           </details>
           <div className="mt-3 hidden items-stretch gap-3 sm:grid sm:grid-cols-2">{reasoningPanels}</div>
         </>
       ) : (
-        <p className="mt-3 text-xs font-semibold leading-5 text-[#626B87]">{rejectedBecause[0] ?? reasons[0]}</p>
+        <p className="mt-3 text-xs font-semibold leading-5 text-[var(--muted)]">{rejectedBecause[0] ?? reasons[0]}</p>
       )}
     </article>
   );
@@ -1465,10 +1465,10 @@ function CandidateOption({ candidate, playerIndex, compact = false }: { candidat
 function SelectedGameweekWorkspace({ step, route, playerIndex }: { step: PlannerStep; route: PlannerRoute; playerIndex: PlannerPlayerIndex }) {
   if (step.__pending) {
     return (
-      <section className="mt-0 rounded-b-[20px] border border-dashed border-[#CFC4EC] bg-[#FBF9FF] p-6 text-center sm:mt-5 sm:rounded-[24px] sm:p-8">
-        <span className="mx-auto block h-7 w-7 animate-spin rounded-full border-2 border-[#6C1DFF] border-t-transparent" aria-hidden />
-        <h2 className="mt-4 text-xl font-black text-[#0A1031]">Calculating {step.gw}</h2>
-        <p className="mt-2 text-sm font-semibold text-[#68718F]">The live route will update this workspace as soon as the gameweek completes.</p>
+      <section className="mt-0 rounded-b-[20px] border border-dashed border-[var(--accent-border)] bg-[var(--accent-soft)] p-6 text-center sm:mt-5 sm:rounded-[24px] sm:p-8">
+        <span className="mx-auto block h-7 w-7 animate-spin rounded-full border-2 border-[var(--accent)] border-t-transparent" aria-hidden />
+        <h2 className="mt-4 text-xl font-black text-[var(--ink)]">Calculating {step.gw}</h2>
+        <p className="mt-2 text-sm font-semibold text-[var(--muted)]">The live route will update this workspace as soon as the gameweek completes.</p>
       </section>
     );
   }
@@ -1479,17 +1479,17 @@ function SelectedGameweekWorkspace({ step, route, playerIndex }: { step: Planner
 
   const decisionEvidence = (
     <>
-      <div className="rounded-2xl border border-[#E0E5EF] bg-[#FAFBFD] p-4">
-        <p className="text-[11px] font-black uppercase tracking-[0.14em] text-[#6C1DFF]">Why this week</p>
+      <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface-3)] p-4">
+        <p className="text-[11px] font-black uppercase tracking-[0.14em] text-[var(--accent)]">Why this week</p>
         {reasoning.length ? (
-          <ul className="mt-3 space-y-2.5 text-sm font-semibold leading-6 text-[#424B6B]">
-            {reasoning.map((item, index) => <li key={`${item}-${index}`} className="flex gap-2.5"><span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#6C1DFF]" />{item}</li>)}
+          <ul className="mt-3 space-y-2.5 text-sm font-semibold leading-6 text-[var(--ink-soft)]">
+            {reasoning.map((item, index) => <li key={`${item}-${index}`} className="flex gap-2.5"><span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--accent)]" />{item}</li>)}
           </ul>
-        ) : <p className="mt-3 text-sm font-semibold text-[#747C99]">No additional route explanation was supplied for this gameweek.</p>}
+        ) : <p className="mt-3 text-sm font-semibold text-[var(--muted)]">No additional route explanation was supplied for this gameweek.</p>}
       </div>
-      <div className={`rounded-2xl border p-4 ${step.warning ? "border-[#F3D99C] bg-[#FFF9E8]" : "border-[#C9EAD9] bg-[#F1FFF7]"}`}>
-        <p className={`text-[11px] font-black uppercase tracking-[0.14em] ${step.warning ? "text-[#9B6500]" : "text-[#008D4F]"}`}>Watch before deadline</p>
-        <p className={`mt-3 text-sm font-semibold leading-6 ${step.warning ? "text-[#705315]" : "text-[#31674E]"}`}>
+      <div className={`rounded-2xl border p-4 ${step.warning ? "border-[var(--warning-border)] bg-[var(--warning-soft)]" : "border-[var(--success-border)] bg-[var(--success-soft)]"}`}>
+        <p className={`text-[11px] font-black uppercase tracking-[0.14em] ${step.warning ? "text-[var(--warning)]" : "text-[var(--success)]"}`}>Watch before deadline</p>
+        <p className={`mt-3 text-sm font-semibold leading-6 ${step.warning ? "text-[var(--warning)]" : "text-[var(--success)]"}`}>
           {step.warning ?? "No major warning is attached to this gameweek."}
         </p>
       </div>
@@ -1501,21 +1501,21 @@ function SelectedGameweekWorkspace({ step, route, playerIndex }: { step: Planner
       {candidates.map((candidate) => <CandidateOption key={`${candidate.out_player.id}-${candidate.in_player.id}`} candidate={candidate} playerIndex={playerIndex} />)}
     </div>
   ) : (
-    <div className="rounded-xl border border-dashed border-[#DCE2EC] bg-white p-4 text-sm font-semibold text-[#747C99]">No additional transfer candidate was returned for this gameweek.</div>
+    <div className="rounded-xl border border-dashed border-[var(--border)] bg-[var(--surface)] p-4 text-sm font-semibold text-[var(--muted)]">No additional transfer candidate was returned for this gameweek.</div>
   );
 
   return (
-    <section className="planner-step-in mt-0 overflow-hidden rounded-b-[20px] border border-[#E0E5EF] bg-white shadow-[0_16px_44px_rgba(15,23,60,0.055)] sm:mt-5 sm:rounded-[24px] sm:shadow-[0_20px_55px_rgba(15,23,60,0.065)]">
-      <div className="flex flex-col gap-3 border-b border-[#E6EAF2] bg-[#FAFBFD] p-4 sm:gap-4 sm:px-6 sm:py-5 lg:flex-row lg:items-center lg:justify-between">
+    <section className="planner-step-in mt-0 overflow-hidden rounded-b-[20px] border border-[var(--border)] bg-[var(--surface)] shadow-[0_16px_44px_rgba(15,23,60,0.055)] sm:mt-5 sm:rounded-[24px] sm:shadow-[0_20px_55px_rgba(15,23,60,0.065)]">
+      <div className="flex flex-col gap-3 border-b border-[var(--border-soft)] bg-[var(--surface-3)] p-4 sm:gap-4 sm:px-6 sm:py-5 lg:flex-row lg:items-center lg:justify-between">
         <div>
           <div className="flex flex-wrap items-center gap-2">
-            <span className="text-[10px] font-black uppercase tracking-[0.13em] text-[#6C1DFF] sm:text-xs sm:tracking-[0.16em]">Selected gameweek</span>
+            <span className="text-[10px] font-black uppercase tracking-[0.13em] text-[var(--accent)] sm:text-xs sm:tracking-[0.16em]">Selected gameweek</span>
             <span className={`rounded-lg border px-2 py-1 text-[9px] font-black uppercase tracking-[0.08em] sm:px-2.5 sm:text-[10px] sm:tracking-[0.1em] ${actionSurfaceClass(step.action)}`}>{actionLabel(step.action)}</span>
           </div>
           {/* Backend headlines sometimes already start with "GWn:" - strip it so the prefix
               this heading adds doesn't render as "GW2: GW2: ...". */}
-          <h2 className="mt-2 text-xl font-black tracking-[-0.03em] text-[#0A1031] sm:text-3xl">{step.gw}: {(step.headline || routeActionSummary(step)).replace(/^GW\d+:\s*/i, "")}</h2>
-          <p className="mt-1.5 line-clamp-2 text-xs font-semibold leading-5 text-[#68718F] sm:mt-2 sm:text-sm">{fixture.opponent}{fixture.venue ? ` (${fixture.venue})` : ""} · Review the move, captain and decision evidence for this week.</p>
+          <h2 className="mt-2 text-xl font-black tracking-[-0.03em] text-[var(--ink)] sm:text-3xl">{step.gw}: {(step.headline || routeActionSummary(step)).replace(/^GW\d+:\s*/i, "")}</h2>
+          <p className="mt-1.5 line-clamp-2 text-xs font-semibold leading-5 text-[var(--muted)] sm:mt-2 sm:text-sm">{fixture.opponent}{fixture.venue ? ` (${fixture.venue})` : ""} · Review the move, captain and decision evidence for this week.</p>
         </div>
         <div className="grid grid-cols-3 gap-1.5 sm:min-w-[360px] sm:gap-2">
           <StatusPill label="Squad points" value={`${formatPoints(step.projected_points)} pts`} tone="green" />
@@ -1530,8 +1530,8 @@ function SelectedGameweekWorkspace({ step, route, playerIndex }: { step: Planner
       <div className="grid gap-4 p-4 sm:gap-5 sm:p-6 xl:grid-cols-[minmax(0,1.3fr)_minmax(300px,0.7fr)]">
         <div>
           <div className="flex items-center justify-between gap-3">
-            <h3 className="text-xs font-black uppercase tracking-[0.13em] text-[#0A1031] sm:text-sm sm:tracking-[0.15em]">Planned action</h3>
-            <span className="text-[10px] font-bold text-[#747C99] sm:text-xs">{pairs.length ? `${pairs.length} transfer${pairs.length === 1 ? "" : "s"}` : "No transfer"}</span>
+            <h3 className="text-xs font-black uppercase tracking-[0.13em] text-[var(--ink)] sm:text-sm sm:tracking-[0.15em]">Planned action</h3>
+            <span className="text-[10px] font-bold text-[var(--muted)] sm:text-xs">{pairs.length ? `${pairs.length} transfer${pairs.length === 1 ? "" : "s"}` : "No transfer"}</span>
           </div>
           <div className="mt-3 space-y-3">
             {pairs.length ? pairs.map((pair, index) => {
@@ -1546,31 +1546,31 @@ function SelectedGameweekWorkspace({ step, route, playerIndex }: { step: Planner
                 />
               );
             }) : (
-              <div className="rounded-2xl border border-[#CFE7F4] bg-[#F0FAFF] p-4 sm:p-5">
-                <p className="text-base font-black text-[#075D78] sm:text-lg">{actionLabel(step.action)}</p>
-                <p className="mt-2 text-xs font-semibold leading-5 text-[#426D7C] sm:text-sm sm:leading-6">The planner does not see enough expected value to force a transfer in this gameweek.</p>
+              <div className="rounded-2xl border border-[var(--info-border)] bg-[var(--info-soft)] p-4 sm:p-5">
+                <p className="text-base font-black text-[var(--info)] sm:text-lg">{actionLabel(step.action)}</p>
+                <p className="mt-2 text-xs font-semibold leading-5 text-[var(--muted)] sm:text-sm sm:leading-6">The planner does not see enough expected value to force a transfer in this gameweek.</p>
               </div>
             )}
           </div>
 
-          <details className="group mt-4 overflow-hidden rounded-2xl border border-[#E0E5EF] bg-[#FAFBFD] md:hidden">
+          <details className="group mt-4 overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--surface-3)] md:hidden">
             <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3">
               <div>
-                <p className="text-[9px] font-black uppercase tracking-[0.12em] text-[#6C1DFF]">Decision evidence</p>
-                <p className="mt-0.5 text-xs font-bold text-[#59617E]">Why this move and deadline risks</p>
+                <p className="text-[9px] font-black uppercase tracking-[0.12em] text-[var(--accent)]">Decision evidence</p>
+                <p className="mt-0.5 text-xs font-bold text-[var(--ink-soft)]">Why this move and deadline risks</p>
               </div>
-              <span className="grid h-8 w-8 place-items-center rounded-full bg-[#F1E8FF] text-base font-black text-[#6C1DFF] transition group-open:rotate-45">+</span>
+              <span className="grid h-8 w-8 place-items-center rounded-full bg-[var(--accent-soft)] text-base font-black text-[var(--accent)] transition group-open:rotate-45">+</span>
             </summary>
-            <div className="grid gap-3 border-t border-[#E0E5EF] p-3">{decisionEvidence}</div>
+            <div className="grid gap-3 border-t border-[var(--border)] p-3">{decisionEvidence}</div>
           </details>
           <div className="mt-5 hidden gap-4 md:grid md:grid-cols-2">{decisionEvidence}</div>
         </div>
 
         <aside className="space-y-3 sm:space-y-4">
-          <div className="rounded-2xl border border-[#D9CDF8] bg-[#F8F4FF] p-3 sm:p-4">
+          <div className="rounded-2xl border border-[var(--accent-border)] bg-[var(--accent-soft)] p-3 sm:p-4">
             <div className="flex items-center justify-between gap-3">
-              <p className="text-[9px] font-black uppercase tracking-[0.12em] text-[#6C1DFF] sm:text-[11px] sm:tracking-[0.14em]">Captain</p>
-              <span className="text-xs font-black text-[#008D4F]">{formatPoints(step.captain?.projected)} pts</span>
+              <p className="text-[9px] font-black uppercase tracking-[0.12em] text-[var(--accent)] sm:text-[11px] sm:tracking-[0.14em]">Captain</p>
+              <span className="text-xs font-black text-[var(--success)]">{formatPoints(step.captain?.projected)} pts</span>
             </div>
             <div className="mt-3"><PlayerMini player={step.captain} /></div>
             <div className="mt-3 grid grid-cols-2 gap-2 sm:mt-4">
@@ -1581,24 +1581,24 @@ function SelectedGameweekWorkspace({ step, route, playerIndex }: { step: Planner
 
           {step.data_quality_evidence ? (
             <>
-              <details className="group rounded-2xl border border-[#E0E5EF] bg-white sm:hidden">
+              <details className="group rounded-2xl border border-[var(--border)] bg-[var(--surface)] sm:hidden">
                 <summary className="flex cursor-pointer list-none items-center justify-between gap-3 p-3">
                   <div>
-                    <p className="text-[9px] font-black uppercase tracking-[0.12em] text-[#747C99]">Data coverage</p>
-                    <p className="mt-1 text-sm font-black text-[#0A1031]">{step.data_quality_evidence.players_with_fixture}/{step.data_quality_evidence.players_total} players</p>
+                    <p className="text-[9px] font-black uppercase tracking-[0.12em] text-[var(--muted)]">Data coverage</p>
+                    <p className="mt-1 text-sm font-black text-[var(--ink)]">{step.data_quality_evidence.players_with_fixture}/{step.data_quality_evidence.players_total} players</p>
                   </div>
-                  <span className="rounded-lg bg-[#F4F6FA] px-2.5 py-1 text-[10px] font-black text-[#59617E]">{step.data_quality_evidence.players_missing_or_fallback} fallback</span>
+                  <span className="rounded-lg bg-[var(--surface-3)] px-2.5 py-1 text-[10px] font-black text-[var(--ink-soft)]">{step.data_quality_evidence.players_missing_or_fallback} fallback</span>
                 </summary>
-                <div className="border-t border-[#E6EAF2] px-3 py-2 text-xs font-semibold text-[#747C99]">Fixture and projection coverage used by the route model for this gameweek.</div>
+                <div className="border-t border-[var(--border-soft)] px-3 py-2 text-xs font-semibold text-[var(--muted)]">Fixture and projection coverage used by the route model for this gameweek.</div>
               </details>
-              <div className="hidden rounded-2xl border border-[#E0E5EF] bg-white p-4 sm:block">
-                <p className="text-[11px] font-black uppercase tracking-[0.14em] text-[#747C99]">Data coverage</p>
+              <div className="hidden rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-4 sm:block">
+                <p className="text-[11px] font-black uppercase tracking-[0.14em] text-[var(--muted)]">Data coverage</p>
                 <div className="mt-3 flex items-end justify-between gap-3">
                   <div>
-                    <p className="text-2xl font-black text-[#0A1031]">{step.data_quality_evidence.players_with_fixture}/{step.data_quality_evidence.players_total}</p>
-                    <p className="text-xs font-bold text-[#747C99]">players with fixture data</p>
+                    <p className="text-2xl font-black text-[var(--ink)]">{step.data_quality_evidence.players_with_fixture}/{step.data_quality_evidence.players_total}</p>
+                    <p className="text-xs font-bold text-[var(--muted)]">players with fixture data</p>
                   </div>
-                  <span className="rounded-lg bg-[#F4F6FA] px-2.5 py-1 text-xs font-black text-[#59617E]">{step.data_quality_evidence.players_missing_or_fallback} fallback</span>
+                  <span className="rounded-lg bg-[var(--surface-3)] px-2.5 py-1 text-xs font-black text-[var(--ink-soft)]">{step.data_quality_evidence.players_missing_or_fallback} fallback</span>
                 </div>
               </div>
             </>
@@ -1606,25 +1606,25 @@ function SelectedGameweekWorkspace({ step, route, playerIndex }: { step: Planner
         </aside>
       </div>
 
-      <details className="group border-t border-[#E6EAF2] bg-[#FCFCFE] sm:hidden">
+      <details className="group border-t border-[var(--border-soft)] bg-[var(--surface-3)] sm:hidden">
         <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-4">
           <div>
-            <p className="text-[9px] font-black uppercase tracking-[0.12em] text-[#6C1DFF]">Extra recommendations</p>
-            <p className="mt-1 text-sm font-black text-[#0A1031]">{candidates.length} other move{candidates.length === 1 ? "" : "s"} for {step.gw}</p>
+            <p className="text-[9px] font-black uppercase tracking-[0.12em] text-[var(--accent)]">Extra recommendations</p>
+            <p className="mt-1 text-sm font-black text-[var(--ink)]">{candidates.length} other move{candidates.length === 1 ? "" : "s"} for {step.gw}</p>
           </div>
-          <span className="grid h-9 w-9 place-items-center rounded-full border border-[#D9CDF8] bg-[#F8F4FF] text-lg font-black text-[#6C1DFF] transition group-open:rotate-45">+</span>
+          <span className="grid h-9 w-9 place-items-center rounded-full border border-[var(--accent-border)] bg-[var(--accent-soft)] text-lg font-black text-[var(--accent)] transition group-open:rotate-45">+</span>
         </summary>
-        <div className="border-t border-[#E6EAF2] p-3">{candidateGrid}</div>
+        <div className="border-t border-[var(--border-soft)] p-3">{candidateGrid}</div>
       </details>
 
-      <div className="hidden border-t border-[#E6EAF2] bg-[#FCFCFE] px-5 py-5 sm:block sm:px-6">
+      <div className="hidden border-t border-[var(--border-soft)] bg-[var(--surface-3)] px-5 py-5 sm:block sm:px-6">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <p className="text-xs font-black uppercase tracking-[0.15em] text-[#6C1DFF]">Extra transfer recommendations for {step.gw}</p>
-            <h3 className="mt-1 text-lg font-black text-[#0A1031]">Other moves the planner evaluated</h3>
-            <p className="mt-1 text-xs font-semibold text-[#747C99]">These remain visible because a hold week can still contain useful transfer options that did not quite clear the threshold.</p>
+            <p className="text-xs font-black uppercase tracking-[0.15em] text-[var(--accent)]">Extra transfer recommendations for {step.gw}</p>
+            <h3 className="mt-1 text-lg font-black text-[var(--ink)]">Other moves the planner evaluated</h3>
+            <p className="mt-1 text-xs font-semibold text-[var(--muted)]">These remain visible because a hold week can still contain useful transfer options that did not quite clear the threshold.</p>
           </div>
-          <span className="shrink-0 rounded-full bg-[#F1E8FF] px-3 py-1.5 text-xs font-black text-[#6C1DFF]">{candidates.length} recommendation{candidates.length === 1 ? "" : "s"}</span>
+          <span className="shrink-0 rounded-full bg-[var(--accent-soft)] px-3 py-1.5 text-xs font-black text-[var(--accent)]">{candidates.length} recommendation{candidates.length === 1 ? "" : "s"}</span>
         </div>
         <div className="mt-4">{candidateGrid}</div>
       </div>
@@ -1636,14 +1636,14 @@ function RouteComparison({ planner, activeRoute, onSelect }: { planner: MultiGwP
   const routes = [planner.recommended_route, ...planner.alternative_routes];
   const readyRoutes = routes.filter((route) => !route.__pending);
   return (
-    <section className="mt-4 rounded-[20px] border border-[#E0E5EF] bg-white p-4 shadow-[0_14px_38px_rgba(15,23,60,0.05)] sm:mt-5 sm:rounded-[24px] sm:p-6 sm:shadow-[0_20px_55px_rgba(15,23,60,0.065)]">
+    <section className="mt-4 rounded-[20px] border border-[var(--border)] bg-[var(--surface)] p-4 shadow-[0_14px_38px_rgba(15,23,60,0.05)] sm:mt-5 sm:rounded-[24px] sm:p-6 sm:shadow-[0_20px_55px_rgba(15,23,60,0.065)]">
       <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between sm:gap-3">
         <div>
-          <p className="text-[9px] font-black uppercase tracking-[0.13em] text-[#6C1DFF] sm:text-xs sm:tracking-[0.17em]">Route comparison</p>
-          <h2 className="mt-1 text-lg font-black tracking-[-0.03em] text-[#0A1031] sm:mt-2 sm:text-2xl">Compare the viable paths</h2>
-          <p className="mt-1 text-xs font-semibold text-[#68718F] sm:mt-2 sm:text-sm">Select a route to update the recommendation and timeline above.</p>
+          <p className="text-[9px] font-black uppercase tracking-[0.13em] text-[var(--accent)] sm:text-xs sm:tracking-[0.17em]">Route comparison</p>
+          <h2 className="mt-1 text-lg font-black tracking-[-0.03em] text-[var(--ink)] sm:mt-2 sm:text-2xl">Compare the viable paths</h2>
+          <p className="mt-1 text-xs font-semibold text-[var(--muted)] sm:mt-2 sm:text-sm">Select a route to update the recommendation and timeline above.</p>
         </div>
-        <span className="w-fit rounded-full bg-[#F5F0FF] px-3 py-1.5 text-[10px] font-black text-[#6C1DFF] sm:text-xs">{readyRoutes.length} routes ready</span>
+        <span className="w-fit rounded-full bg-[var(--accent-soft)] px-3 py-1.5 text-[10px] font-black text-[var(--accent)] sm:text-xs">{readyRoutes.length} routes ready</span>
       </div>
 
       <div className="-mx-1 mt-3 flex snap-x gap-3 overflow-x-auto px-1 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:hidden">
@@ -1656,17 +1656,17 @@ function RouteComparison({ planner, activeRoute, onSelect }: { planner: MultiGwP
               type="button"
               onClick={() => onSelect(index === 0 ? null : route.id)}
               aria-pressed={active}
-              className={`w-[245px] shrink-0 snap-start rounded-2xl border p-3.5 text-left transition ${active ? "border-[#6C1DFF] bg-[#F8F4FF] shadow-[0_10px_26px_rgba(108,29,255,0.12)]" : "border-[#E2E6EF] bg-[#FAFBFD]"}`}
+              className={`w-[245px] shrink-0 snap-start rounded-2xl border p-3.5 text-left transition ${active ? "border-[var(--accent)] bg-[var(--accent-soft)] shadow-[0_10px_26px_rgba(108,29,255,0.12)]" : "border-[var(--border)] bg-[var(--surface-3)]"}`}
             >
               <div className="flex items-start justify-between gap-2">
                 <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-1.5">
-                    <p className="truncate text-sm font-black text-[#0A1031]">{route.title}</p>
-                    {index === 0 ? <span className="rounded-full bg-[#6C1DFF] px-2 py-0.5 text-[8px] font-black uppercase tracking-[0.08em] text-white">Best</span> : null}
+                    <p className="truncate text-sm font-black text-[var(--ink)]">{route.title}</p>
+                    {index === 0 ? <span className="rounded-full bg-[var(--accent)] px-2 py-0.5 text-[8px] font-black uppercase tracking-[0.08em] text-white">Best</span> : null}
                   </div>
-                  <p className="mt-1 line-clamp-2 text-[10px] font-semibold leading-4 text-[#747C99]">{firstRouteReason(route)}</p>
+                  <p className="mt-1 line-clamp-2 text-[10px] font-semibold leading-4 text-[var(--muted)]">{firstRouteReason(route)}</p>
                 </div>
-                <span className={`grid h-7 w-7 shrink-0 place-items-center rounded-full text-xs font-black ${active ? "bg-[#6C1DFF] text-white" : "border border-[#D8C9FF] bg-white text-[#6C1DFF]"}`}>{active ? "✓" : "›"}</span>
+                <span className={`grid h-7 w-7 shrink-0 place-items-center rounded-full text-xs font-black ${active ? "bg-[var(--accent)] text-white" : "border border-[var(--accent-border)] bg-[var(--surface)] text-[var(--accent)]"}`}>{active ? "✓" : "›"}</span>
               </div>
               <div className="mt-3 grid grid-cols-2 gap-2">
                 <StatusPill label="Total" value={`${formatPoints(route.expected_total_points)} pts`} />
@@ -1679,11 +1679,11 @@ function RouteComparison({ planner, activeRoute, onSelect }: { planner: MultiGwP
         })}
       </div>
 
-      <div className="mt-5 hidden overflow-hidden rounded-2xl border border-[#E0E5EF] sm:block">
-        <div className="hidden grid-cols-[minmax(220px,1.4fr)_repeat(5,minmax(86px,0.55fr))_54px] gap-3 border-b border-[#E0E5EF] bg-[#F7F9FC] px-4 py-3 text-[10px] font-black uppercase tracking-[0.12em] text-[#747C99] xl:grid">
+      <div className="mt-5 hidden overflow-hidden rounded-2xl border border-[var(--border)] sm:block">
+        <div className="hidden grid-cols-[minmax(220px,1.4fr)_repeat(5,minmax(86px,0.55fr))_54px] gap-3 border-b border-[var(--border)] bg-[var(--surface-3)] px-4 py-3 text-[10px] font-black uppercase tracking-[0.12em] text-[var(--muted)] xl:grid">
           <span>Route</span><span>Total</span><span>Gain</span><span>Transfers</span><span>Confidence</span><span>Risk</span><span />
         </div>
-        <div className="divide-y divide-[#E6EAF2]">
+        <div className="divide-y divide-[var(--border-soft)]">
           {routes.map((route, index) => {
             if (route.__pending) return <AlternativeRoutePlaceholder key={route.id} compact />;
             const active = route.id === activeRoute.id;
@@ -1693,21 +1693,21 @@ function RouteComparison({ planner, activeRoute, onSelect }: { planner: MultiGwP
                 type="button"
                 onClick={() => onSelect(index === 0 ? null : route.id)}
                 aria-pressed={active}
-                className={`grid w-full gap-3 px-4 py-4 text-left transition focus:outline-none focus:ring-2 focus:ring-inset focus:ring-[#8D68FF] xl:grid-cols-[minmax(220px,1.4fr)_repeat(5,minmax(86px,0.55fr))_54px] xl:items-center ${active ? "bg-[#F8F4FF]" : "bg-white hover:bg-[#FAFBFD]"}`}
+                className={`grid w-full gap-3 px-4 py-4 text-left transition focus:outline-none focus:ring-2 focus:ring-inset focus:ring-[var(--accent-2)] xl:grid-cols-[minmax(220px,1.4fr)_repeat(5,minmax(86px,0.55fr))_54px] xl:items-center ${active ? "bg-[var(--accent-soft)]" : "bg-[var(--surface)] hover:bg-[var(--surface-3)]"}`}
               >
                 <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
-                    <p className="truncate text-sm font-black text-[#0A1031]">{route.title}</p>
-                    {index === 0 ? <span className="rounded-full bg-[#6C1DFF] px-2 py-0.5 text-[9px] font-black uppercase tracking-[0.1em] text-white">Recommended</span> : null}
+                    <p className="truncate text-sm font-black text-[var(--ink)]">{route.title}</p>
+                    {index === 0 ? <span className="rounded-full bg-[var(--accent)] px-2 py-0.5 text-[9px] font-black uppercase tracking-[0.1em] text-white">Recommended</span> : null}
                   </div>
-                  <p className="mt-1 line-clamp-1 text-xs font-semibold text-[#747C99]">{firstRouteReason(route)}</p>
+                  <p className="mt-1 line-clamp-1 text-xs font-semibold text-[var(--muted)]">{firstRouteReason(route)}</p>
                 </div>
                 <RouteCell label="Total" value={`${formatPoints(route.expected_total_points)} pts`} />
                 <RouteCell label="Gain" value={`${formatSignedPoints(route.expected_gain)} pts`} tone={route.expected_gain >= 0 ? "green" : "red"} />
                 <RouteCell label="Transfers" value={String(totalRouteTransfers(route))} />
                 <RouteCell label="Confidence" value={route.confidence} />
                 <RouteCell label="Risk" value={route.risk} risk={route.risk} />
-                <span className={`hidden h-8 w-8 place-items-center justify-self-end rounded-full text-base font-black xl:grid ${active ? "bg-[#6C1DFF] text-white" : "border border-[#D8C9FF] bg-white text-[#6C1DFF]"}`}>{active ? "✓" : "›"}</span>
+                <span className={`hidden h-8 w-8 place-items-center justify-self-end rounded-full text-base font-black xl:grid ${active ? "bg-[var(--accent)] text-white" : "border border-[var(--accent-border)] bg-[var(--surface)] text-[var(--accent)]"}`}>{active ? "✓" : "›"}</span>
               </button>
             );
           })}
@@ -1718,10 +1718,10 @@ function RouteComparison({ planner, activeRoute, onSelect }: { planner: MultiGwP
 }
 
 function RouteCell({ label, value, tone, risk }: { label: string; value: string; tone?: "green" | "red"; risk?: RiskLevel }) {
-  const textClass = risk ? riskTextClass(risk) : tone === "green" ? "text-[#008D4F]" : tone === "red" ? "text-[#D9004A]" : "text-[#263052]";
+  const textClass = risk ? riskTextClass(risk) : tone === "green" ? "text-[var(--success)]" : tone === "red" ? "text-[var(--danger)]" : "text-[var(--ink-soft)]";
   return (
     <div className="flex items-baseline justify-between gap-3 xl:block">
-      <span className="text-[10px] font-black uppercase tracking-[0.1em] text-[#8A91A8] xl:hidden">{label}</span>
+      <span className="text-[10px] font-black uppercase tracking-[0.1em] text-[var(--muted)] xl:hidden">{label}</span>
       <span className={`text-sm font-black ${textClass}`}>{value}</span>
     </div>
   );
@@ -1744,17 +1744,17 @@ function DetailedRouteCard({
     : route.steps.map((step) => step.warning).filter((item): item is string => Boolean(item));
 
   return (
-    <article className={`overflow-hidden rounded-[22px] border shadow-[0_18px_44px_rgba(15,23,60,0.055)] ${active ? "border-[#6C1DFF] bg-[#FBF9FF] ring-2 ring-[#6C1DFF]/12" : "border-[#E0E5EF] bg-white"}`}>
-      <button type="button" onClick={onSelect} className="w-full p-5 text-left focus:outline-none focus:ring-2 focus:ring-inset focus:ring-[#8D68FF] sm:p-6">
+    <article className={`overflow-hidden rounded-[22px] border shadow-[0_18px_44px_rgba(15,23,60,0.055)] ${active ? "border-[var(--accent)] bg-[var(--accent-soft)] ring-2 ring-[var(--accent)]/12" : "border-[var(--border)] bg-[var(--surface)]"}`}>
+      <button type="button" onClick={onSelect} className="w-full p-5 text-left focus:outline-none focus:ring-2 focus:ring-inset focus:ring-[var(--accent-2)] sm:p-6">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="rounded-full bg-[#F1E8FF] px-3 py-1 text-[10px] font-black uppercase tracking-[0.12em] text-[#6C1DFF]">{route.route_type} route</span>
-              {recommended ? <span className="rounded-full bg-[#6C1DFF] px-3 py-1 text-[10px] font-black uppercase tracking-[0.12em] text-white">Recommended</span> : null}
-              {active ? <span className="rounded-full bg-[#EDFFF5] px-3 py-1 text-[10px] font-black uppercase tracking-[0.12em] text-[#008D4F]">Showing above</span> : null}
+              <span className="rounded-full bg-[var(--accent-soft)] px-3 py-1 text-[10px] font-black uppercase tracking-[0.12em] text-[var(--accent)]">{route.route_type} route</span>
+              {recommended ? <span className="rounded-full bg-[var(--accent)] px-3 py-1 text-[10px] font-black uppercase tracking-[0.12em] text-white">Recommended</span> : null}
+              {active ? <span className="rounded-full bg-[var(--success-soft)] px-3 py-1 text-[10px] font-black uppercase tracking-[0.12em] text-[var(--success)]">Showing above</span> : null}
             </div>
-            <h3 className="mt-3 text-2xl font-black tracking-[-0.03em] text-[#0A1031]">{route.title}</h3>
-            <p className="mt-2 max-w-2xl text-sm font-semibold leading-6 text-[#68718F]">{firstRouteReason(route)}</p>
+            <h3 className="mt-3 text-2xl font-black tracking-[-0.03em] text-[var(--ink)]">{route.title}</h3>
+            <p className="mt-2 max-w-2xl text-sm font-semibold leading-6 text-[var(--muted)]">{firstRouteReason(route)}</p>
           </div>
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 lg:min-w-[470px]">
             <StatusPill label="Total" value={`${formatPoints(route.expected_total_points)} pts`} />
@@ -1769,16 +1769,16 @@ function DetailedRouteCard({
             const pair = transferPairs(step)[0];
             const summary = step.__pending ? "Calculating" : pair ? `${pair.out?.name ?? "TBC"} → ${pair.in?.name ?? "TBC"}` : actionLabel(step.action);
             return (
-              <div key={`${route.id}-${step.gw}-summary`} className="min-w-[150px] flex-1 rounded-xl border border-[#E3E7F0] bg-white px-3 py-3">
-                <div className="flex items-center justify-between gap-2"><span className="text-xs font-black text-[#6C1DFF]">{step.gw}</span><span className="text-[10px] font-black text-[#747C99]">{formatPoints(step.projected_points)} pts</span></div>
-                <p className="mt-2 line-clamp-2 text-xs font-bold leading-5 text-[#303A5D]">{summary}</p>
+              <div key={`${route.id}-${step.gw}-summary`} className="min-w-[150px] flex-1 rounded-xl border border-[var(--border)] bg-[var(--surface)] px-3 py-3">
+                <div className="flex items-center justify-between gap-2"><span className="text-xs font-black text-[var(--accent)]">{step.gw}</span><span className="text-[10px] font-black text-[var(--muted)]">{formatPoints(step.projected_points)} pts</span></div>
+                <p className="mt-2 line-clamp-2 text-xs font-bold leading-5 text-[var(--ink-soft)]">{summary}</p>
               </div>
             );
           })}
         </div>
       </button>
 
-      <div className="grid gap-3 border-t border-[#E6EAF2] bg-[#FAFBFD] p-4 md:grid-cols-3 sm:p-5">
+      <div className="grid gap-3 border-t border-[var(--border-soft)] bg-[var(--surface-3)] p-4 md:grid-cols-3 sm:p-5">
         <AnalysisList title="Why this route" items={route.why} tone="purple" />
         <AnalysisList title="What could go wrong" items={route.why_this_could_be_wrong} tone="pink" />
         <AnalysisList title="Warnings" items={warnings} tone="amber" />
@@ -1792,26 +1792,26 @@ function MobileDetailedRouteCard({ route, recommended, active, onSelect }: { rou
     ? route.warnings
     : route.steps.map((step) => step.warning).filter((item): item is string => Boolean(item));
   return (
-    <details className={`group overflow-hidden rounded-2xl border ${active ? "border-[#6C1DFF] bg-[#FBF9FF]" : "border-[#E0E5EF] bg-white"}`}>
+    <details className={`group overflow-hidden rounded-2xl border ${active ? "border-[var(--accent)] bg-[var(--accent-soft)]" : "border-[var(--border)] bg-[var(--surface)]"}`}>
       <summary className="flex cursor-pointer list-none items-center justify-between gap-3 p-3.5">
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-1.5">
-            <span className="rounded-full bg-[#F1E8FF] px-2 py-0.5 text-[8px] font-black uppercase tracking-[0.08em] text-[#6C1DFF]">{route.route_type}</span>
-            {recommended ? <span className="rounded-full bg-[#6C1DFF] px-2 py-0.5 text-[8px] font-black uppercase tracking-[0.08em] text-white">Recommended</span> : null}
-            {active ? <span className="rounded-full bg-[#EDFFF5] px-2 py-0.5 text-[8px] font-black uppercase tracking-[0.08em] text-[#008D4F]">Showing</span> : null}
+            <span className="rounded-full bg-[var(--accent-soft)] px-2 py-0.5 text-[8px] font-black uppercase tracking-[0.08em] text-[var(--accent)]">{route.route_type}</span>
+            {recommended ? <span className="rounded-full bg-[var(--accent)] px-2 py-0.5 text-[8px] font-black uppercase tracking-[0.08em] text-white">Recommended</span> : null}
+            {active ? <span className="rounded-full bg-[var(--success-soft)] px-2 py-0.5 text-[8px] font-black uppercase tracking-[0.08em] text-[var(--success)]">Showing</span> : null}
           </div>
-          <p className="mt-2 truncate text-sm font-black text-[#0A1031]">{route.title}</p>
-          <p className="mt-1 text-[10px] font-bold text-[#747C99]">{formatPoints(route.expected_total_points)} pts · {formatSignedPoints(route.expected_gain)} gain · {route.risk} risk</p>
+          <p className="mt-2 truncate text-sm font-black text-[var(--ink)]">{route.title}</p>
+          <p className="mt-1 text-[10px] font-bold text-[var(--muted)]">{formatPoints(route.expected_total_points)} pts · {formatSignedPoints(route.expected_gain)} gain · {route.risk} risk</p>
         </div>
-        <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-[#F1E8FF] text-base font-black text-[#6C1DFF] transition group-open:rotate-45">+</span>
+        <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-[var(--accent-soft)] text-base font-black text-[var(--accent)] transition group-open:rotate-45">+</span>
       </summary>
-      <div className="border-t border-[#E6EAF2] bg-[#FAFBFD] p-3">
-        <p className="text-xs font-semibold leading-5 text-[#68718F]">{firstRouteReason(route)}</p>
+      <div className="border-t border-[var(--border-soft)] bg-[var(--surface-3)] p-3">
+        <p className="text-xs font-semibold leading-5 text-[var(--muted)]">{firstRouteReason(route)}</p>
         <div className="mt-3 flex snap-x gap-2 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {route.steps.map((step) => (
-            <div key={`${route.id}-mobile-detail-${step.gw}`} className="w-[132px] shrink-0 snap-start rounded-xl border border-[#E3E7F0] bg-white p-2.5">
-              <div className="flex items-center justify-between gap-2"><span className="text-[11px] font-black text-[#6C1DFF]">{step.gw}</span><span className="text-[9px] font-black text-[#747C99]">{formatPoints(step.projected_points)}</span></div>
-              <p className="mt-1.5 line-clamp-2 text-[10px] font-bold leading-4 text-[#303A5D]">{routeActionSummary(step)}</p>
+            <div key={`${route.id}-mobile-detail-${step.gw}`} className="w-[132px] shrink-0 snap-start rounded-xl border border-[var(--border)] bg-[var(--surface)] p-2.5">
+              <div className="flex items-center justify-between gap-2"><span className="text-[11px] font-black text-[var(--accent)]">{step.gw}</span><span className="text-[9px] font-black text-[var(--muted)]">{formatPoints(step.projected_points)}</span></div>
+              <p className="mt-1.5 line-clamp-2 text-[10px] font-bold leading-4 text-[var(--ink-soft)]">{routeActionSummary(step)}</p>
             </div>
           ))}
         </div>
@@ -1820,7 +1820,7 @@ function MobileDetailedRouteCard({ route, recommended, active, onSelect }: { rou
           <AnalysisList title="What could go wrong" items={route.why_this_could_be_wrong} tone="pink" />
           <AnalysisList title="Warnings" items={warnings} tone="amber" />
         </div>
-        <button type="button" onClick={onSelect} className="mt-3 w-full rounded-xl bg-[#6C1DFF] px-4 py-2.5 text-xs font-black text-white">{active ? "Route currently shown" : "Show this route"}</button>
+        <button type="button" onClick={onSelect} className="mt-3 w-full rounded-xl bg-[var(--accent)] px-4 py-2.5 text-xs font-black text-white">{active ? "Route currently shown" : "Show this route"}</button>
       </div>
     </details>
   );
@@ -1830,13 +1830,13 @@ function DetailedRoutes({ planner, activeRoute, onSelect }: { planner: MultiGwPl
   const routes = [planner.recommended_route, ...planner.alternative_routes];
   return (
     <>
-      <section className="mt-4 rounded-[20px] border border-[#E0E5EF] bg-white p-4 shadow-[0_14px_38px_rgba(15,23,60,0.05)] sm:hidden">
+      <section className="mt-4 rounded-[20px] border border-[var(--border)] bg-[var(--surface)] p-4 shadow-[0_14px_38px_rgba(15,23,60,0.05)] sm:hidden">
         <div className="flex items-end justify-between gap-3">
           <div>
-            <p className="text-[9px] font-black uppercase tracking-[0.13em] text-[#6C1DFF]">All planner routes</p>
-            <h2 className="mt-1 text-lg font-black text-[#0A1031]">Detailed route evidence</h2>
+            <p className="text-[9px] font-black uppercase tracking-[0.13em] text-[var(--accent)]">All planner routes</p>
+            <h2 className="mt-1 text-lg font-black text-[var(--ink)]">Detailed route evidence</h2>
           </div>
-          <span className="rounded-full bg-[#F5F0FF] px-2.5 py-1 text-[9px] font-black text-[#6C1DFF]">{routes.length} routes</span>
+          <span className="rounded-full bg-[var(--accent-soft)] px-2.5 py-1 text-[9px] font-black text-[var(--accent)]">{routes.length} routes</span>
         </div>
         <div className="mt-3 grid gap-2.5">
           {routes.map((route, index) => route.__pending ? (
@@ -1853,14 +1853,14 @@ function DetailedRoutes({ planner, activeRoute, onSelect }: { planner: MultiGwPl
         </div>
       </section>
 
-      <section className="mt-5 hidden rounded-[24px] border border-[#E0E5EF] bg-white p-5 shadow-[0_20px_55px_rgba(15,23,60,0.065)] sm:block sm:p-6">
+      <section className="mt-5 hidden rounded-[24px] border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[0_20px_55px_rgba(15,23,60,0.065)] sm:block sm:p-6">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <p className="text-xs font-black uppercase tracking-[0.17em] text-[#6C1DFF]">All planner routes</p>
-            <h2 className="mt-2 text-2xl font-black tracking-[-0.03em] text-[#0A1031]">Every distinct planner route</h2>
-            <p className="mt-2 text-sm font-semibold text-[#68718F]">Safe, balanced, aggressive and roll paths remain available. Select any route to load its own hero, timeline, selected-gameweek analysis and transfer recommendations above.</p>
+            <p className="text-xs font-black uppercase tracking-[0.17em] text-[var(--accent)]">All planner routes</p>
+            <h2 className="mt-2 text-2xl font-black tracking-[-0.03em] text-[var(--ink)]">Every distinct planner route</h2>
+            <p className="mt-2 text-sm font-semibold text-[var(--muted)]">Safe, balanced, aggressive and roll paths remain available. Select any route to load its own hero, timeline, selected-gameweek analysis and transfer recommendations above.</p>
           </div>
-          <span className="rounded-full bg-[#F5F0FF] px-3 py-1.5 text-xs font-black text-[#6C1DFF]">{routes.length} route slots</span>
+          <span className="rounded-full bg-[var(--accent-soft)] px-3 py-1.5 text-xs font-black text-[var(--accent)]">{routes.length} route slots</span>
         </div>
         <div className="mt-5 grid gap-4">
           {routes.map((route, index) => route.__pending ? (
@@ -1883,16 +1883,16 @@ function DetailedRoutes({ planner, activeRoute, onSelect }: { planner: MultiGwPl
 function AdvancedAnalysis({ route }: { route: PlannerRoute }) {
   const warnings = route.warnings.length ? route.warnings : route.steps.map((step) => step.warning).filter((item): item is string => Boolean(item));
   return (
-    <details className="group mt-5 overflow-hidden rounded-[24px] border border-[#E0E5EF] bg-white shadow-[0_20px_55px_rgba(15,23,60,0.055)]">
+    <details className="group mt-5 overflow-hidden rounded-[24px] border border-[var(--border)] bg-[var(--surface)] shadow-[0_20px_55px_rgba(15,23,60,0.055)]">
       <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-5 focus:outline-none sm:px-6">
         <div>
-          <p className="text-xs font-black uppercase tracking-[0.17em] text-[#6C1DFF]">Route evidence</p>
-          <h2 className="mt-2 text-xl font-black tracking-[-0.02em] text-[#0A1031]">Route thesis, downside and risk notes</h2>
-          <p className="mt-1 text-sm font-semibold text-[#68718F]">The complete gameweek output is shown above; this section keeps the route-level model explanation available on demand.</p>
+          <p className="text-xs font-black uppercase tracking-[0.17em] text-[var(--accent)]">Route evidence</p>
+          <h2 className="mt-2 text-xl font-black tracking-[-0.02em] text-[var(--ink)]">Route thesis, downside and risk notes</h2>
+          <p className="mt-1 text-sm font-semibold text-[var(--muted)]">The complete gameweek output is shown above; this section keeps the route-level model explanation available on demand.</p>
         </div>
-        <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-[#D9CDF8] bg-[#F8F4FF] text-xl font-black text-[#6C1DFF] transition group-open:rotate-45">+</span>
+        <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-[var(--accent-border)] bg-[var(--accent-soft)] text-xl font-black text-[var(--accent)] transition group-open:rotate-45">+</span>
       </summary>
-      <div className="border-t border-[#E6EAF2] bg-[#FAFBFD] p-4 sm:p-6">
+      <div className="border-t border-[var(--border-soft)] bg-[var(--surface-3)] p-4 sm:p-6">
         <div className="grid gap-4 lg:grid-cols-3">
           <AnalysisList title="Why this route" items={route.why} tone="purple" />
           <AnalysisList title="What could go wrong" items={route.why_this_could_be_wrong} tone="pink" />
@@ -1904,11 +1904,11 @@ function AdvancedAnalysis({ route }: { route: PlannerRoute }) {
 }
 
 function AnalysisList({ title, items, tone }: { title: string; items: string[]; tone: "purple" | "pink" | "amber" }) {
-  const styles = tone === "purple" ? "border-[#D9CDF8] bg-[#F8F4FF] text-[#6C1DFF]" : tone === "pink" ? "border-[#FFD1E0] bg-[#FFF4F8] text-[#D9004A]" : "border-[#F3D99C] bg-[#FFF9E8] text-[#9B6500]";
+  const styles = tone === "purple" ? "border-[var(--accent-border)] bg-[var(--accent-soft)] text-[var(--accent)]" : tone === "pink" ? "border-[var(--danger-border)] bg-[var(--danger-soft)] text-[var(--danger)]" : "border-[var(--warning-border)] bg-[var(--warning-soft)] text-[var(--warning)]";
   return (
     <div className={`rounded-2xl border p-4 ${styles}`}>
       <h3 className="text-sm font-black">{title}</h3>
-      <ul className="mt-3 space-y-2 text-xs font-semibold leading-5 text-[#4D5675]">
+      <ul className="mt-3 space-y-2 text-xs font-semibold leading-5 text-[var(--ink-soft)]">
         {(items.length ? items : ["No additional notes supplied."]).map((item, index) => <li key={`${title}-${index}`} className="flex gap-2"><span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-current" />{item}</li>)}
       </ul>
     </div>
@@ -1918,22 +1918,22 @@ function AnalysisList({ title, items, tone }: { title: string; items: string[]; 
 function UpgradeTeaser({ planner }: { planner: MultiGwPlanner }) {
   if (planner.usage.has_full_planner) return null;
   return (
-    <section className="mt-5 flex flex-col gap-4 rounded-[24px] border border-dashed border-[#CDBAFA] bg-[#F8F4FF] p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
+    <section className="mt-5 flex flex-col gap-4 rounded-[24px] border border-dashed border-[var(--accent-border)] bg-[var(--accent-soft)] p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
       <div>
-        <p className="text-xs font-black uppercase tracking-[0.17em] text-[#6C1DFF]">Extended planning</p>
-        <h2 className="mt-2 text-xl font-black text-[#0A1031]">Unlock deeper route comparison and saved plans</h2>
-        <p className="mt-2 text-sm font-semibold text-[#68718F]">Upgrade messaging stays separate from your live recommendation, so sample data never looks like part of the real route.</p>
+        <p className="text-xs font-black uppercase tracking-[0.17em] text-[var(--accent)]">Extended planning</p>
+        <h2 className="mt-2 text-xl font-black text-[var(--ink)]">Unlock deeper route comparison and saved plans</h2>
+        <p className="mt-2 text-sm font-semibold text-[var(--muted)]">Upgrade messaging stays separate from your live recommendation, so sample data never looks like part of the real route.</p>
       </div>
-      <a href="/pricing" className="inline-flex shrink-0 items-center justify-center rounded-xl bg-[#6C1DFF] px-5 py-3 text-sm font-black text-white shadow-[0_12px_28px_rgba(108,29,255,0.24)] transition hover:bg-[#5B16DD] focus:outline-none focus:ring-2 focus:ring-[#8D68FF] focus:ring-offset-2">View plans</a>
+      <a href="/pricing" className="inline-flex shrink-0 items-center justify-center rounded-xl bg-[var(--accent)] px-5 py-3 text-sm font-black text-white shadow-[0_12px_28px_rgba(108,29,255,0.24)] transition hover:bg-[var(--accent-2)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-2)] focus:ring-offset-2">View plans</a>
     </section>
   );
 }
 
 function AlternativeRoutePlaceholder({ compact = false }: { compact?: boolean }) {
   return (
-    <div className={`flex items-center justify-center gap-3 border-dashed border-[#DCE2EC] bg-white/75 text-center ${compact ? "min-h-[78px] border-0 px-4 py-4" : "min-h-[168px] rounded-2xl border p-6"}`}>
-      <span className="h-5 w-5 animate-spin rounded-full border-2 border-[#6C1DFF] border-t-transparent" aria-hidden />
-      <p className="text-sm font-black text-[#6C1DFF]">Calculating route...</p>
+    <div className={`flex items-center justify-center gap-3 border-dashed border-[var(--border)] bg-[var(--surface)]/75 text-center ${compact ? "min-h-[78px] border-0 px-4 py-4" : "min-h-[168px] rounded-2xl border p-6"}`}>
+      <span className="h-5 w-5 animate-spin rounded-full border-2 border-[var(--accent)] border-t-transparent" aria-hidden />
+      <p className="text-sm font-black text-[var(--accent)]">Calculating route...</p>
     </div>
   );
 }
@@ -2020,7 +2020,7 @@ export function PlannerContent({ payload }: { payload: Record<string, unknown> }
       <PlannerRouteSelectionReset activeRouteId={activeRoute.id} stepCount={activeRoute.steps.length} setSelectedStepIndex={setSelectedStepIndex} />
       <PhaseBanner phase={state.phase} elapsedMs={"elapsedMs" in state ? state.elapsedMs : undefined} />
       {planner.horizon_clamped ? (
-        <div className="mb-4 rounded-2xl border border-[#F1D795] bg-[#FFF9E8] px-4 py-3 text-sm font-semibold text-[#735616]">
+        <div className="mb-4 rounded-2xl border border-[var(--warning-border)] bg-[var(--warning-soft)] px-4 py-3 text-sm font-semibold text-[var(--warning)]">
           <span className="font-black">Horizon adjusted:</span> {planner.horizon_clamp_reason ?? `The loaded fixture calendar currently supports ${planner.horizon} gameweek${planner.horizon === 1 ? "" : "s"}.`}
         </div>
       ) : null}

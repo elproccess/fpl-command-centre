@@ -443,15 +443,15 @@ export function useStreamingAnalysis<T>(
 export function StillComputingPanel({ phase, elapsedMs, label }: { phase: "loading" | "pending" | "running"; elapsedMs?: number; label: string }) {
   const seconds = elapsedMs != null ? Math.round(elapsedMs / 1000) : 0;
   return (
-    <section className="rounded-2xl border border-[#E8DEF8] bg-white p-6 shadow-[0_18px_45px_rgba(55,0,60,0.08)]">
+    <section className="rounded-2xl border border-[var(--border-soft)] bg-[var(--surface)] p-6 shadow-[0_18px_45px_rgba(55,0,60,0.08)]">
       <div className="flex items-center gap-3">
-        <span className="h-3 w-3 animate-pulse rounded-full bg-[#6C1DFF]" />
-        <p className="text-sm font-black uppercase tracking-[0.14em] text-[#6C1DFF]">
+        <span className="h-3 w-3 animate-pulse rounded-full bg-[var(--accent)]" />
+        <p className="text-sm font-black uppercase tracking-[0.14em] text-[var(--accent)]">
           {phase === "loading" ? "Checking..." : phase === "running" ? "Computing" : "Queued"}
         </p>
       </div>
-      <h2 className="mt-3 text-2xl font-black text-[#17002F]">{label} is still computing</h2>
-      <p className="mt-2 text-sm font-semibold leading-6 text-[#5D4A70]">
+      <h2 className="mt-3 text-2xl font-black text-[var(--ink)]">{label} is still computing</h2>
+      <p className="mt-2 text-sm font-semibold leading-6 text-[var(--muted)]">
         This runs as a real background job, not a page-load timeout - it started automatically when your team was imported
         {seconds > 0 ? ` and has been running for ${seconds}s` : ""}. This page checks back every few seconds and will show
         real results the moment it finishes.
