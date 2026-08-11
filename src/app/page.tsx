@@ -508,7 +508,7 @@ function HeroPlayerCard({ shirt, code, name, meta, tone }: { shirt: number; code
         <span className="relative mx-auto mt-1.5 block h-9 w-9 overflow-hidden rounded-full bg-[#0A140E] ring-1 ring-[#7fe0ac]/30">
           <Image
             key={code}
-            src={`https://resources.premierleague.com/premierleague/photos/players/110x140/p${code}.png`}
+            src={`https://resources.premierleague.com/premierleague/photos/players/250x250/p${code}.png`}
             alt=""
             fill
             sizes="36px"
@@ -534,7 +534,7 @@ function HeroFaceArt({ code }: { code: number }) {
       <span className="absolute bottom-3 right-1/2 h-16 w-16 translate-x-1/2 rounded-full bg-[#A67BFF]/25 blur-2xl" />
       {!broken ? (
         <Image
-          src={`https://resources.premierleague.com/premierleague/photos/players/110x140/p${code}.png`}
+          src={`https://resources.premierleague.com/premierleague/photos/players/250x250/p${code}.png`}
           alt=""
           fill
           sizes="120px"
@@ -922,7 +922,7 @@ function NewHero() {
                             <div className="relative h-6 w-6 shrink-0 sm:h-9 sm:w-9">
                               <span className="hero-armband-ring absolute inset-0 rounded-full" />
                               <span className="relative block h-6 w-6 overflow-hidden rounded-full bg-[#0A140E] sm:h-9 sm:w-9">
-                                <Image key={`${play.gw}-cap`} src={`https://resources.premierleague.com/premierleague/photos/players/110x140/p${play.capCode}.png`} alt="" fill sizes="36px" className="object-cover object-top" />
+                                <Image key={`${play.gw}-cap`} src={`https://resources.premierleague.com/premierleague/photos/players/250x250/p${play.capCode}.png`} alt="" fill sizes="36px" className="object-cover object-top" />
                               </span>
                               <span className="absolute -right-0.5 -top-0.5 grid h-3 w-3 place-items-center rounded-full border border-[#1E3527] bg-[#E8B23D] text-[6px] font-black text-[#1C1300] sm:h-4 sm:w-4 sm:border-[1.5px] sm:text-[8px]">C</span>
                             </div>
