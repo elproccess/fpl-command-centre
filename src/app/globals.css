@@ -2,10 +2,11 @@
 
 /* App-wide theme tokens. Light values are the app's existing palette (unchanged, still the
    default everywhere - see the note on data-theme below); dark values are pulled directly from
-   the landing page's own dark-purple section (page.tsx's "Why it feels different" section:
-   bg-[#100C18], the #6C1DFF/#00A86B glow accents, #BFAAFF/#CBB9FF label text) rather than
-   invented fresh, so dark mode actually looks like the rest of the product instead of a
-   generic inverted palette.
+   the landing page's actual hero/demo section (page.tsx's live squad-pitch mockup, the first
+   thing anyone sees) - dark green background/cards (#101F17/#182B1F/#1E3527), cream text
+   (#F3EFE3), soft purple accents (#A67BFF/#B394FF), mint success (#7FE0AC) and amber warning
+   (#E8B23D) - not the later, far less prominent bg-[#100C18] "Why it feels different" section
+   this was originally (wrongly) based on before a real side-by-side screenshot showed the gap.
    Selection precedence: :root[data-theme="dark"] (explicit user choice, written by the
    Settings toggle) always wins over the OS-level @media query below, in both directions - a
    user who explicitly picked light must see light even on a dark-OS device, and vice versa. The
@@ -52,42 +53,44 @@
 }
 
 :root[data-theme="dark"] {
-  --background: #100C18;
-  --foreground: #F5F1FF;
+  --background: #101F17;
+  --foreground: #F3EFE3;
 
-  --surface: #1A1428;
-  --surface-2: #100C18;
-  --surface-3: #1F1830;
-  --surface-dim: rgba(255, 255, 255, 0.05);
-  --border: rgba(255, 255, 255, 0.12);
-  --border-soft: rgba(255, 255, 255, 0.1);
+  --surface: #1E3527;
+  --surface-2: #182B1F;
+  --surface-3: #16281D;
+  --surface-dim: rgba(243, 239, 227, 0.05);
+  --border: rgba(243, 239, 227, 0.16);
+  --border-soft: rgba(243, 239, 227, 0.12);
 
-  --ink: #ffffff;
-  --ink-soft: rgba(255, 255, 255, 0.72);
-  --muted: rgba(255, 255, 255, 0.55);
-  --muted-2: rgba(255, 255, 255, 0.42);
+  --ink: #F3EFE3;
+  --ink-soft: rgba(243, 239, 227, 0.72);
+  --muted: #A9B8AB;
+  --muted-2: rgba(243, 239, 227, 0.42);
 
-  --accent: #8B5CFF;
-  --accent-2: #9A6BFF;
-  --accent-soft: rgba(108, 29, 255, 0.18);
-  --accent-border: rgba(139, 92, 255, 0.4);
-  --accent-ink: #ffffff;
+  --accent: #A67BFF;
+  --accent-2: #B394FF;
+  --accent-soft: rgba(166, 123, 255, 0.14);
+  --accent-border: rgba(166, 123, 255, 0.35);
+  /* The landing hero's own selected-pill state pairs this same light purple fill with dark text
+     (text-[#101F17] on bg-[#B394FF]), not white - white-on-pastel-purple reads as low contrast. */
+  --accent-ink: #101F17;
 
-  --success: #6FE3B4;
-  --success-soft: rgba(111, 227, 180, 0.14);
-  --success-border: rgba(111, 227, 180, 0.32);
-  --warning: #FFC876;
-  --warning-soft: rgba(255, 200, 118, 0.14);
-  --warning-border: rgba(255, 200, 118, 0.32);
-  --danger: #FF7FA8;
-  --danger-soft: rgba(255, 127, 168, 0.14);
-  --danger-border: rgba(255, 127, 168, 0.32);
+  --success: #7FE0AC;
+  --success-soft: rgba(127, 224, 172, 0.14);
+  --success-border: rgba(127, 224, 172, 0.32);
+  --warning: #E8B23D;
+  --warning-soft: rgba(232, 178, 61, 0.14);
+  --warning-border: rgba(232, 178, 61, 0.32);
+  --danger: #FF8FA8;
+  --danger-soft: rgba(255, 143, 168, 0.14);
+  --danger-border: rgba(255, 143, 168, 0.32);
   --info: #7EC8FF;
   --info-soft: rgba(126, 200, 255, 0.14);
   --info-border: rgba(126, 200, 255, 0.32);
 
-  --shadow-color: rgba(0, 0, 0, 0.5);
-  --surface-translucent: rgba(26, 20, 40, 0.9);
+  --shadow-color: rgba(0, 0, 0, 0.6);
+  --surface-translucent: rgba(16, 31, 23, 0.88);
 }
 
 /* Deliberately no @media (prefers-color-scheme: dark) fallback here - the platform defaults to
