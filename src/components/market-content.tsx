@@ -51,6 +51,18 @@ const PRICE_OPTIONS = [
   { value: 12, label: "Under £12.0m" },
 ];
 
+const MIN_PRICE_OPTIONS = [
+  { value: 0, label: "Any price" },
+  { value: 4.5, label: "Over £4.5m" },
+  { value: 5, label: "Over £5.0m" },
+  { value: 5.5, label: "Over £5.5m" },
+  { value: 6, label: "Over £6.0m" },
+  { value: 6.5, label: "Over £6.5m" },
+  { value: 7.5, label: "Over £7.5m" },
+  { value: 8.5, label: "Over £8.5m" },
+  { value: 10, label: "Over £10.0m" },
+];
+
 const PAGE_SIZE = 30;
 
 type PositionFilter = (typeof POSITIONS)[number];
@@ -408,6 +420,8 @@ function MarketToolbar({
   onPosition,
   team,
   onTeam,
+  minPrice,
+  onMinPrice,
   maxPrice,
   onMaxPrice,
   sortKey,
@@ -426,6 +440,8 @@ function MarketToolbar({
   onPosition: (value: PositionFilter) => void;
   team: string;
   onTeam: (value: string) => void;
+  minPrice: number;
+  onMinPrice: (value: number) => void;
   maxPrice: number;
   onMaxPrice: (value: number) => void;
   sortKey: RowSortKey;
@@ -449,7 +465,7 @@ function MarketToolbar({
             className="h-12 w-full rounded-xl border border-[var(--border)] bg-[var(--surface-3)] pl-10 pr-4 text-sm font-bold text-[var(--ink)] outline-none transition placeholder:text-[var(--muted)] focus:border-[var(--accent)] focus:ring-4 focus:ring-[var(--accent)]/10"
           />
         </label>
-        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 xl:flex xl:shrink-0">
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-5 xl:flex xl:shrink-0">
           <select
             value={team}
             onChange={(event) => onTeam(event.target.value)}
@@ -459,6 +475,16 @@ function MarketToolbar({
             <option value="">All clubs</option>
             {teams.map((club) => (
               <option key={club} value={club}>{club}</option>
+            ))}
+          </select>
+          <select
+            value={minPrice}
+            onChange={(event) => onMinPrice(Number(event.target.value))}
+            className="h-12 rounded-xl border border-[var(--border)] bg-[var(--surface)] px-3 text-xs font-black text-[var(--ink)] outline-none focus:border-[var(--accent)]"
+            aria-label="Minimum price"
+          >
+            {MIN_PRICE_OPTIONS.map((option) => (
+              <option key={option.value} value={option.value}>{option.label}</option>
             ))}
           </select>
           <select
@@ -872,6 +898,7 @@ export function MarketContent({
     POSITIONS.includes(initialPosition as PositionFilter) ? (initialPosition as PositionFilter) : "All",
   );
   const [teamFilter, setTeamFilter] = useState(initialTeam);
+  const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(initialMaxPrice || 0);
   const [sortKey, setSortKey] = useState<RowSortKey>("horizon");
   const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
@@ -922,7 +949,7 @@ export function MarketContent({
 
   useEffect(() => {
     setPage(0);
-  }, [search, tab, positionFilter, teamFilter, maxPrice, sortKey, sortDirection]);
+  }, [search, tab, positionFilter, teamFilter, minPrice, maxPrice, sortKey, sortDirection]);
 
   if (listState.phase === "error") return <ErrorState message={listState.message} />;
   if (listState.phase !== "ready") {
@@ -965,6 +992,7 @@ export function MarketContent({
     .filter((row) => matchesTab(row, tab, ownedIds))
     .filter((row) => positionFilter === "All" || row.position === positionFilter)
     .filter((row) => !teamFilter || row.team === teamFilter)
+    .filter((row) => !minPrice || row.price >= minPrice)
     .filter((row) => !maxPrice || row.price <= maxPrice)
     .sort((a, b) => {
       const delta = rowSortValue(a, sortKey) - rowSortValue(b, sortKey);
@@ -1050,6 +1078,8 @@ export function MarketContent({
         onPosition={setPositionFilter}
         team={teamFilter}
         onTeam={setTeamFilter}
+        minPrice={minPrice}
+        onMinPrice={setMinPrice}
         maxPrice={maxPrice}
         onMaxPrice={setMaxPrice}
         sortKey={sortKey}
@@ -1107,6 +1137,7 @@ export function MarketContent({
                   setTab("All");
                   setPositionFilter("All");
                   setTeamFilter("");
+                  setMinPrice(0);
                   setMaxPrice(0);
                 }}
                 className="mt-5 rounded-xl bg-[var(--accent)] px-5 py-3 text-sm font-black text-white"
