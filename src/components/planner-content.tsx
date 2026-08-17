@@ -15,11 +15,19 @@ const PLANNER_STATUS_LABEL: Record<string, string> = {
   season_complete: "Requested gameweek is beyond the loaded season",
 };
 
-// Poll the one real planner job conservatively. Before any gameweek is available we use a
-// short bounded backoff so GW1 still appears promptly. Once usable planner data is visible, two
-// lightweight status checks per minute are enough; the cached GW1 remains on screen between them.
-const PLANNER_INITIAL_STATUS_DELAYS_MS = [5000, 10000, 20000, 30000] as const;
-const PLANNER_VISIBLE_STATUS_INTERVAL_MS = 30000;
+// Poll /analysis/status (lightweight - reads a cached row, does not recompute) fast enough to
+// actually show GW1 as soon as the backend has it, and keep filling in GW2-5 as each one
+// finishes, instead of lagging behind real backend progress. Found live: the old 5s/10s/20s/30s
+// initial backoff plus a 30s steady-state interval was tuned for a backend job that took
+// ~70s+; after cutting real DB round-trips per plan from 208 to ~50 (see the backend's
+// decision_centre.py/squad_health.py/scenario_simulator.py fixes), GW1 is typically ready by
+// ~13-15s and each subsequent gameweek step lands roughly a second apart - the old delays meant
+// a user could be looking at a bare spinner for 30-65s after the backend already had GW1 ready,
+// then watching a stale streaming snapshot for up to 30s after later gameweeks had already
+// finished. This is a status-only poll (no heavy recompute triggered), so a short, near-constant
+// cadence here costs one cheap read per tick, not another full plan computation.
+const PLANNER_INITIAL_STATUS_DELAYS_MS = [1500, 2000, 2500, 3000] as const;
+const PLANNER_VISIBLE_STATUS_INTERVAL_MS = 2000;
 const PLANNER_STATUS_ERROR_RETRY_MS = 60000;
 
 type PlannerPollState =
