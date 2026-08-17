@@ -275,14 +275,18 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 // the UI into the multi-card streaming skeleton for. Found live: doing so replaced a single
 // "still working" spinner with 5 cards that all read "Calculating..." and then visibly sat
 // frozen for the entire ~20s setup window before any of them filled in - reading as MORE broken
-// than the one spinner it replaced, not less. Only treat a snapshot as streamable once it
-// actually contains a completed step or alternative; otherwise keep showing the plain running
-// state even though is_partial is technically true.
+// than the one spinner it replaced, not less. Originally gated on the snapshot containing an
+// actual completed step or alternative, so a bare generic spinner showed for the whole ~15-20s
+// before GW1 itself finished, then GW1-5 all appeared within the same few-second window once
+// streaming state finally kicked in - reading as "loaded all at once" even though the backend
+// genuinely streamed them one at a time. Gating on `gameweeks` being known instead: the backend's
+// very first on_progress emit (before analyse_squad even runs - see plan_multi_gw's own
+// docstring) already carries the real GW numbers with zero completed steps, which is enough for
+// buildStreamingPlanner to render a "GW1 calculating..., GW2 calculating..., ..." skeleton
+// immediately - each placeholder then flips to real data the moment its own step actually lands,
+// instead of the whole route appearing to pop in together.
 function hasRealPlannerProgress(partial: Record<string, unknown>): boolean {
-  const recommendedPartial = partial.recommended_route_partial;
-  const steps = isRecord(recommendedPartial) && Array.isArray(recommendedPartial.steps) ? recommendedPartial.steps : [];
-  const completedAlternatives = Array.isArray(partial.alternative_routes_completed) ? partial.alternative_routes_completed : [];
-  return steps.length > 0 || completedAlternatives.length > 0;
+  return Array.isArray(partial.gameweeks) && partial.gameweeks.length > 0;
 }
 
 // Builds a full MultiGwPlanner-shaped object out of the backend's real, growing partial-progress
