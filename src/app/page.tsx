@@ -1359,6 +1359,7 @@ export default function Home() {
           <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-xs font-bold text-white/42">
             <a href="#system" className="transition hover:text-white">The system</a>
             <a href="#modules" className="transition hover:text-white">Modules</a>
+            <Link href="/about" className="transition hover:text-white">About</Link>
             <Link href="/trust" className="transition hover:text-white">Model trust</Link>
             <Link href="/import" className="transition hover:text-white">Import team</Link>
           </div>
