@@ -23,9 +23,33 @@ const sora = Sora({
 // already holds the old response until that cache independently expires or is force-cleared.
 export const dynamic = "force-dynamic";
 
+const SITE_URL = "https://matchdayfpl.co.uk";
+const SITE_DESCRIPTION =
+  "Free FPL decision assistant - plans your transfers and captaincy across the full gameweek horizon, with a live market screen, squad health checks, and transfer-by-transfer reasoning.";
+
 export const metadata: Metadata = {
-  title: "Matchday OS",
-  description: "Premium FPL decision assistant for your best move, captain pick, squad health, and 3-GW plan.",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: "Matchday OS - FPL Transfer & Captaincy Planner",
+    template: "%s | Matchday OS",
+  },
+  description: SITE_DESCRIPTION,
+  keywords: ["FPL", "Fantasy Premier League", "FPL planner", "FPL transfers", "FPL captaincy", "FPL projections"],
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    type: "website",
+    url: SITE_URL,
+    siteName: "Matchday OS",
+    title: "Matchday OS - FPL Transfer & Captaincy Planner",
+    description: SITE_DESCRIPTION,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Matchday OS - FPL Transfer & Captaincy Planner",
+    description: SITE_DESCRIPTION,
+  },
 };
 
 export default function RootLayout({
