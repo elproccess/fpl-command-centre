@@ -34,9 +34,10 @@ const SIGNAL_ORDER: Record<MarketSignal["signal"], number> = {
 const POSITIONS = ["All", "GK", "DEF", "MID", "FWD"] as const;
 
 // Tabs re-slice ONE underlying table instead of swapping to a second, differently-shaped list -
-// "Sell/Avoid" is deliberately one tab even though the two are distinct badges, because the
-// player is asking the same question either way ("who's a risk right now").
-const VIEW_TABS = ["All", "Buy", "Watch", "Sell/Avoid", "Rising", "Falling", "My Squad"] as const;
+// Buy/Watch/Sell-Avoid tabs hidden for now along with the rest of the market signal UI -
+// every row still has a signal of null, so matchesTab's signal branches below just never match,
+// which is fine since nothing currently links to those tab values. Restore by adding them back.
+const VIEW_TABS = ["All", "Rising", "Falling", "My Squad"] as const;
 
 const PRICE_OPTIONS = [
   { value: 0, label: "Any price" },
@@ -252,9 +253,12 @@ function buildMarketRows(pool: ExplorerPlayer[], signals: MarketSignal[]): Marke
       next_projected: entry.next_projected,
       horizon_projected: entry.horizon_projected,
       value_per_million: entry.value_per_million,
-      signal: signal?.signal ?? null,
-      score: signal?.score ?? null,
-      reason: signal?.reason ?? null,
+      // Buy/Watch/Sell/Avoid signals hidden for now (score/reason along with it) - not deleted,
+      // just not attached to rows, so every existing "unranked" fallback already in this file
+      // renders correctly with zero other changes needed. Restore by reading from `signal` again.
+      signal: null,
+      score: null,
+      reason: null,
       trend: signalPlayer?.trend ?? null,
       price_movement: signalPlayer?.price_movement ?? null,
       form: signalPlayer?.form ?? null,
@@ -264,56 +268,32 @@ function buildMarketRows(pool: ExplorerPlayer[], signals: MarketSignal[]): Marke
     };
   });
 
-  const poolIds = new Set(pool.map((entry) => entry.id));
-  for (const signal of signals) {
-    if (poolIds.has(signal.player.id)) continue;
-    const player = signal.player;
-    const horizon = numberValue(player.three_gw_projected) || numberValue(player.projected);
-    rows.push({
-      id: player.id,
-      code: player.code ?? null,
-      name: player.name,
-      team: player.team,
-      team_id: 0,
-      position: asPosition(player.position),
-      price: player.price,
-      ownership: numberValue(player.ownership),
-      status: player.status,
-      projections: {},
-      next_projected: numberValue(player.projected),
-      horizon_projected: horizon,
-      value_per_million: player.price ? Math.round((horizon / player.price) * 100) / 100 : 0,
-      signal: signal.signal,
-      score: signal.score,
-      reason: signal.reason,
-      trend: player.trend ?? null,
-      price_movement: player.price_movement ?? null,
-      form: player.form ?? null,
-      three_gw_projected: player.three_gw_projected ?? null,
-      fixture: player.fixture ?? null,
-      fixture_difficulty: player.fixture_difficulty ?? null,
-    });
-  }
+  // Previously also pushed a row for every signals-only player not in `pool`, using a 3-GW (or
+  // single-GW) total as `horizon_projected` - mixed into the same sort column as the pool's real
+  // 5-GW total from a different source, so sorting "by projection" compared numbers on two
+  // different scales and looked shuffled. Signals are hidden for now anyway (see above), so this
+  // no longer has real player rows to pull from - dropped rather than left producing bad rows.
 
   return rows;
 }
 
 function rowSortValue(row: MarketRow, key: RowSortKey) {
-  if (key === "next") return row.next_projected;
-  if (key === "value") return row.value_per_million;
+  // numberValue() on every branch, not just the ones known to sometimes be null - a comparator
+  // that ever returns NaN (undefined - number) makes Array.prototype.sort's result unstable
+  // instead of just wrong, which looked like "the whole table is in a random order" rather than
+  // a normal off-by-some-players bug.
+  if (key === "next") return numberValue(row.next_projected);
+  if (key === "value") return numberValue(row.value_per_million);
   if (key === "score") return numberValue(row.score);
   if (key === "form") return numberValue(row.form);
   if (key === "movement") return Math.abs(numberValue(row.price_movement));
-  if (key === "price") return row.price;
-  if (key === "ownership") return row.ownership;
-  return row.horizon_projected;
+  if (key === "price") return numberValue(row.price);
+  if (key === "ownership") return numberValue(row.ownership);
+  return numberValue(row.horizon_projected);
 }
 
 function matchesTab(row: MarketRow, tab: ViewTab, ownedIds: Set<number>) {
   if (tab === "All") return true;
-  if (tab === "Buy") return row.signal === "Buy";
-  if (tab === "Watch") return row.signal === "Watch";
-  if (tab === "Sell/Avoid") return row.signal === "Sell" || row.signal === "Avoid";
   if (tab === "Rising") return row.trend === "up";
   if (tab === "Falling") return row.trend === "down";
   return ownedIds.has(row.id);
@@ -1009,25 +989,14 @@ export function MarketContent({
     shownRows[0] ??
     allRows[0];
 
-  const buys = allRows.filter((row) => row.signal === "Buy");
-  const sells = allRows.filter((row) => row.signal === "Sell" || row.signal === "Avoid");
   const rising = allRows.filter((row) => row.trend === "up");
   const falling = allRows.filter((row) => row.trend === "down");
   const averageProjection = allRows.length
     ? allRows.reduce((sum, row) => sum + row.next_projected, 0) / allRows.length
     : 0;
-  const ticker = [...universe].sort((a, b) => {
-    const movementDelta = Math.abs(numberValue(b.player.price_movement)) - Math.abs(numberValue(a.player.price_movement));
-    return movementDelta || numberValue(b.score) - numberValue(a.score);
-  });
 
   function selectRow(row: MarketRow, mobile = false) {
     setSelectedId(row.id);
-    if (mobile) setMobileDetailOpen(true);
-  }
-
-  function selectSignalFromTicker(signal: MarketSignal, mobile = false) {
-    setSelectedId(signal.player.id);
     if (mobile) setMobileDetailOpen(true);
   }
 
@@ -1048,13 +1017,13 @@ export function MarketContent({
               </div>
               <h1 className="mt-3 text-2xl font-black tracking-tight text-[var(--ink)] sm:text-3xl">Player Market</h1>
               <p className="mt-2 max-w-xl text-xs font-semibold leading-5 text-[var(--muted)] sm:text-sm">
-                The full player pool for {gwWindow}, screened by price, position, ownership and market signal — click any row for the full thesis.
+                The full player pool for {gwWindow}, screened by price, position, and ownership — sorted best to worst by projected points, click any row for the full breakdown.
               </p>
             </div>
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 xl:min-w-[560px]">
               <MarketStat label="Market depth" value={String(allRows.length)} detail="players in pool" />
-              <MarketStat label="Buy signals" value={String(buys.length)} detail="positive setups" />
-              <MarketStat label="Risk exits" value={String(sells.length)} detail="sell or avoid" />
+              <MarketStat label="Rising" value={String(rising.length)} detail="price trending up" />
+              <MarketStat label="Falling" value={String(falling.length)} detail="price trending down" />
               <MarketStat label="Avg projection" value={averageProjection.toFixed(1)} detail="next-GW points" />
             </div>
           </div>
@@ -1066,8 +1035,6 @@ export function MarketContent({
           </div>
         </div>
       </section>
-
-      <MovementTicker signals={ticker} onSelect={(item) => selectSignalFromTicker(item, true)} />
 
       <MarketToolbar
         search={search}
@@ -1170,8 +1137,6 @@ export function MarketContent({
           <div className="mt-5"><CompareAnyTwoPlayers directory={directory} /></div>
         </details>
       ) : null}
-
-      <SignalGuide board={board} />
 
       {mobileDetailOpen && selectedRow ? (
         <div className="fixed inset-0 z-[80] flex items-end bg-[var(--ink)]/55 p-0 backdrop-blur-sm xl:hidden" onClick={() => setMobileDetailOpen(false)}>
