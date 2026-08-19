@@ -7,7 +7,18 @@ const SITE_URL = "https://matchdayfpl.co.uk";
 // are personalized to whatever team is already imported, so a crawler visiting cold wouldn't see
 // real content there and they're not useful entries for search discovery.
 export default function sitemap(): MetadataRoute.Sitemap {
-  const routes = ["", "/about", "/market", "/pricing", "/trust", "/import"];
+  const routes = [
+    "",
+    "/about",
+    "/market",
+    "/pricing",
+    "/trust",
+    "/import",
+    "/guides/beginners",
+    "/guides/chips",
+    "/guides/captaincy",
+    "/guides/mistakes",
+  ];
   return routes.map((route) => ({
     url: `${SITE_URL}${route}`,
     lastModified: new Date(),

@@ -69,6 +69,24 @@ export default function AboutPage() {
           </Link>
         </div>
       </section>
+
+      <section className="mt-6">
+        <p className="mb-3 text-xs font-black uppercase tracking-[0.14em] text-[var(--muted-2)]">New to FPL?</p>
+        <div className="grid gap-3 sm:grid-cols-4">
+          <Link href="/guides/beginners" className="rounded-xl border border-[var(--border-soft)] bg-[var(--surface)] p-4 text-sm font-black text-[var(--ink)] transition hover:border-[var(--accent-border)] hover:bg-[var(--accent-soft)]">
+            FPL for Beginners →
+          </Link>
+          <Link href="/guides/chips" className="rounded-xl border border-[var(--border-soft)] bg-[var(--surface)] p-4 text-sm font-black text-[var(--ink)] transition hover:border-[var(--accent-border)] hover:bg-[var(--accent-soft)]">
+            Chips Explained →
+          </Link>
+          <Link href="/guides/captaincy" className="rounded-xl border border-[var(--border-soft)] bg-[var(--surface)] p-4 text-sm font-black text-[var(--ink)] transition hover:border-[var(--accent-border)] hover:bg-[var(--accent-soft)]">
+            Captaincy Explained →
+          </Link>
+          <Link href="/guides/mistakes" className="rounded-xl border border-[var(--border-soft)] bg-[var(--surface)] p-4 text-sm font-black text-[var(--ink)] transition hover:border-[var(--accent-border)] hover:bg-[var(--accent-soft)]">
+            Common Mistakes →
+          </Link>
+        </div>
+      </section>
     </AppShell>
   );
 }
