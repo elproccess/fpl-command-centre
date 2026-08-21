@@ -98,8 +98,8 @@ export function ImportTeamForm() {
           </form>
           <p className="mt-3 text-xs font-semibold leading-relaxed text-[var(--muted)]">
             No team ID needed — explores the full platform with a sample squad on real 2026/27
-            fixtures and projections. Importing your own team opens once the Gameweek 1 deadline
-            passes, because FPL keeps everyone&apos;s picks private until then.
+            fixtures and projections. Importing your own team works once your squad&apos;s locked
+            in for the latest gameweek deadline — before that, FPL keeps picks private.
           </p>
         </div>
       </div>

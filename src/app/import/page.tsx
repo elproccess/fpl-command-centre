@@ -20,17 +20,20 @@ function ImportErrorNotice({ error, status, message }: { error: string; status: 
 
   const detail = backendDetail(message);
 
-  // Pre-season: FPL has zero finished events until the GW1 deadline passes, so every real
-  // team-ID import fails with this. It's expected, not broken - say so.
-  if (/no finished fpl events/i.test(detail)) {
+  // Before any gameweek's deadline has passed, FPL keeps every manager's squad private - every
+  // real team-ID import fails with this until the next deadline passes. It's expected, not
+  // broken - say so. (Was keyed on "no finished fpl events" - the backend used to gate imports on
+  // a gameweek being fully *played*, which lagged the actual "squads are locked" moment by days;
+  // fixed to gate on the deadline itself, see squad_health.deadline_passed_official_events.)
+  if (/no fpl gameweek deadline has passed yet/i.test(detail)) {
     return (
       <div className="rounded-2xl border-2 border-dashed border-[var(--accent)] bg-[var(--accent-soft)] p-5">
-        <p className="text-[10px] font-black uppercase tracking-[0.14em] text-[var(--accent)]">Season not started yet</p>
-        <h2 className="mt-2 text-lg font-black text-[var(--ink)]">Team imports open at the Gameweek 1 deadline</h2>
+        <p className="text-[10px] font-black uppercase tracking-[0.14em] text-[var(--accent)]">Squads not locked yet</p>
+        <h2 className="mt-2 text-lg font-black text-[var(--ink)]">Team imports open at the next deadline</h2>
         <p className="mt-2 text-sm font-semibold leading-6 text-[var(--ink-soft)]">
-          The 2026/27 season hasn&apos;t kicked off, so FPL keeps every manager&apos;s squad private —
-          there&apos;s nothing to import yet. Imports start working the moment the GW1 deadline passes
-          (Friday 21 Aug, 18:30 UK). Until then, use the demo squad below to explore the full platform.
+          FPL keeps every manager&apos;s squad private until a gameweek&apos;s deadline passes.
+          Imports start working the moment that happens. Until then, use the demo squad below to
+          explore the full platform.
         </p>
       </div>
     );
